@@ -1,0 +1,20 @@
+Buyer.java:13: error: unreported exception InterruptedException; must be caught or declared to be thrown
+    Thread.sleep(200);
+                ^
+1 error
+Buyer.java:13: error: unreported exception InterruptedException; must be caught or declared to be thrown
+    Thread.sleep(200);
+                ^
+1 error
+Buyer.java:17: error: cannot find symbol
+    catch(Excpetion e)
+          ^
+  symbol:   class Excpetion
+  location: class Buyer
+1 error
+Buyer.java:17: error: cannot find symbol
+    catch(Excpetion e)
+          ^
+  symbol:   class Excpetion
+  location: class Buyer
+1 error
