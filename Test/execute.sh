@@ -1,3 +1,4 @@
+unset JAVA_TOOL_OPTIONS
 filename="info_file.txt"
 while read -r line
 do
