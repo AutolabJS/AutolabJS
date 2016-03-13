@@ -32,5 +32,3 @@ do
   rm -rf *
   cd ..
 done < $filename
-cat scores.txt
-rm scores.txt
