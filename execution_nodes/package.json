@@ -1,0 +1,15 @@
+{
+  "name": "execution_nodes",
+  "version": "0.0.0",
+  "description": "",
+  "main": "execute_node.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "1.8",
+    "express": "^4.13.4"
+  }
+}
