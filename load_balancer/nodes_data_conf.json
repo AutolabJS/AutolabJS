@@ -1,0 +1,19 @@
+{"Nodes": [
+  {
+
+    "hostname": "localhost",
+    "port": "8082",
+    "max_submissions": "10"
+
+  },
+  {
+    "url": "localhost",
+    "port": "8082",
+    "max_submissions": "10"
+  }
+],
+"server_info": {
+  "hostname": "localhost",
+  "port": "8080"
+  }
+}
