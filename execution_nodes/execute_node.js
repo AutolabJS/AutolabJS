@@ -55,5 +55,5 @@ app.post('/requestRun', function(req, res){
 load_balancer_hostname=load_balancer.hostname;
 load_balancer_port=load_balancer.port;
 
-server.listen(8080);
-console.log("Listening at 8080");
+server.listen(8082);
+console.log("Listening at 8082");
