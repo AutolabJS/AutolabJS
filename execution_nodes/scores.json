@@ -1,0 +1,12 @@
+{
+  "node_details":
+    {
+      "hostname": "localhost",
+      "port": "8082"
+    },
+  "submission_details":
+    {
+      "id" : "0",
+      "marks" :[]
+    }
+}

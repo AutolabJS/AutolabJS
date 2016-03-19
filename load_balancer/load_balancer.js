@@ -20,8 +20,8 @@ app.post('/submit', function(req, res){
     var assigned_node = node_queue.pop();
     var assigned_hostname = assigned_node.url;
     var assigned_port = assigned_node.port;
-
-    var body=req.body;
+    var body=JSON.stringify(req.body);
+    // var body=req.body;
     var request = new http.ClientRequest({
       hostname: assigned_hostname,
       port: assigned_port,
@@ -49,7 +49,7 @@ app.post('/sendScores', function(req, res){
     var assigned_node = node_queue.pop();
     var assigned_hostname = assigned_node.url;
     var assigned_port = assigned_node.port;
-    var body=job_queue.pop();
+    var body=JSON.stringify(job_queue.pop());
     var request = new http.ClientRequest({
       hostname: assigned_hostname,
       port: assigned_port,
