@@ -6,7 +6,12 @@
     },
   "submission_details":
     {
-      "id" : "0",
-      "marks" :[]
+      "marks" :[],
+      "id_no" :"",
+      "Lab_No": "",
+      "time":"",
+      "status": "",
+      "penalty": "" ,
+      "socket": ""
     }
 }

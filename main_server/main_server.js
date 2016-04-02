@@ -58,19 +58,21 @@ app.get('/reset', function (req,res) {
 app.post('/results', function(req, res){
     var submission_id = req.body.id;
     var scores = req.body.marks;
-    console.log(submission_id+ " "+scores);
+    console.log(req.body);
     res.send(true);
-    req.socket.emit('scores', req.scores);
+    // req.socket.emit('scores', req.scores);
 });
 
+// socket_map = [];
+
 io.on('connection', function(socket) {
-  lab_config = require('./labs.json');
+  lab_conf = require('./labs.json');
   var current_time= new Date();
   labs_status=[];
-  for(var i=0;i<lab_config["Labs"].length;i++) {
-    start=new Date(lab_config["Labs"][i].start_year, lab_config["Labs"][i].start_month -1 ,lab_config["Labs"][i].start_date, lab_config["Labs"][i].start_hour,lab_config["Labs"][i].start_minute, 0,0);
-    end=new Date(lab_config["Labs"][i].end_year, lab_config["Labs"][i].end_month -1 ,lab_config["Labs"][i].end_date, lab_config["Labs"][i].end_hour,lab_config["Labs"][i].end_minute, 0,0);
-    hard=new Date(lab_config["Labs"][i].hard_year, lab_config["Labs"][i].hard_month -1 ,lab_config["Labs"][i].hard_date, lab_config["Labs"][i].hard_hour,lab_config["Labs"][i].hard_minute, 0,0);
+  for(var i=0;i<lab_conf["Labs"].length;i++) {
+    start=new Date(lab_conf["Labs"][i].start_year, lab_conf["Labs"][i].start_month -1 ,lab_conf["Labs"][i].start_date, lab_conf["Labs"][i].start_hour,lab_conf["Labs"][i].start_minute, 0,0);
+    end=new Date(lab_conf["Labs"][i].end_year, lab_conf["Labs"][i].end_month -1 ,lab_conf["Labs"][i].end_date, lab_conf["Labs"][i].end_hour,lab_conf["Labs"][i].end_minute, 0,0);
+    hard=new Date(lab_conf["Labs"][i].hard_year, lab_conf["Labs"][i].hard_month -1 ,lab_conf["Labs"][i].hard_date, lab_conf["Labs"][i].hard_hour,lab_conf["Labs"][i].hard_minute, 0,0);
     var status = 0;
     if(current_time-start > 0)
     {
@@ -86,7 +88,7 @@ io.on('connection', function(socket) {
       }
     }
 
-    lab_x = {"Lab_No" :lab_config["Labs"][i], "status": status};
+    lab_x = {"Lab_No" :lab_conf["Labs"][i], "status": status};
     labs_status.push(lab_x);
   }
   socket.emit('labs_status', labs_status);
@@ -124,7 +126,8 @@ io.on('connection', function(socket) {
           }
         }
       }
-      body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time, "status": status, "penalty": penalty, "socket": socket};
+      // body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time, "status": status, "penalty": penalty, "socket": socket};
+      body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time, "status": status, "penalty": penalty};
       var body=JSON.stringify(body_json);
       var request = new http.ClientRequest({
         hostname: load_balancer_hostname,
@@ -137,10 +140,17 @@ io.on('connection', function(socket) {
         }
       });
       request.end(body);
-
     }
     else {
       socket.emit("invalid", "Invalid Lab No");
     }
   });
+
+  // socket.on('requestLab', function(data) {
+  //   socket_map.push({data: socket});
+  // });
+  //
+  // socket.on('disconnect', function() {
+  //   // delete socket_map[];
+  // });
 });

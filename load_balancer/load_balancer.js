@@ -15,6 +15,7 @@ app.get('/connectionCheck', function (req,res) {
 });
 
 app.post('/submit', function(req, res){
+  console.log("Received "+req);
   res.send(true);
   if(node_queue.length!=0) {
     var assigned_node = node_queue.pop();
