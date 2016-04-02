@@ -124,7 +124,7 @@ io.on('connection', function(socket) {
           }
         }
       }
-      body_json= {"id_no" :id_number, "Lab_No:" lab_no, "time:",current_time, "status": status, "penalty": penalty, "socket:", socket};
+      body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time, "status": status, "penalty": penalty, "socket": socket};
       var body=JSON.stringify(body_json);
       var request = new http.ClientRequest({
         hostname: load_balancer_hostname,
