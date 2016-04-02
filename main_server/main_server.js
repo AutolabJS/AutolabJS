@@ -35,7 +35,7 @@ function initScoreboard(lab_no) {
   connection.query('SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1', [config_details["database"].database,table_name] ,function(err, rows, fields) {
       if(rows.length==0)
       {
-        var q='CREATE TABLE l'+lab_no+'(id varchar(12), score int, time datetime)';
+        var q='CREATE TABLE l'+lab_no+'(id_no varchar(12), score int, time datetime)';
         connection.query(q, function(err, rows, fields) {
         });
       }
@@ -50,17 +50,10 @@ app.get('/', function (req,res) {
   res.send('./public/index.html');
 });
 
-app.get('/reset', function (req,res) {
-  initLabs();
-  res.send(true);
-});
-
 app.post('/results', function(req, res){
-    var submission_id = req.body.id;
-    var scores = req.body.marks;
     console.log(req.body);
     res.send(true);
-    // req.socket.emit('scores', req.scores);
+    io.to(req.body.socket).emit('scores', req.body.marks);
 });
 
 // socket_map = [];
@@ -126,8 +119,7 @@ io.on('connection', function(socket) {
           }
         }
       }
-      // body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time, "status": status, "penalty": penalty, "socket": socket};
-      body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time, "status": status, "penalty": penalty};
+      body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "status": status, "penalty": penalty, "socket": socket.id};
       var body=JSON.stringify(body_json);
       var request = new http.ClientRequest({
         hostname: load_balancer_hostname,
