@@ -51,12 +51,32 @@ app.get('/', function (req,res) {
 });
 
 app.post('/results', function(req, res){
-    console.log(req.body);
-    res.send(true);
-    io.to(req.body.socket).emit('scores', req.body.marks);
+  console.log(req.body);
+  res.send(true);
+  io.to(req.body.socket).emit('scores', req.body.marks);
 });
 
-// socket_map = [];
+app.get('/scoreboard/:Lab_no', function(req, res) {
+  lab = req.params.Lab_no;
+  flag=0;
+  lab_conf = require('./labs.json');
+  for(var i=0;i<lab_conf["Labs"].length;i++) {
+    if(lab_conf["Labs"][i].Lab_No == lab)
+    {
+      flag=1;
+      break;
+    }
+  }
+  if(flag == 1)
+  {
+    connection.query('SELECT * FROM l'+lab+' ORDER BY score DESC, time' ,function(err, rows, fields) {
+      res.send(rows);
+    });
+  }
+  else {
+    res.send(false);
+  }
+});
 
 io.on('connection', function(socket) {
   lab_conf = require('./labs.json');
@@ -137,12 +157,4 @@ io.on('connection', function(socket) {
       socket.emit("invalid", "Invalid Lab No");
     }
   });
-
-  // socket.on('requestLab', function(data) {
-  //   socket_map.push({data: socket});
-  // });
-  //
-  // socket.on('disconnect', function() {
-  //   // delete socket_map[];
-  // });
 });
