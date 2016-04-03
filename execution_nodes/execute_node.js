@@ -55,6 +55,10 @@ app.post('/requestRun', function(req, res){
         total_score=total_score+parseInt(array[i]);
       }
       total_score = total_score - parseInt(req.body.penalty);
+      if(total_score < 0)
+      {
+        total_score = 0;
+      }
       table_name='l'+req.body.Lab_No;
       q="SELECT * FROM "+table_name+" WHERE id_no = \'"+req.body.id_no+"\'";
       connection.query(q ,function(err, rows, fields) {
