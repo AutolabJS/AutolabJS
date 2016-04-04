@@ -21,22 +21,22 @@
     },
     {
       "Lab_No": "2",
-      "start_date": "2",
+      "start_date": "4",
       "start_month": "4",
       "start_year": "2016",
       "start_hour": "3",
       "start_minute": "00",
-      "end_date": "2",
+      "end_date": "4",
       "end_month": "4",
       "end_year": "2016",
-      "end_hour": "22",
+      "end_hour": "23",
       "end_minute": "00",
-      "hard_date": "2",
+      "hard_date": "4",
       "hard_month": "4",
       "hard_year": "2016",
       "hard_hour": "23",
       "hard_minute": "30",
-      "penalty": "10"
+      "penalty": "1"
     }
   ]
 }

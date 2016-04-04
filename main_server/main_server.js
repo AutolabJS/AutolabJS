@@ -53,7 +53,7 @@ app.get('/', function (req,res) {
 app.post('/results', function(req, res){
   console.log(req.body);
   res.send(true);
-  io.to(req.body.socket).emit('scores', req.body.marks);
+  io.to(req.body.socket).emit('scores', req.body);
 });
 
 app.get('/scoreboard/:Lab_no', function(req, res) {
