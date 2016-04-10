@@ -10,7 +10,7 @@ $(document).ready(function() {
   var current_lab = '';
   var id_no='';
 
-  var socket = io.connect("http://localhost:8080");
+  var socket = io.connect();
 
   socket.on('labs_status', function(data) {
     $("#loadingDiv").hide();
