@@ -123,6 +123,11 @@ io.on('connection', function(socket) {
         break;
       }
     }
+    id_number = id_number.replace(/\s+/, "");
+    if(id_number.length!=12)
+    {
+      flag=0;
+    }
     if(flag==1) {
       var status = 0;
       if(current_time-start > 0)
@@ -139,7 +144,7 @@ io.on('connection', function(socket) {
           }
         }
       }
-      body_json= {"id_no" :id_number, "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "status": status, "penalty": penalty, "socket": socket.id};
+      body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "status": status, "penalty": penalty, "socket": socket.id};
       var body=JSON.stringify(body_json);
       var request = new http.ClientRequest({
         hostname: load_balancer_hostname,
