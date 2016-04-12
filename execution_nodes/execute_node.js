@@ -8,12 +8,11 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var conf = require('./conf.json');
 var scores = require('./scores.json');
-var mysql = require('mysql');
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
 
+app.use(bodyParser.json());
 app.get('/connectionCheck', function (req,res) {
   res.send(true);
 });
@@ -48,49 +47,12 @@ app.post('/requestRun', function(req, res){
       }
     });
     request.end(body);
-    if(req.body.status ==  1 || req.body.status == 2)
-    {
-      total_score = 0;
-      for(i in array)
-      {
-        total_score=total_score+parseInt(array[i]);
-      }
-      total_score = total_score - parseInt(req.body.penalty);
-      if(total_score < 0)
-      {
-        total_score = 0;
-      }
-      table_name='l'+req.body.Lab_No;
-      q="SELECT * FROM "+table_name+" WHERE id_no = \'"+req.body.id_no+"\'";
-      connection.query(q ,function(err, rows, fields) {
-        if(rows.length==0)
-        {
-          var q1='INSERT INTO '+table_name+' VALUES (\''+req.body.id_no+'\', '+ total_score+',\''+req.body.time+'\')';
-          connection.query(q1, function(err, rows, fields) {
-          });
-        }
-        else {
-          if(rows[0].score < total_score)
-          {
-            var q1='UPDATE '+table_name+' SET score='+total_score+', time=\''+req.body.time+'\' WHERE id_no=\''+req.body.id_no+'\'' ;
-            connection.query(q1, function(err, rows, fields) {
-            });
-          }
-        }
-      });
-    }
   });
 });
 
 
 load_balancer_hostname=conf["load_balancer"].hostname;
 load_balancer_port=conf["load_balancer"].port;
-
-var connection = mysql.createConnection(
-  conf["database"]
-);
-
-connection.connect();
 
 server.listen(8082);
 console.log("Listening at 8082");

@@ -43,8 +43,8 @@ function initScoreboard(lab_no) {
 }
 
 initLabs();
-server.listen(8080);
-console.log("Listening at 8080");
+server.listen(9000);
+console.log("Listening at 9000");
 
 app.get('/', function (req,res) {
   res.send('./public/index.html');
