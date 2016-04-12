@@ -4,6 +4,8 @@ var server = require('http').createServer(app);
 var http = require('http');
 var bodyParser = require('body-parser');
 var fs = require('fs');
+var sys = require('sys')
+var exec = require('child_process').exec;
 var nodes_data = require('./nodes_data_conf.json');
 var mysql = require('mysql');
 
@@ -88,6 +90,7 @@ app.post('/sendScores', function(req, res){
     {
       total_score = 0;
     }
+    code_download_flag=0;
     table_name='l'+submission_json.Lab_No;
     q="SELECT * FROM "+table_name+" WHERE id_no = \'"+submission_json.id_no+"\'";
     connection.query(q ,function(err, rows, fields) {
@@ -96,6 +99,7 @@ app.post('/sendScores', function(req, res){
         var q1='INSERT INTO '+table_name+' VALUES (\''+submission_json.id_no+'\', '+ total_score+',\''+submission_json.time+'\')';
         connection.query(q1, function(err, rows, fields) {
         });
+        code_download_flag=1;
       }
       else {
         if(rows[0].score < total_score)
@@ -103,7 +107,15 @@ app.post('/sendScores', function(req, res){
           var q1='UPDATE '+table_name+' SET score='+total_score+', time=\''+submission_json.time+'\' WHERE id_no=\''+submission_json.id_no+'\'' ;
           connection.query(q1, function(err, rows, fields) {
           });
+          code_download_flag=1;
         }
+      }
+      if(code_download_flag==1)
+      {
+        var exec_command = 'bash savecode.sh ';
+        exec_command = exec_command.concat(submission_json.id_no+" "+submission_json.Lab_No);
+        exec(exec_command,function (error, stdout, stderr) {
+        });
       }
     });
   }
