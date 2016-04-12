@@ -22,5 +22,9 @@
     "user"    : "root",
     "password" : "root",
     "database" : "Autolab"
+  },
+  "gitlab" :{
+    "hostname": "localhost",
+    "port": "8080"
   }
 }

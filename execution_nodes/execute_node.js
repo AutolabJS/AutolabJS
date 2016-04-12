@@ -22,7 +22,7 @@ app.post('/requestRun', function(req, res){
   var submission_id = req.body.id_no;
   var lab = req.body.Lab_No;
   var exec_command = 'bash extract_run.sh ';
-  exec_command = exec_command.concat(submission_id+" "+lab);
+  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname);
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync('submissions/'+submission_id+'/lab'+lab+'/scores.txt').toString().split("\n");
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
@@ -53,6 +53,9 @@ app.post('/requestRun', function(req, res){
 
 load_balancer_hostname=conf["load_balancer"].hostname;
 load_balancer_port=conf["load_balancer"].port;
+
+gitlab_hostname=conf["gitlab"].hostname;
+gitlab_port=conf["gitlab"].port;
 
 server.listen(8082);
 console.log("Listening at 8082");

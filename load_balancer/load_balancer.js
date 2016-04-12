@@ -113,7 +113,7 @@ app.post('/sendScores', function(req, res){
       if(code_download_flag==1)
       {
         var exec_command = 'bash savecode.sh ';
-        exec_command = exec_command.concat(submission_json.id_no+" "+submission_json.Lab_No);
+        exec_command = exec_command.concat(submission_json.id_no+" "+submission_json.Lab_No+" "+gitlab_hostname);
         exec(exec_command,function (error, stdout, stderr) {
         });
       }
@@ -124,13 +124,14 @@ app.post('/sendScores', function(req, res){
 server_hostname=nodes_data["server_info"].hostname;
 server_port=nodes_data["server_info"].port;
 
+gitlab_hostname=nodes_data["gitlab"].hostname;
+gitlab_port=nodes_data["gitlab"].port;
 
 var connection = mysql.createConnection(
   nodes_data["database"]
 );
 
 connection.connect();
-
 
 var node_queue=[];
 for(var i=0;i<nodes_data["Nodes"].length;i++)
