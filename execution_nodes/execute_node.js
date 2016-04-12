@@ -22,11 +22,11 @@ app.post('/requestRun', function(req, res){
   res.send(true);
   var submission_id = req.body.id_no;
   var lab = req.body.Lab_No;
-  var exec_command = 'sh extract_run.sh ';
+  var exec_command = 'bash extract_run.sh ';
   exec_command = exec_command.concat(submission_id+" "+lab);
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync('submissions/'+submission_id+'/lab'+lab+'/scores.txt').toString().split("\n");
-    exec('sh cleanup.sh '.concat(submission_id+" "+lab));
+    exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     var body=scores;
     body["submission_details"].id_no=submission_id;

@@ -1,4 +1,4 @@
-Test1.java Seller.java 0.1
-Test2.java Seller.java 0.1
-Test3.java Buyer.java 0.1
-Test4.java Buyer.java 0.1
+Test1.java Seller.java 1
+Test2.java Seller.java 1
+Test3.java Buyer.java 1
+Test4.java Buyer.java 1

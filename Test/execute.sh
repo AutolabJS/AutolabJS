@@ -1,4 +1,5 @@
 unset JAVA_TOOL_OPTIONS
+marks=()
 filename="info_file.txt"
 while read -r line
 do
@@ -20,15 +21,26 @@ do
   errors=$(wc -l log.txt | awk '{print $1}')
   if [ $errors -eq 0 ];
   then
-    timeout -k 0.5 $timelimit java Driver >> ../scores.txt
+    # timeout -k 0.5 $timelimit java Driver >> ../scores.txt
+    timeout -k 0.5 $timelimit java Driver >> abc.txt
+    sc=$(tail -n1 abc.txt)
     status=$(echo $?)
     if [ $status -ne 0 ];
     then
-      echo "0" >> ../scores.txt
+      # echo "0" >> ../scores.txt
+      sc="0"
     fi
   else
-    echo "0" >> ../scores.txt
+    # echo "0" >> ../scores.txt
+    sc="0"
   fi
   rm -rf *
+  # echo $sc >> ../scores.txt
+  marks+=($sc)
   cd ..
 done < $filename
+rm scores.txt
+for each in "${marks[@]}"
+do
+  echo "$each" >> scores.txt
+done
