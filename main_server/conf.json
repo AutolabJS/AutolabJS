@@ -9,5 +9,9 @@
    "user"    : "root",
    "password" : "root",
    "database" : "Autolab"
+ },
+ "host_port" :
+ {
+   "port" : "9000"
  }
 }

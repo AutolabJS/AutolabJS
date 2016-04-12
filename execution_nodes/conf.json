@@ -5,5 +5,9 @@
 "gitlab" :{
   "hostname": "localhost",
   "port": "8080"
+},
+"host_port" :
+{
+  "port" : "8082"
 }
 }

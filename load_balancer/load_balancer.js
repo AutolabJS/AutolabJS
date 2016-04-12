@@ -144,5 +144,5 @@ for(var i=0;i<nodes_data["Nodes"].length;i++)
 
 var job_queue = [];
 
-server.listen(8081);
-console.log("Listening at 8081");
+server.listen(nodes_data["host_port"].port);
+console.log("Listening at "+nodes_data["host_port"].port);

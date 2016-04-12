@@ -57,5 +57,5 @@ load_balancer_port=conf["load_balancer"].port;
 gitlab_hostname=conf["gitlab"].hostname;
 gitlab_port=conf["gitlab"].port;
 
-server.listen(8082);
-console.log("Listening at 8082");
+server.listen(conf["host_port"].port);
+console.log("Listening at "+conf["host_port"].port);

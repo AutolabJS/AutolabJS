@@ -43,8 +43,8 @@ function initScoreboard(lab_no) {
 }
 
 initLabs();
-server.listen(9000);
-console.log("Listening at 9000");
+server.listen(config_details["host_port"].port);
+console.log("Listening at "+config_details["host_port"].port);
 
 app.get('/', function (req,res) {
   res.send('./public/index.html');
