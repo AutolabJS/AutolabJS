@@ -15,7 +15,64 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.get('/connectionCheck', function (req,res) {
-  res.send(true);
+  var result = 'Load Balancer Working\n';
+  var numOfNodes = nodes_data["Nodes"].length;
+  
+  function checkNodeConn(node){
+    var options = {
+      host: node.hostname,
+      port: node.port,
+      path: '/connectionCheck'
+    };
+    
+    //send a get request and capture the response
+    var req = http.get(options, function(res){
+
+      // Buffer the body entirely for processing as a whole.
+      var bodyChunks = [];
+      res.on('data', function(chunk){
+        bodyChunks.push(chunk);
+      }).on('end', function(){
+      
+        var body = Buffer.concat(bodyChunks);
+        result = result.concat('<br/>Node at '+node.hostname+':'+node.port+' working: ' + body);
+        console.log("nodeing");
+        //return if all requets processed
+        if(--numOfNodes == 0){
+          console.log("DispRes");
+          dispResult();
+        }
+        
+      });
+    });
+
+    req.on('error', function(e) {
+      result = result.concat('<br/>Node at  '+node.hostname+':'+node.port+' Error: ' + e.message);
+      //return if all requets processed
+      if(--numOfNodes == 0){
+      console.log("DispRes");
+        dispResult();
+      }
+      
+    });
+    
+    req.end();
+  }; //checkNodeConnection ends
+  
+  
+  function dispResult(){
+    res.send(result);
+  }
+  
+  
+  //Check connection of all nodes
+  for(var i=0;i<nodes_data["Nodes"].length;i++)
+  {
+    console.log(numOfNodes);
+    checkNodeConn(nodes_data["Nodes"][i]);
+  }
+  
+  
 });
 
 app.post('/submit', function(req, res){

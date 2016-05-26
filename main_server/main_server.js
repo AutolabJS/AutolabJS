@@ -78,6 +78,41 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
   }
 });
 
+//status requested
+app.get('/status', function (statusReq,statusRes) {
+
+  //options for load_balancer get request
+  var options = {
+    host: load_balancer_hostname,
+    port: load_balancer_port,
+    path: '/connectionCheck'
+  };
+  
+  //send a get request and capture the response
+  var req = http.get(options, function(res){
+
+    // Buffer the body entirely for processing as a whole.
+    var bodyChunks = [];
+    res.on('data', function(chunk){
+      bodyChunks.push(chunk);
+    }).on('end', function(){
+    
+      var body = Buffer.concat(bodyChunks);
+      var result = '';
+      result = result.concat(body);
+      statusRes.send(result);
+    })
+  });
+
+  req.on('error', function(e) {
+    statusRes.send('Load Balancer Error: ' + e.message);
+  });
+  
+  req.end();
+
+});
+
+
 io.on('connection', function(socket) {
   lab_conf = require('./labs.json');
   var current_time= new Date();
