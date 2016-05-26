@@ -23,7 +23,7 @@ $(document).ready(function() {
     $("#activeLabContainer .row").empty();
     for(var i=0;i<data.length;i++)
     {
-      lab_block = "<div class=\"col s4 m4\"> <div class=\"card #ffffff white\"> <div class=\"card-content black-text\"> <span class=\"card-title\">Lab "+data[i].Lab_No.Lab_No+"</span> <ul><li>Date: \t"+data[i].Lab_No.start_date+"-"+data[i].Lab_No.start_month+"-"+data[i].Lab_No.start_year+"</li><li>Start Time: \t"+data[i].Lab_No.start_hour+":"+data[i].Lab_No.start_minute;
+      lab_block = "<div class=\"col s4 m4\"> <div class=\"card #ffffff white\"> <div class=\"card-content black-text\"> <span class=\"card-title\">"+data[i].Lab_No.Lab_No+"</span> <ul><li>Date: \t"+data[i].Lab_No.start_date+"-"+data[i].Lab_No.start_month+"-"+data[i].Lab_No.start_year+"</li><li>Start Time: \t"+data[i].Lab_No.start_hour+":"+data[i].Lab_No.start_minute;
       lab_block=lab_block + "</li> <li>End Time: \t"+data[i].Lab_No.end_hour+":"+data[i].Lab_No.end_minute+"</li> <li>Hard Deadline:\t"+data[i].Lab_No.hard_hour+":"+data[i].Lab_No.hard_minute+"</li><li>Late Penalty: \t"+data[i].Lab_No.penalty+" mark(s) </li></ul> </div> <div class=\"card-action\"> <a id=\"subl"+data[i].Lab_No.Lab_No+"\" href=\"#\">Submit</a> <a id=\"scol"+data[i].Lab_No.Lab_No+"\" href=\"#\">Scoreboard</a></div> </div> </div>";
       if(data[i].status==0)
       {
@@ -39,14 +39,14 @@ $(document).ready(function() {
 
     $('[id^=subl]').on('click', function(e) {
       e.preventDefault();
-      current_lab=parseInt($(this).attr('id').substring(4));
+      current_lab=$(this).attr('id').substring(4);
       $('#labs').hide();
       $('#submission').show();
     });
 
     $('[id^=scol]').on('click', function(e) {
       e.preventDefault();
-      current_lab=parseInt($(this).attr('id').substring(4));
+      current_lab=$(this).attr('id').substring(4);
       $('#labs').hide();
       $('#loadingDiv').show();
       request = $.ajax({

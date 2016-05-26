@@ -1,2 +1,2 @@
 cd submissions
-rm -rf $1/lab$2
+rm -rf $1/$2

@@ -1,8 +1,8 @@
 mkdir -p submissions
 cd submissions
-mkdir -p lab$2
-cd lab$2
+mkdir -p $2
+cd $2
 mkdir -p $1
 cd $1
 rm -rf *
-git clone git@$3:$1/lab$2.git
+git clone git@$3:$1/$2.git

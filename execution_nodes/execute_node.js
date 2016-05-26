@@ -24,7 +24,7 @@ app.post('/requestRun', function(req, res){
   var exec_command = 'bash extract_run.sh ';
   exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname);
   exec(exec_command,function (error, stdout, stderr) {
-    var array = fs.readFileSync('submissions/'+submission_id+'/lab'+lab+'/scores.txt').toString().split("\n");
+    var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     var body=scores;
