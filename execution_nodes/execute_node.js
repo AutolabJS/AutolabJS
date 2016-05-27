@@ -59,5 +59,19 @@ load_balancer_port=conf["load_balancer"].port;
 gitlab_hostname=conf["gitlab"].hostname;
 gitlab_port=conf["gitlab"].port;
 
+var body=JSON.stringify(scores["node_details"]);
+var request = new http.ClientRequest({
+  hostname: load_balancer_hostname,
+  port: load_balancer_port,
+  path: "/addNode",
+  method: "POST",
+  headers: {
+      "Content-Type": "application/json",
+      "Content-Length": Buffer.byteLength(body)
+  }
+});
+request.end(body);
+
+
 server.listen(conf["host_port"].port);
 console.log("Listening at "+conf["host_port"].port);

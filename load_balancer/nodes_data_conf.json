@@ -2,14 +2,12 @@
   {
 
     "hostname": "localhost",
-    "port": "8082",
-    "max_submissions": "5"
+    "port": "8082"
 
   },
   {
     "hostname": "localhost",
-    "port": "8083",
-    "max_submissions": "5"
+    "port": "8083"
   }
 ],
 "server_info": {

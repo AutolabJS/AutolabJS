@@ -17,23 +17,19 @@ app.use(bodyParser.json());
 app.get('/connectionCheck', function (req,res) {
   var result = 'Load Balancer Working\n';
   var numOfNodes = nodes_data["Nodes"].length;
-
   function checkNodeConn(node){
     var options = {
       host: node.hostname,
       port: node.port,
       path: '/connectionCheck'
     };
-
     //send a get request and capture the response
     var req = http.get(options, function(res){
-
       // Buffer the body entirely for processing as a whole.
       var bodyChunks = [];
       res.on('data', function(chunk){
         bodyChunks.push(chunk);
       }).on('end', function(){
-
         var body = Buffer.concat(bodyChunks);
         result = result.concat('<br/>Node at '+node.hostname+':'+node.port+' working: ' + body);
         console.log("nodeing");
@@ -42,10 +38,8 @@ app.get('/connectionCheck', function (req,res) {
           console.log("DispRes");
           dispResult();
         }
-
       });
     });
-
     req.on('error', function(e) {
       result = result.concat('<br/>Node at  '+node.hostname+':'+node.port+' Error: ' + e.message);
       //return if all requets processed
@@ -53,26 +47,19 @@ app.get('/connectionCheck', function (req,res) {
       console.log("DispRes");
         dispResult();
       }
-
     });
-
     req.end();
   }; //checkNodeConnection ends
-
 
   function dispResult(){
     res.send(result);
   }
-
-
   //Check connection of all nodes
   for(var i=0;i<nodes_data["Nodes"].length;i++)
   {
     console.log(numOfNodes);
     checkNodeConn(nodes_data["Nodes"][i]);
   }
-
-
 });
 
 app.post('/submit', function(req, res){
@@ -178,6 +165,31 @@ app.post('/sendScores', function(req, res){
   }
 });
 
+app.post('/addNode', function(req, res){
+  node_queue.push(req.body);
+  console.log("Added "+req.body.hostname+":"+req.body.port+" to queue");
+  res.send(true);
+  if(job_queue.length!=0)
+  {
+    var assigned_node = node_queue.pop();
+    var assigned_hostname = assigned_node.hostname;
+    var assigned_port = assigned_node.port;
+    var body=JSON.stringify(job_queue.pop());
+    var request = new http.ClientRequest({
+      hostname: assigned_hostname,
+      port: assigned_port,
+      path: "/requestRun",
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(body)
+      }
+    });
+    request.end(body);
+  }
+});
+
+
 server_hostname=nodes_data["server_info"].hostname;
 server_port=nodes_data["server_info"].port;
 
@@ -193,13 +205,33 @@ connection.connect();
 var node_queue=[];
 for(var i=0;i<nodes_data["Nodes"].length;i++)
 {
-  for(var j=0;j<nodes_data["Nodes"][i].max_submissions;j++)
-  {
-    node_queue.push(nodes_data["Nodes"][i]);
+  checkNodeConn(nodes_data["Nodes"][i]);
+  function checkNodeConn(node) {
+  var options = {
+    host: node.hostname,
+    port: node.port,
+    path: '/connectionCheck'
+  };
+  var req = http.get(options, function(res){
+    var bodyChunks = [];
+    res.on('data', function(chunk){
+      bodyChunks.push(chunk);
+    }).on('end', function(){
+      var body = Buffer.concat(bodyChunks);
+      if(body.toString()=='true')
+      {
+        console.log("Added "+node.hostname+":"+node.port+" to queue");
+        node_queue.push(node);
+      }
+    });
+  });
+  req.on('error', function(e) {
+    console.log("Error connecting to "+node.hostname+":"+node.port);
+  });
+  req.end();
   }
 }
 
 var job_queue = [];
-
 server.listen(nodes_data["host_port"].port);
 console.log("Listening at "+nodes_data["host_port"].port);
