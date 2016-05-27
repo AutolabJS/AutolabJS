@@ -181,18 +181,39 @@ io.on('connection', function(socket) {
         }
       }
       body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "commit": commit_hash, "status": status, "penalty": penalty, "socket": socket.id};
-      var body=JSON.stringify(body_json);
-      var request = new http.ClientRequest({
-        hostname: load_balancer_hostname,
+
+      var options = {
+        host: load_balancer_hostname,
         port: load_balancer_port,
-        path: "/submit",
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            "Content-Length": Buffer.byteLength(body)
-        }
+        path: '/userCheck'
+      };
+      var req = http.get(options, function(res){
+        var bodyChunks = [];
+        res.on('data', function(chunk){
+          bodyChunks.push(chunk);
+        }).on('end', function(){
+          var body = Buffer.concat(bodyChunks);
+          if(body.toString()=='true')
+          {
+            var body=JSON.stringify(body_json);
+            var request = new http.ClientRequest({
+              hostname: load_balancer_hostname,
+              port: load_balancer_port,
+              path: "/submit",
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  "Content-Length": Buffer.byteLength(body)
+              }
+            });
+            request.end(body);
+          }
+        });
       });
-      request.end(body);
+      req.on('error', function(e) {
+        socket.emit("invalid", "Invalid Lab No");
+      });
+      req.end();
     }
     else {
       socket.emit("invalid", "Invalid Lab No");

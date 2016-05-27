@@ -14,6 +14,10 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+app.get('/userCheck', function (req,res) {
+  res.send(true);
+});
+
 app.get('/connectionCheck', function (req,res) {
   var result = 'Load Balancer Working\n';
   var numOfNodes = nodes_data["Nodes"].length;
