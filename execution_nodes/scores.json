@@ -9,6 +9,7 @@
       "marks" :[],
       "id_no" :"",
       "Lab_No": "",
+      "commit": "",
       "time":"",
       "status": "",
       "penalty": "" ,

@@ -87,7 +87,7 @@ app.get('/status', function (statusReq,statusRes) {
     port: load_balancer_port,
     path: '/connectionCheck'
   };
-  
+
   //send a get request and capture the response
   var req = http.get(options, function(res){
 
@@ -96,7 +96,7 @@ app.get('/status', function (statusReq,statusRes) {
     res.on('data', function(chunk){
       bodyChunks.push(chunk);
     }).on('end', function(){
-    
+
       var body = Buffer.concat(bodyChunks);
       var result = '';
       result = result.concat(body);
@@ -107,7 +107,7 @@ app.get('/status', function (statusReq,statusRes) {
   req.on('error', function(e) {
     statusRes.send('Load Balancer Error: ' + e.message);
   });
-  
+
   req.end();
 
 });
@@ -144,6 +144,7 @@ io.on('connection', function(socket) {
   socket.on('submission', function(data) {
     id_number=data[0];
     lab_no=data[1];
+    commit_hash=data[2];
     current_time = new Date();
     lab_config = require('./labs.json');
     flag=0;
@@ -179,7 +180,7 @@ io.on('connection', function(socket) {
           }
         }
       }
-      body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "status": status, "penalty": penalty, "socket": socket.id};
+      body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "commit": commit_hash, "status": status, "penalty": penalty, "socket": socket.id};
       var body=JSON.stringify(body_json);
       var request = new http.ClientRequest({
         hostname: load_balancer_hostname,

@@ -70,7 +70,9 @@ $(document).ready(function() {
    $("#submission").hide();
    $("#evaluating").show();
    id_no=$('#nameField').val();
-   socket.emit('submission', [id_no, current_lab]);
+   commit_hash=$('#commitHash').val();
+   socket.emit('submission', [id_no, current_lab, commit_hash]);
+   commit_hash="";
  });
 
   socket.on('invalid', function(data) {
