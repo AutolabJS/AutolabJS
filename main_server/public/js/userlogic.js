@@ -88,8 +88,14 @@ $(document).ready(function() {
     {
       total_score=total_score+ parseInt(data.marks[i]);
       status = "Accepted";
-      if(data.marks[i]==0) {
-        status="Not Accepted"
+      if(data.comment[i]==0) {
+        status="Wrong Answer"
+      }
+      if(data.comment[i]==1 && data.marks[i]==0) {
+        status="Compilation Error"
+      }
+      if(data.comment[i]==2 && data.marks[i]==0) {
+        status="Timeout"
       }
       entry ="<tr> <td>"+(i+1)+"</td><td>"+status+"</td> <td>"+data.marks[i]+"</td> </tr>";
       $("#marks tbody").append(entry);

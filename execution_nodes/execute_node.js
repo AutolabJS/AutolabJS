@@ -26,12 +26,15 @@ app.post('/requestRun', function(req, res){
   exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit);
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
+    var comment = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/comment.txt').toString().split("\n");
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
+    comment.pop();
     var body=scores;
     body["submission_details"].id_no=submission_id;
     body["submission_details"].commit=commit;
     body["submission_details"].marks=array;
+    body["submission_details"].comment=comment;
     body["submission_details"].Lab_No=req.body.Lab_No;
     body["submission_details"].time=req.body.time;
     body["submission_details"].status=req.body.status;

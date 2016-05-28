@@ -1,5 +1,6 @@
 unset JAVA_TOOL_OPTIONS
 marks=()
+comment=()
 filename="info_file.txt"
 while read -r line
 do
@@ -23,24 +24,32 @@ do
   then
     # timeout -k 0.5 $timelimit java Driver >> ../scores.txt
     timeout -k 0.5 $timelimit java Driver >> abc.txt
-    sc=$(tail -n1 abc.txt)
     status=$(echo $?)
+    sc=$(tail -n1 abc.txt)
+    cs=$sc
     if [ $status -ne 0 ];
     then
       # echo "0" >> ../scores.txt
       sc="0"
+      cs="2"
     fi
   else
     # echo "0" >> ../scores.txt
     sc="0"
+    cs="1"
   fi
   rm -rf *
   # echo $sc >> ../scores.txt
   marks+=($sc)
+  comment+=($cs)
   cd ..
 done < $filename
 rm scores.txt
 for each in "${marks[@]}"
 do
   echo "$each" >> scores.txt
+done
+for each in "${comment[@]}"
+do
+  echo "$each" >> comment.txt
 done

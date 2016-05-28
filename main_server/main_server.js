@@ -160,6 +160,7 @@ io.on('connection', function(socket) {
       }
     }
     id_number = id_number.replace(/\s+/, "");
+    commit_hash = commit_hash.replace(/\s+/, "");
     if(id_number.length!=12)
     {
       flag=0;
