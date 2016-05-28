@@ -1,7 +1,7 @@
 {
   "name": "execution_nodes",
   "version": "0.0.0",
-  "description": "",
+  "description": "ERROR: No README data found!",
   "main": "execute_node.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -11,5 +11,6 @@
   "dependencies": {
     "body-parser": "1.8",
     "express": "^4.13.4"
-  }
+  },
+  "devDependencies": {}
 }

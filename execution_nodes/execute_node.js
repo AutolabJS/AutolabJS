@@ -1,6 +1,13 @@
+var fs = require('fs');
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
+var https_config={
+  key : fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+  rejectUnauthorized:false,
+}
+var https = require('https');
+var server = https.createServer(https_config,app);
 var sys = require('sys')
 var http = require('http');
 var exec = require('child_process').exec;
@@ -41,7 +48,8 @@ app.post('/requestRun', function(req, res){
     body["submission_details"].penalty=req.body.penalty;
     body["submission_details"].socket=req.body.socket;
     body=JSON.stringify(body);
-    var request = new http.ClientRequest({
+
+    var https_request_options ={
       hostname: load_balancer_hostname,
       port: load_balancer_port,
       path: "/sendScores",
@@ -49,9 +57,26 @@ app.post('/requestRun', function(req, res){
       headers: {
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(body)
-      }
-    });
-    request.end(body);
+      },
+      key : fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      rejectUnauthorized:false,
+    }
+
+    var request = https.request(https_request_options,function(res)
+    {
+      res.on('data',function(chunk)
+      {
+        //Do nothing
+      })
+    })
+
+    request.on('error',function(err)
+  {
+    console.log(err);
+  })
+  request.end();
+
   });
 });
 
@@ -63,7 +88,7 @@ gitlab_hostname=conf["gitlab"].hostname;
 gitlab_port=conf["gitlab"].port;
 
 var body=JSON.stringify(scores["node_details"]);
-var request = new http.ClientRequest({
+var https_addnode_options ={
   hostname: load_balancer_hostname,
   port: load_balancer_port,
   path: "/addNode",
@@ -71,9 +96,25 @@ var request = new http.ClientRequest({
   headers: {
       "Content-Type": "application/json",
       "Content-Length": Buffer.byteLength(body)
-  }
-});
-request.end(body);
+  },
+  key : fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+  rejectUnauthorized:false,
+}
+
+var request = https.request(https_addnode_options,function(res)
+{
+  res.on('data',function(chunk)
+  {
+    //Do nothing
+  })
+})
+
+request.on('error',function(err)
+{
+console.log(err);
+})
+request.end();
 
 
 server.listen(conf["host_port"].port);

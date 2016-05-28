@@ -1,7 +1,14 @@
+var fs = require('fs');
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
-var http = require('http');
+var https_config={
+  key : fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+  rejectUnauthorized:false,
+}
+var https = require('https');
+var server = https.createServer(https_config,app);
+var http = require('http')
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var io = require('socket.io')(server);
@@ -47,12 +54,14 @@ server.listen(config_details["host_port"].port);
 console.log("Listening at "+config_details["host_port"].port);
 
 app.get('/', function (req,res) {
+
   res.send('./public/index.html');
+
 });
 
 app.post('/results', function(req, res){
   console.log(req.body);
-  res.send(true);
+  res.send("true");
   io.to(req.body.socket).emit('scores', req.body);
 });
 
@@ -85,11 +94,14 @@ app.get('/status', function (statusReq,statusRes) {
   var options = {
     host: load_balancer_hostname,
     port: load_balancer_port,
-    path: '/connectionCheck'
+    path: '/connectionCheck',
+    key : fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+    rejectUnauthorized:false,
   };
 
   //send a get request and capture the response
-  var req = http.get(options, function(res){
+  var req = https.request(options, function(res){
 
     // Buffer the body entirely for processing as a whole.
     var bodyChunks = [];
@@ -114,6 +126,7 @@ app.get('/status', function (statusReq,statusRes) {
 
 
 io.on('connection', function(socket) {
+
   lab_conf = require('./labs.json');
   var current_time= new Date();
   labs_status=[];
@@ -194,9 +207,12 @@ io.on('connection', function(socket) {
       var options = {
         host: load_balancer_hostname,
         port: load_balancer_port,
-        path: '/userCheck'
+        path: '/userCheck',
+        key : fs.readFileSync('./key.pem'),
+        cert: fs.readFileSync('./cert.pem'),
+        rejectUnauthorized:false,
       };
-      var req = http.get(options, function(res){
+      var req = https.request(options, function(res){
         var bodyChunks = [];
         res.on('data', function(chunk){
           bodyChunks.push(chunk);
@@ -205,7 +221,7 @@ io.on('connection', function(socket) {
           if(body.toString()=='true')
           {
             var body=JSON.stringify(body_json);
-            var request = new http.ClientRequest({
+            var request = https.request({
               hostname: load_balancer_hostname,
               port: load_balancer_port,
               path: "/submit",
@@ -213,7 +229,10 @@ io.on('connection', function(socket) {
               headers: {
                   "Content-Type": "application/json",
                   "Content-Length": Buffer.byteLength(body)
-              }
+              },
+              key : fs.readFileSync('./key.pem'),
+              cert: fs.readFileSync('./cert.pem'),
+              rejectUnauthorized:false,
             });
             request.end(body);
           }

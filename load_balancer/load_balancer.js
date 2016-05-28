@@ -1,6 +1,13 @@
+var fs = require('fs');
 var express = require('express');
 var app = express();
-var server = require('http').createServer(app);
+var https_config={
+  key : fs.readFileSync('./key.pem'),
+  cert: fs.readFileSync('./cert.pem'),
+  rejectUnauthorized:false,
+}
+var https = require('https');
+var server = https.createServer(https_config,app);
 var http = require('http');
 var bodyParser = require('body-parser');
 var fs = require('fs');
@@ -25,10 +32,13 @@ app.get('/connectionCheck', function (req,res) {
     var options = {
       host: node.hostname,
       port: node.port,
-      path: '/connectionCheck'
+      path: '/connectionCheck',
+      key : fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      rejectUnauthorized:false,
     };
     //send a get request and capture the response
-    var req = http.get(options, function(res){
+    var req = https.request(options, function(res){
       // Buffer the body entirely for processing as a whole.
       var bodyChunks = [];
       res.on('data', function(chunk){
@@ -73,7 +83,7 @@ app.post('/submit', function(req, res){
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
     var body=JSON.stringify(req.body);
-    var request = new http.ClientRequest({
+    var https_job_options={
       hostname: assigned_hostname,
       port: assigned_port,
       path: "/requestRun",
@@ -81,8 +91,25 @@ app.post('/submit', function(req, res){
       headers: {
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(body)
-      }
-    });
+      },
+      key : fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      rejectUnauthorized:false,
+    }
+
+    var request = https.request(https_job_options,function(response)
+    {
+        response.on('data',function(chunk)
+        {
+
+        })
+    })
+
+    request.on('error',function(error)
+    {
+      console.log(error);
+    })
+
     request.end(body);
   }
   else {
@@ -101,7 +128,7 @@ app.post('/sendScores', function(req, res){
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
     var body=JSON.stringify(job_queue.pop());
-    var request = new http.ClientRequest({
+    var https_job_options={
       hostname: assigned_hostname,
       port: assigned_port,
       path: "/requestRun",
@@ -109,12 +136,40 @@ app.post('/sendScores', function(req, res){
       headers: {
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(body)
-      }
-    });
+      },
+      key : fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      rejectUnauthorized:false,
+    }
+
+    var request = https.request(https_job_options,function(response)
+    {
+        response.on('data',function(chunk)
+        {
+
+        })
+    })
+
+    request.on('error',function(error)
+    {
+      console.log(error);
+    })
+
     request.end(body);
+    // var request = new http.ClientRequest({
+    //   hostname: assigned_hostname,
+    //   port: assigned_port,
+    //   path: "/requestRun",
+    //   method: "POST",
+    //   headers: {
+    //       "Content-Type": "application/json",
+    //       "Content-Length": Buffer.byteLength(body)
+    //   }
+    // });
+    // request.end(body);
   }
   var body=JSON.stringify(submission_json);
-  var request = new http.ClientRequest({
+  var https_job_options={
     hostname: server_hostname,
     port: server_port,
     path: "/results",
@@ -122,9 +177,37 @@ app.post('/sendScores', function(req, res){
     headers: {
         "Content-Type": "application/json",
         "Content-Length": Buffer.byteLength(body)
-    }
-  });
+    },
+    key : fs.readFileSync('./key.pem'),
+    cert: fs.readFileSync('./cert.pem'),
+    rejectUnauthorized:false,
+  }
+
+  var request = https.request(https_job_options,function(response)
+  {
+      response.on('data',function(chunk)
+      {
+
+      })
+  })
+
+  request.on('error',function(error)
+  {
+    console.log(error);
+  })
+
   request.end(body);
+  // var request = new http.ClientRequest({
+  //   hostname: server_hostname,
+  //   port: server_port,
+  //   path: "/results",
+  //   method: "POST",
+  //   headers: {
+  //       "Content-Type": "application/json",
+  //       "Content-Length": Buffer.byteLength(body)
+  //   }
+  // });
+  // request.end(body);
   array = submission_json.marks
   if(submission_json.status ==  1 || submission_json.status == 2)
   {
@@ -179,7 +262,7 @@ app.post('/addNode', function(req, res){
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
     var body=JSON.stringify(job_queue.pop());
-    var request = new http.ClientRequest({
+    var https_job_options={
       hostname: assigned_hostname,
       port: assigned_port,
       path: "/requestRun",
@@ -187,9 +270,37 @@ app.post('/addNode', function(req, res){
       headers: {
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(body)
-      }
-    });
+      },
+      key : fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      rejectUnauthorized:false,
+    }
+
+    var request = https.request(https_job_options,function(response)
+    {
+        response.on('data',function(chunk)
+        {
+
+        })
+    })
+
+    request.on('error',function(error)
+    {
+      console.log(error);
+    })
+
     request.end(body);
+    // var request = new http.ClientRequest({
+    //   hostname: assigned_hostname,
+    //   port: assigned_port,
+    //   path: "/requestRun",
+    //   method: "POST",
+    //   headers: {
+    //       "Content-Type": "application/json",
+    //       "Content-Length": Buffer.byteLength(body)
+    //   }
+    // });
+    // request.end(body);
   }
 });
 
@@ -211,16 +322,24 @@ for(var i=0;i<nodes_data["Nodes"].length;i++)
 {
   checkNodeConn(nodes_data["Nodes"][i]);
   function checkNodeConn(node) {
-  var options = {
-    host: node.hostname,
-    port: node.port,
-    path: '/connectionCheck'
-  };
-  var req = http.get(options, function(res){
-    var bodyChunks = [];
-    res.on('data', function(chunk){
+
+    var https_checkConn ={
+      hostname : node.hostname,
+      port : node.port,
+      path : '/connectionCheck',
+      key : fs.readFileSync('./key.pem'),
+      cert: fs.readFileSync('./cert.pem'),
+      rejectUnauthorized:false,
+    }
+
+  var checkConnRequest = https.request(https_checkConn,function(res)
+  {
+    var bodyChunks =[];
+    res.on('data',function(chunk)
+    {
       bodyChunks.push(chunk);
-    }).on('end', function(){
+    }).on('end',function()
+    {
       var body = Buffer.concat(bodyChunks);
       if(body.toString()=='true')
       {
@@ -229,10 +348,14 @@ for(var i=0;i<nodes_data["Nodes"].length;i++)
       }
     });
   });
-  req.on('error', function(e) {
-    console.log("Error connecting to "+node.hostname+":"+node.port);
-  });
-  req.end();
+
+  checkConnRequest.on('error',function(err)
+{
+  console.log("Error connecting to "+node.hostname+":"+node.port);
+
+});
+checkConnRequest.end();
+
   }
 }
 
