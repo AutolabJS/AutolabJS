@@ -26,6 +26,7 @@ app.get('/connectionCheck', function (req,res) {
 
 app.post('/requestRun', function(req, res){
   res.send(true);
+  console.log(req.body);
   var submission_id = req.body.id_no;
   var lab = req.body.Lab_No;
   var commit = req.body.commit;
@@ -75,7 +76,7 @@ app.post('/requestRun', function(req, res){
   {
     console.log(err);
   })
-  request.end();
+  request.end(body);
 
   });
 });
@@ -114,7 +115,7 @@ request.on('error',function(err)
 {
 console.log(err);
 })
-request.end();
+request.end(body);
 
 
 server.listen(conf["host_port"].port);

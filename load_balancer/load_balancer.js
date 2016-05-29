@@ -78,6 +78,9 @@ app.get('/connectionCheck', function (req,res) {
 
 app.post('/submit', function(req, res){
   res.send(true);
+  console.log(req.body)
+  console.log(node_queue)
+  console.log(job_queue);
   if(node_queue.length!=0) {
     var assigned_node = node_queue.pop();
     var assigned_hostname = assigned_node.hostname;
@@ -119,11 +122,14 @@ app.post('/submit', function(req, res){
 
 app.post('/sendScores', function(req, res){
   var submission_json = req.body.submission_details;
+  //console.log(req.body);
   var node_json = req.body.node_details;
+
   node_queue.push(node_json);
   res.send(true);
   if(job_queue.length!=0)
   {
+
     var assigned_node = node_queue.pop();
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
@@ -155,7 +161,7 @@ app.post('/sendScores', function(req, res){
       console.log(error);
     })
 
-    request.end(body);
+    request.end(JSON.stringify(body));
     // var request = new http.ClientRequest({
     //   hostname: assigned_hostname,
     //   port: assigned_port,
@@ -169,6 +175,9 @@ app.post('/sendScores', function(req, res){
     // request.end(body);
   }
   var body=JSON.stringify(submission_json);
+    // console.log("COming here");
+    // console.log(node_queue);
+    // console.log(job_queue);
   var https_job_options={
     hostname: server_hostname,
     port: server_port,
