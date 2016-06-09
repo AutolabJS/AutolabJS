@@ -10,6 +10,10 @@ class Driver
       score = x.test();
       System.out.println(score);
     }
+    catch(RuntimeException e)
+    {
+      System.out.println("error");
+    }
     catch(Throwable e)
     {
       System.out.println("0");

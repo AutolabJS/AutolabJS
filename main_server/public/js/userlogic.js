@@ -97,6 +97,9 @@ $(document).ready(function() {
       if(data.comment[i]==2 && data.marks[i]==0) {
         status="Timeout"
       }
+      if(data.comment[i]==3 && data.marks[i]==0) {
+        status="Runtime Error"
+      }
       entry ="<tr> <td>"+(i+1)+"</td><td>"+status+"</td> <td>"+data.marks[i]+"</td> </tr>";
       $("#marks tbody").append(entry);
     }
