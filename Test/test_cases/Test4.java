@@ -11,7 +11,6 @@ class Test
     {
       x1.setCash(0);
       x1.buy(x);
-      
       if(x1.getCash()==0)
       {
         x1.setCash(1);
