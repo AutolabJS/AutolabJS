@@ -18,37 +18,25 @@ do
   cp Driver.java ./working_dir
   cd working_dir
   javac -nowarn *.java 2>> log.txt
- 
+  cat log.txt >> ../log.txt
   errors=$(wc -l log.txt | awk '{print $1}')
   if [ $errors -eq 0 ];
   then
     # timeout -k 0.5 $timelimit java Driver >> ../scores.txt
     timeout -k 0.5 $timelimit java Driver >> abc.txt
-
     status=$(echo $?)
     sc=$(tail -n1 abc.txt)
     cs=$sc
     if [ $status -ne 0 ];
     then
       # echo "0" >> ../scores.txt
-      
       sc="0"
-      cs="2"                      
-
-    fi
-
-    if [ "$sc" == "error" ];
-    then 
-
-      sc="0"
-      cs="3"
+      cs="2"
     fi
   else
     # echo "0" >> ../scores.txt
-
     sc="0"
     cs="1"
-  
   fi
   rm -rf *
   # echo $sc >> ../scores.txt

@@ -8,7 +8,6 @@ class Test
       x1.setCash(20);
       if(x1.getCash()==20)
       {
-        
         return 1;
       }
       else
