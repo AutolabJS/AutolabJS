@@ -132,7 +132,6 @@ app.post('/sendScores', function(req, res){
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
     var body=JSON.stringify(job_queue.pop());
-    console.log(body);
     var https_job_options={
       hostname: assigned_hostname,
       port: assigned_port,
@@ -248,7 +247,6 @@ app.post('/addNode', function(req, res){
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
     var body=JSON.stringify(job_queue.pop());
-    console.log(body);
     var https_job_options={
       hostname: assigned_hostname,
       port: assigned_port,
