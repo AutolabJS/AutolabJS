@@ -45,7 +45,7 @@ app.get('/connectionCheck', function (req,res) {
         bodyChunks.push(chunk);
       }).on('end', function(){
         var body = Buffer.concat(bodyChunks);
-        result = result.concat('<br/>Node at '+node.hostname+':'+node.port+' working: ' + body);
+        result = result.concat('<br/>Execution Node at '+node.hostname+':'+node.port+' working: ' + body);
         console.log("nodeing");
         //return if all requets processed
         if(--numOfNodes == 0){
@@ -55,7 +55,7 @@ app.get('/connectionCheck', function (req,res) {
       });
     });
     req.on('error', function(e) {
-      result = result.concat('<br/>Node at  '+node.hostname+':'+node.port+' Error: ' + e.message);
+      result = result.concat('<br/>Execution Node at  '+node.hostname+':'+node.port+' Error: ' + e.message);
       //return if all requets processed
       if(--numOfNodes == 0){
       console.log("DispRes");
