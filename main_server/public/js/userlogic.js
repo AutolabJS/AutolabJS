@@ -12,6 +12,16 @@ $(document).ready(function() {
 
   var socket = io.connect();
 
+  socket.on('course details',function(data)
+{
+  $('#logo-container').text(data['course number'] + ": " + data['name'])
+  list_start = '<li><a class="grey-text text-lighten-3" target="_blank" href="#!">'
+  list_end ='</a></li>'
+  var list = ""
+  list+= list_start + data['instructor in charge'] + "  (Instructor In-charge)" + list_end
+  for(var ins in data['other instructors']) list += list_start + data['other instructors'][ins] + list_end
+  $('#instructors').append(list)
+})
   socket.on('labs_status', function(data) {
     $("#loadingDiv").hide();
     $("#submission").hide();

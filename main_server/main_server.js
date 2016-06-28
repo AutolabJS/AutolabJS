@@ -152,6 +152,10 @@ io.on('connection', function(socket) {
     lab_x = {"Lab_No" :lab_conf["Labs"][i], "status": status};
     labs_status.push(lab_x);
   }
+  //emit course name,number and instructors
+  socket.emit('course details',require('./courses.json')['Object Oriented Programming'])
+
+  //emit lab status
   socket.emit('labs_status', labs_status);
 
   socket.on('submission', function(data) {
