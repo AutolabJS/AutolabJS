@@ -153,7 +153,7 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('./courses.json')['Object Oriented Programming'])
+  socket.emit('course details',require('./courses.json'))
 
   //emit lab status
   socket.emit('labs_status', labs_status);
