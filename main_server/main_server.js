@@ -162,7 +162,7 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('./courses.json')['Object Oriented Programming'])
+  socket.emit('course details',require('./courses.json'))
 
   //emit lab status
   socket.emit('labs_status', labs_status);
@@ -225,36 +225,25 @@ io.on('connection', function(socket) {
         cert: fs.readFileSync('./cert.pem'),
         rejectUnauthorized:false,
       };
-      var req = https.request(options, function(res){
-        var bodyChunks = [];
-        res.on('data', function(chunk){
-          bodyChunks.push(chunk);
-        }).on('end', function(){
-          var body = Buffer.concat(bodyChunks);
-          if(body.toString()=='true')
-          {
-            var body=JSON.stringify(body_json);
-            var request = https.request({
-              hostname: load_balancer_hostname,
-              port: load_balancer_port,
-              path: "/submit",
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  "Content-Length": Buffer.byteLength(body)
-              },
-              key : fs.readFileSync('./key.pem'),
-              cert: fs.readFileSync('./cert.pem'),
-              rejectUnauthorized:false,
-            });
-            request.end(body);
-          }
-        });
+      var body=JSON.stringify(body_json);
+      var request = https.request({
+        hostname: load_balancer_hostname,
+        port: load_balancer_port,
+        path: "/submit",
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Content-Length": Buffer.byteLength(body)
+        },
+        key : fs.readFileSync('./key.pem'),
+        cert: fs.readFileSync('./cert.pem'),
+        rejectUnauthorized:false,
       });
-      req.on('error', function(e) {
+      request.end(body);
+      request.on('error', function(e) {
+        console.log(e)
         socket.emit("invalid", "Invalid Lab No");
       });
-      req.end();
     }
     else {
       socket.emit("invalid", "Invalid Lab No");
