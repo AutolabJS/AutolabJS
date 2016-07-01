@@ -1,13 +1,17 @@
 var fs = require('fs');
 var express = require('express');
 var app = express();
+
 var https_config={
   key : fs.readFileSync('./key.pem'),
   cert: fs.readFileSync('./cert.pem'),
   rejectUnauthorized:false,
 }
+var httpolyglot = require('httpolyglot');
 var https = require('https');
-var server = https.createServer(https_config,app);
+//redirect to https
+
+var server = httpolyglot.createServer(https_config,app);
 var http = require('http')
 var bodyParser = require('body-parser');
 var fs = require('fs');
@@ -15,9 +19,11 @@ var io = require('socket.io')(server);
 var config_details = require('./conf.json');
 var mysql = require('mysql');
 
-app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+app.use(express.static(__dirname + '/public'));
+
 
 var load_balancer_hostname=config_details["load_balancer"].hostname;
 var load_balancer_port=config_details["load_balancer"].port;
@@ -50,10 +56,13 @@ function initScoreboard(lab_no) {
 }
 
 initLabs();
+
 server.listen(config_details["host_port"].port);
 console.log("Listening at "+config_details["host_port"].port);
 
+
 app.get('/', function (req,res) {
+
 
   res.send('./public/index.html');
 

@@ -11,7 +11,9 @@
   "dependencies": {
     "body-parser": "1.8",
     "express": "^4.13.4",
-    "socket.io": "~1.3.6",
-    "mysql": ""
+    "helmet": "^2.1.1",
+    "httpolyglot": "^0.1.1",
+    "mysql": "",
+    "socket.io": "~1.3.6"
   }
 }
