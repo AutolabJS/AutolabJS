@@ -1,3 +1,14 @@
+var download_marks=[];
+var current_lab = '';
+var id_no='';
+
+function download_csv() {
+  var blob = new Blob([download_marks], {
+    type: "text/plain;charset=utf-8;",
+  });
+  saveAs(blob, current_lab+".csv");
+};
+
 $(document).ready(function() {
 
   $("#labs").hide();
@@ -6,9 +17,6 @@ $(document).ready(function() {
   $("#marks").hide();
   $("#scorecard").hide();
   $("#invalidLab").hide();
-
-  var current_lab = '';
-  var id_no='';
 
   var socket = io.connect();
 
@@ -66,10 +74,14 @@ $(document).ready(function() {
       request.done(function (response, textStatus, jqXHR){
         $('#loadingDiv').hide();
         $("#scorecard").show();
+        entry="<a href=\"\" onClick=\"download_csv(); return false;\">Download as CSV</a>";
+        $("#scorecard #download").append(entry);
+        download_marks=[];
         for(i=0;i<response.length;i++)
         {
           entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> </tr>";
           $("#scorecard tbody").append(entry);
+          download_marks=download_marks+response[i].id_no+", "+response[i].score+"\n"
         }
       });
     });
