@@ -63,18 +63,20 @@ console.log("Listening at "+config_details["host_port"].port);
 
 app.get('/', function (req,res) {
 
-
+  console.log('index.html requested');
   res.send('./public/index.html');
 
 });
 
 app.post('/results', function(req, res){
+  console.log('Results post request received');
   console.log(req.body);
   res.send("true");
   io.to(req.body.socket).emit('scores', req.body);
 });
 
 app.get('/scoreboard/:Lab_no', function(req, res) {
+  console.log('Scoreboard requested');
   lab = req.params.Lab_no;
   flag=0;
   lab_conf = require('./labs.json');
@@ -99,6 +101,7 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
 //status requested
 app.get('/status', function (statusReq,statusRes) {
 
+  console.log('Status requested');
   //options for load_balancer get request
   var options = {
     host: load_balancer_hostname,
@@ -127,6 +130,7 @@ app.get('/status', function (statusReq,statusRes) {
 
   req.on('error', function(e) {
     statusRes.send('Load Balancer Error: ' + e.message);
+    console.log('Load Balancer Error: ' + e.message);
   });
 
   req.end();
@@ -168,6 +172,7 @@ io.on('connection', function(socket) {
   socket.emit('labs_status', labs_status);
 
   socket.on('submission', function(data) {
+    console.log('Socket submission event triggered');
     id_number=data[0];
     lab_no=data[1];
     commit_hash=data[2];

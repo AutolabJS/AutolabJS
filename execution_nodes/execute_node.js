@@ -21,10 +21,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
 app.get('/connectionCheck', function (req,res) {
+  console.log('connectionCheck requested');
   res.send(true);
 });
 
 app.post('/requestRun', function(req, res){
+  console.log('requestRun post request recieved');
   res.send(true);
   console.log(req.body);
   var submission_id = req.body.id_no;
@@ -113,7 +115,7 @@ var request = https.request(https_addnode_options,function(res)
 
 request.on('error',function(err)
 {
-console.log(err);
+  console.log(err);
 })
 request.end(body);
 

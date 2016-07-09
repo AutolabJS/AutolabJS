@@ -22,10 +22,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 app.get('/userCheck', function (req,res) {
+  console.log('userCheck requested');
   res.send(true);
 });
 
 app.get('/connectionCheck', function (req,res) {
+  console.log('connectionCheck requested');
   var result = 'Load Balancer Working\n';
   var numOfNodes = nodes_data["Nodes"].length;
   function checkNodeConn(node){
@@ -77,6 +79,7 @@ app.get('/connectionCheck', function (req,res) {
 });
 
 app.post('/submit', function(req, res){
+  console.log('submit post request recieved')
   res.send(true);
 
   if(node_queue.length!=0) {
@@ -119,6 +122,7 @@ app.post('/submit', function(req, res){
 });
 
 app.post('/sendScores', function(req, res){
+  console.log('sendScores post request recieved');
   var submission_json = req.body.submission_details;
 
   var node_json = req.body.node_details;
@@ -238,6 +242,7 @@ app.post('/sendScores', function(req, res){
 });
 
 app.post('/addNode', function(req, res){
+  console.log('addNode post request recieved');
   node_queue.push(req.body);
   console.log("Added "+req.body.hostname+":"+req.body.port+" to queue");
   res.send(true);
