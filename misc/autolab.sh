@@ -1,23 +1,30 @@
+#!/bin/bash
+
+# Create new lab
 if [[ "$1" == "create" && ("$2" != "") ]];	then
 	 mkdir $2
-	java -jar createUsers.jar
-	java -jar createLab.jar $2
+	java -jar createLab.jar $3 $4 $2
 elif [ "$1" == "create" ];then
 	printf "Enter a name for the lab \t Format -> {Course name}-{Lab name}"
 fi
 
+# Delete a lab
 if [[ "$1" == "delete" && ("$2" != "") ]];	then
 	rm -rf ./$2
+	java -jar deleteLab.jar $3 $4 $2
 elif [ "$1" == "delete" ];then
 	echo "Enter a lab name to delete"
 fi
 
+#Add testcases/solutions/skeleton code to a project
 if [ "$1" == "add" ];then
 
 	if [ $# -ne 4 ];	then
 		echo "Enter the action,lab name and the path to the folder."
 		exit
 	elif [ "$2" == "testcase" ];then
+		echo $3
+		pwd
 		cd ./$3
 		mkdir testcases
 		
@@ -44,6 +51,7 @@ if [ "$1" == "add" ];then
 	fi
 fi
 
+# Remove testcases/solutions/skeleton code from the project
 if [ "$1" == "remove" ]
 	then
 	if [ $# -ne 3 ]
