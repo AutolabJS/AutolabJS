@@ -3,7 +3,7 @@
 # Create new lab
 if [[ "$1" == "create" && ("$2" != "") ]];	then
 	 mkdir $2
-	java -jar createLab.jar $3 $4 $2
+	java -jar createLab.jar $2
 elif [ "$1" == "create" ];then
 	printf "Enter a name for the lab \t Format -> {Course name}-{Lab name}"
 fi
@@ -11,7 +11,7 @@ fi
 # Delete a lab
 if [[ "$1" == "delete" && ("$2" != "") ]];	then
 	rm -rf ./$2
-	java -jar deleteLab.jar $3 $4 $2
+	java -jar deleteLab.jar $2
 elif [ "$1" == "delete" ];then
 	echo "Enter a lab name to delete"
 fi
