@@ -342,3 +342,10 @@ checkConnRequest.end();
 var job_queue = [];
 server.listen(nodes_data["host_port"].port);
 console.log("Listening at "+nodes_data["host_port"].port);
+
+
+setInterval(function () {
+  connection.query('SELECT 1' ,function(err, rows, fields) {
+    console.log("keep alive query")
+  });
+}, 10000);
