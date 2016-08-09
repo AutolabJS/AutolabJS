@@ -132,5 +132,9 @@ $(document).ready(function() {
       $("#marks").append("<h5 class = \"header light\">Penalty = "+data.penalty+"</h5>");
     }
     $("#marks").append("<h4 class = \"header light\">Total Score = "+total_score+"</h4>");
+    if(data.status==0)
+    {
+      $("#marks").append("<p class=\"collection item\"><h6><b>Warning:</b> Not accepting submissions right now. The score is not updated on the scoreboard.<h6>");
+    }
   });
 });
