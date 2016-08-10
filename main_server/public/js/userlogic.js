@@ -10,7 +10,7 @@ function download_csv() {
 };
 
 $(document).ready(function() {
-
+  $(".dropdown-button").dropdown();
   $("#labs").hide();
   $("#submission").hide();
   $("#evaluating").hide();
