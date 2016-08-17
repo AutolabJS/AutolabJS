@@ -10,7 +10,7 @@ function download_csv() {
 };
 
 $(document).ready(function() {
-
+  $(".dropdown-button").dropdown();
   $("#labs").hide();
   $("#submission").hide();
   $("#evaluating").hide();
@@ -41,8 +41,8 @@ $(document).ready(function() {
     $("#activeLabContainer .row").empty();
     for(var i=0;i<data.length;i++)
     {
-      lab_block = "<div class=\"col s4 m4\"> <div class=\"card #ffffff white\"> <div class=\"card-content black-text\"> <span class=\"card-title\">"+data[i].Lab_No.Lab_No+"</span> <ul><li>Date: \t"+data[i].Lab_No.start_date+"-"+data[i].Lab_No.start_month+"-"+data[i].Lab_No.start_year+"</li><li>Start Time: \t"+data[i].Lab_No.start_hour+":"+data[i].Lab_No.start_minute;
-      lab_block=lab_block + "</li> <li>End Time: \t"+data[i].Lab_No.end_hour+":"+data[i].Lab_No.end_minute+"</li> <li>Hard Deadline:\t"+data[i].Lab_No.hard_hour+":"+data[i].Lab_No.hard_minute+"</li><li>Late Penalty: \t"+data[i].Lab_No.penalty+" mark(s) </li></ul> </div> <div class=\"card-action\"> <a id=\"subl"+data[i].Lab_No.Lab_No+"\" href=\"#\">Submit</a> <a id=\"scol"+data[i].Lab_No.Lab_No+"\" href=\"#\">Scoreboard</a></div> </div> </div>";
+      lab_block = "<div class=\"col s4 m4\"> <div class=\"card #ffffff white\"> <div class=\"card-content black-text\"> <span class=\"card-title\">"+data[i].Lab_No.Lab_No+"</span> <ul><li>Starts at\t"+data[i].Lab_No.start_hour+":"+data[i].Lab_No.start_minute+" on "+data[i].Lab_No.start_date+"-"+data[i].Lab_No.start_month+"-"+data[i].Lab_No.start_year;
+      lab_block=lab_block + "</li><li>Ends at \t"+data[i].Lab_No.end_hour+":"+data[i].Lab_No.end_minute+" on "+data[i].Lab_No.end_date+"-"+data[i].Lab_No.end_month+"-"+data[i].Lab_No.end_year+"</li><li>Late Deadline at \t"+data[i].Lab_No.hard_hour+":"+data[i].Lab_No.hard_minute+" on "+data[i].Lab_No.hard_date+"-"+data[i].Lab_No.hard_month+"-"+data[i].Lab_No.hard_year+"</li><li>Late Penalty: \t"+data[i].Lab_No.penalty+" mark(s) </li></ul> </div> <div class=\"card-action\"> <a id=\"subl"+data[i].Lab_No.Lab_No+"\" href=\"#\">Submit</a> <a id=\"scol"+data[i].Lab_No.Lab_No+"\" href=\"#\">Scoreboard</a></div> </div> </div>";
       if(data[i].status==0)
       {
         $("#inactiveLabContainer .collection").empty();
@@ -132,5 +132,9 @@ $(document).ready(function() {
       $("#marks").append("<h5 class = \"header light\">Penalty = "+data.penalty+"</h5>");
     }
     $("#marks").append("<h4 class = \"header light\">Total Score = "+total_score+"</h4>");
+    if(data.status==0)
+    {
+      $("#marks").append("<p class=\"collection item\"><h6><b>Warning:</b> This lab is not active. The result of this evaluation is not added to the scoreboard.<h6>");
+    }
   });
 });
