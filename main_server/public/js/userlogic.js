@@ -17,7 +17,7 @@ $(document).ready(function() {
   $("#marks").hide();
   $("#scorecard").hide();
   $("#invalidLab").hide();
-
+  $("submission_pending").hide();
   var socket = io.connect();
 
   socket.on('course details',function(data)
@@ -37,6 +37,7 @@ $(document).ready(function() {
     $("#marks").hide();
     $("#scorecard").hide();
     $("#invalidLab").hide();
+    $("submission_pending").hide();
     $("#inactiveLabContainer .row").empty();
     $("#activeLabContainer .row").empty();
     for(var i=0;i<data.length;i++)
@@ -60,12 +61,14 @@ $(document).ready(function() {
       current_lab=$(this).attr('id').substring(4);
       $('#labs').hide();
       $('#submission').show();
+      $('#submission_pending').hide();
     });
 
     $('[id^=scol]').on('click', function(e) {
       e.preventDefault();
       current_lab=$(this).attr('id').substring(4);
       $('#labs').hide();
+      $('#submission_pending').hide();
       $('#loadingDiv').show();
       request = $.ajax({
         url: "/scoreboard/"+current_lab,
@@ -90,6 +93,7 @@ $(document).ready(function() {
   $('#submitButton').on('click', function(e) {
    e.preventDefault();
    $("#submission").hide();
+   $('#submission_pending').hide();
    $("#evaluating").show();
    id_no=$('#nameField').val();
    commit_hash=$('#commitHash').val();
@@ -101,6 +105,13 @@ $(document).ready(function() {
     $("#evaluating").hide();
     $("#invalidLab").show();
   });
+
+  socket.on('submission_pending',function(data)
+  {
+    console.log("Pending recieved")
+    $("#evaluating").hide();
+    $("#submission_pending").show();
+  })
 
   socket.on('scores', function(data) {
     $("#evaluating").hide();

@@ -68,6 +68,8 @@ server.listen(config_details["host_port"].port);
 console.log("Listening at "+config_details["host_port"].port);
 
 
+var submission_pending = new Array();  // Holds the pending submissions of the users
+
 app.get('/', function (req,res) {
 
   console.log('index.html requested');
@@ -79,6 +81,8 @@ app.post('/results', function(req, res){
   console.log('Results post request received');
   console.log(req.body);
   res.send("true");
+  submission_pending.splice(submission_pending.indexOf(req.body.id_no,1));
+  console.log('remove Users')
   io.to(req.body.socket).emit('scores', req.body);
 });
 
@@ -183,82 +187,94 @@ io.on('connection', function(socket) {
     id_number=data[0];
     lab_no=data[1];
     commit_hash=data[2];
-    current_time = new Date();
-    lab_config = require('./labs.json');
-    flag=0;
-    penalty=0;
-    for(var i=0;i<lab_config["Labs"].length;i++) {
-      if(lab_config["Labs"][i].Lab_No == lab_no)
+    if(submission_pending.indexOf(id_number)!=-1)      // Check if there is a pending submission
+    {                                                   // with the same ID number
+      io.to(socket.id).emit('submission_pending',{});
+       return false
+       
+    }
+    else 
       {
-        start=new Date(lab_config["Labs"][i].start_year, lab_config["Labs"][i].start_month -1 ,lab_config["Labs"][i].start_date, lab_config["Labs"][i].start_hour,lab_config["Labs"][i].start_minute, 0,0);
-        end=new Date(lab_config["Labs"][i].end_year, lab_config["Labs"][i].end_month -1 ,lab_config["Labs"][i].end_date, lab_config["Labs"][i].end_hour,lab_config["Labs"][i].end_minute, 0,0);
-        hard=new Date(lab_config["Labs"][i].hard_year, lab_config["Labs"][i].hard_month -1 ,lab_config["Labs"][i].hard_date, lab_config["Labs"][i].hard_hour,lab_config["Labs"][i].hard_minute, 0,0);
-        flag=1;
-        break;
-      }
-    }
-    id_number = id_number.replace(/\s+/, "");
-    commit_hash = commit_hash.replace(/\s+/, "");
-    if(/^\w+$/.test(id_number)==false)
-    {
-      flag=0;
-    }
-    if(/^\w*$/.test(commit_hash)==false)
-    {
-      flag=0;
-    }
-    if(id_number.length!=12)
-    {
-      flag=0;
-    }
-    if(flag==1) {
-      var status = 0;
-      if(current_time-start > 0)
-      {
-        if(current_time - end < 0)
-        {
-          status=1;
-        }
-        else {
-          if(current_time - hard < 0)
+        submission_pending.push(id_number);
+         console.log("New request"); 
+        current_time = new Date();
+        lab_config = require('./labs.json');
+        flag=0;
+        penalty=0;
+        for(var i=0;i<lab_config["Labs"].length;i++) {
+          if(lab_config["Labs"][i].Lab_No == lab_no)
           {
-            status =2;
-            penalty=lab_config["Labs"][i].penalty;
+            start=new Date(lab_config["Labs"][i].start_year, lab_config["Labs"][i].start_month -1 ,lab_config["Labs"][i].start_date, lab_config["Labs"][i].start_hour,lab_config["Labs"][i].start_minute, 0,0);
+            end=new Date(lab_config["Labs"][i].end_year, lab_config["Labs"][i].end_month -1 ,lab_config["Labs"][i].end_date, lab_config["Labs"][i].end_hour,lab_config["Labs"][i].end_minute, 0,0);
+            hard=new Date(lab_config["Labs"][i].hard_year, lab_config["Labs"][i].hard_month -1 ,lab_config["Labs"][i].hard_date, lab_config["Labs"][i].hard_hour,lab_config["Labs"][i].hard_minute, 0,0);
+            flag=1;
+            break;
           }
         }
-      }
-      body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "commit": commit_hash, "status": status, "penalty": penalty, "socket": socket.id};
+        id_number = id_number.replace(/\s+/, "");
+        commit_hash = commit_hash.replace(/\s+/, "");
+        if(/^\w+$/.test(id_number)==false)
+        {
+          flag=0;
+        }
+        if(/^\w*$/.test(commit_hash)==false)
+        {
+          flag=0;
+        }
+        if(id_number.length!=12)
+        {
+          flag=0;
+        }
+        if(flag==1) {
+          var status = 0;
+          if(current_time-start > 0)
+          {
+            if(current_time - end < 0)
+            {
+              status=1;
+            }
+            else {
+              if(current_time - hard < 0)
+              {
+                status =2;
+                penalty=lab_config["Labs"][i].penalty;
+              }
+            }
+          }
+          body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "commit": commit_hash, "status": status, "penalty": penalty, "socket": socket.id};
 
-      var options = {
-        host: load_balancer_hostname,
-        port: load_balancer_port,
-        path: '/userCheck',
-        key : fs.readFileSync('./key.pem'),
-        cert: fs.readFileSync('./cert.pem'),
-        rejectUnauthorized:false,
-      };
-      var body=JSON.stringify(body_json);
-      var request = https.request({
-        hostname: load_balancer_hostname,
-        port: load_balancer_port,
-        path: "/submit",
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Content-Length": Buffer.byteLength(body)
-        },
-        key : fs.readFileSync('./key.pem'),
-        cert: fs.readFileSync('./cert.pem'),
-        rejectUnauthorized:false,
-      });
-      request.end(body);
-      request.on('error', function(e) {
-        console.log(e)
-        socket.emit("invalid", "Invalid Lab No");
-      });
-    }
-    else {
-      socket.emit("invalid", "Invalid Lab No");
-    }
+          var options = {
+            host: load_balancer_hostname,
+            port: load_balancer_port,
+            path: '/userCheck',
+            key : fs.readFileSync('./key.pem'),
+            cert: fs.readFileSync('./cert.pem'),
+            rejectUnauthorized:false,
+          };
+          var body=JSON.stringify(body_json);
+          var request = https.request({
+            hostname: load_balancer_hostname,
+            port: load_balancer_port,
+            path: "/submit",
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Content-Length": Buffer.byteLength(body)
+            },
+            key : fs.readFileSync('./key.pem'),
+            cert: fs.readFileSync('./cert.pem'),
+            rejectUnauthorized:false,
+          });
+          request.end(body);
+          request.on('error', function(e) {
+            console.log(e)
+            socket.emit("invalid", "Invalid Lab No");
+          });
+        }
+        else {
+          socket.emit("invalid", "Invalid Lab No");
+        }
+      }
+   
   });
 });
