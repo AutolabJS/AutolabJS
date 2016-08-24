@@ -42,7 +42,7 @@ app.post('/requestRun', function(req, res){
     comment.pop();
     var body=scores;
     body.submission_details.id_no=submission_id;
-    bod.submission_details.commit=commit;
+    body.submission_details.commit=commit;
     body.submission_details.marks=array;
     body.submission_details.comment=comment;
     body.submission_details.Lab_No=req.body.Lab_No;
