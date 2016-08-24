@@ -3,20 +3,20 @@ var express = require('express');
 var app = express();
 
 var https_config={
-  key : fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
+  key : fs.readFileSync('./ssl/key.pem'),
+  cert: fs.readFileSync('./ssl/cert.pem'),
   rejectUnauthorized:false,
-}
+};
 var httpolyglot = require('httpolyglot');
 var https = require('https');
 //redirect to https
 
 var server = httpolyglot.createServer(https_config,app);
-var http = require('http')
+var http = require('http');
 var bodyParser = require('body-parser');
-var fs = require('fs');
+
 var io = require('socket.io')(server);
-var config_details = require('./conf.json');
+var config_details = require('./config/conf.json');
 var mysql = require('mysql');
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -25,28 +25,28 @@ app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
 
 
-var load_balancer_hostname=config_details["load_balancer"].hostname;
-var load_balancer_port=config_details["load_balancer"].port;
+var load_balancer_hostname=config_details.load_balancer.hostname;
+var load_balancer_port=config_details.load_balancer.port;
 
 var connection = mysql.createConnection(
-  config_details["database"]
+  config_details.database
 );
 
 connection.connect();
 
 function initLabs()
 {
-  lab_config = require('./labs.json');
-  for(var j=0;j<lab_config["Labs"].length;j++)
+  lab_config = require('./config/labs.json');
+  for(var j=0;j<lab_config.Labs.length;j++)
   {
-    initScoreboard(lab_config["Labs"][j].Lab_No);
+    initScoreboard(lab_config.Labs[j].Lab_No);
   }
 }
 
 function initScoreboard(lab_no) {
   table_name='l'+lab_no;
-  connection.query('SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1', [config_details["database"].database,table_name] ,function(err, rows, fields) {
-      if(rows.length==0)
+  connection.query('SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1', [config_details.database.database,table_name] ,function(err, rows, fields) {
+      if(rows.length===0)
       {
         var q='CREATE TABLE l'+lab_no+'(id_no varchar(12), score int, time datetime)';
         connection.query(q, function(err, rows, fields) {
@@ -60,21 +60,27 @@ initLabs();
 
 setInterval(function () {
   connection.query('SELECT 1' ,function(err, rows, fields) {
-    console.log("keep alive query")
+    console.log("keep alive query");
   });
 }, 10000);
 
-server.listen(config_details["host_port"].port);
-console.log("Listening at "+config_details["host_port"].port);
+server.listen(config_details.host_port.port);
+console.log("Listening at "+config_details.host_port.port);
 
 
-var submission_pending = new Array();  // Holds the pending submissions of the users
+var submission_pending = [];  // Holds the pending submissions of the users
 
 app.get('/', function (req,res) {
 
-  console.log('index.html requested');
+  
   res.send('./public/index.html');
 
+});
+
+var path = require('path');
+app.get('/config',function(req,res)
+{
+    res.sendFile(path.join(__dirname+ '/public/config.html'));
 });
 
 app.post('/results', function(req, res){
@@ -82,7 +88,7 @@ app.post('/results', function(req, res){
   console.log(req.body);
   res.send("true");
   submission_pending.splice(submission_pending.indexOf(req.body.id_no,1));
-  console.log('remove Users')
+  console.log('remove Users');
   io.to(req.body.socket).emit('scores', req.body);
 });
 
@@ -90,9 +96,9 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
   console.log('Scoreboard requested');
   lab = req.params.Lab_no;
   flag=0;
-  lab_conf = require('./labs.json');
-  for(var i=0;i<lab_conf["Labs"].length;i++) {
-    if(lab_conf["Labs"][i].Lab_No == lab)
+  lab_conf = require('./config/labs.json');
+  for(var i=0;i<lab_conf.Labs.length;i++) {
+    if(lab_conf.Labs[i].Lab_No == lab)
     {
       flag=1;
       break;
@@ -118,8 +124,8 @@ app.get('/status', function (statusReq,statusRes) {
     host: load_balancer_hostname,
     port: load_balancer_port,
     path: '/connectionCheck',
-    key : fs.readFileSync('./key.pem'),
-    cert: fs.readFileSync('./cert.pem'),
+    key : fs.readFileSync('./ssl/key.pem'),
+    cert: fs.readFileSync('./ssl/cert.pem'),
     rejectUnauthorized:false,
   };
 
@@ -136,7 +142,7 @@ app.get('/status', function (statusReq,statusRes) {
       var result = '';
       result = result.concat(body);
       statusRes.send(result);
-    })
+    });
   });
 
   req.on('error', function(e) {
@@ -151,13 +157,13 @@ app.get('/status', function (statusReq,statusRes) {
 
 io.on('connection', function(socket) {
 
-  lab_conf = require('./labs.json');
+  lab_conf = require('./config/labs.json');
   var current_time= new Date();
   labs_status=[];
-  for(var i=0;i<lab_conf["Labs"].length;i++) {
-    start=new Date(lab_conf["Labs"][i].start_year, lab_conf["Labs"][i].start_month -1 ,lab_conf["Labs"][i].start_date, lab_conf["Labs"][i].start_hour,lab_conf["Labs"][i].start_minute, 0,0);
-    end=new Date(lab_conf["Labs"][i].end_year, lab_conf["Labs"][i].end_month -1 ,lab_conf["Labs"][i].end_date, lab_conf["Labs"][i].end_hour,lab_conf["Labs"][i].end_minute, 0,0);
-    hard=new Date(lab_conf["Labs"][i].hard_year, lab_conf["Labs"][i].hard_month -1 ,lab_conf["Labs"][i].hard_date, lab_conf["Labs"][i].hard_hour,lab_conf["Labs"][i].hard_minute, 0,0);
+  for(var i=0;i<lab_conf.Labs.length;i++) {
+    start=new Date(lab_conf.Labs[i].start_year, lab_conf.Labs[i].start_month -1 ,lab_conf.Labs[i].start_date, lab_conf.Labs[i].start_hour,lab_conf.Labs[i].start_minute, 0,0);
+    end=new Date(lab_conf.Labs[i].end_year, lab_conf.Labs[i].end_month -1 ,lab_conf.Labs[i].end_date, lab_conf.Labs[i].end_hour,lab_conf.Labs[i].end_minute, 0,0);
+    hard=new Date(lab_conf.Labs[i].hard_year, lab_conf.Labs[i].hard_month -1 ,lab_conf.Labs[i].hard_date, lab_conf.Labs[i].hard_hour,lab_conf.Labs[i].hard_minute, 0,0);
     var status = 0;
     if(current_time-start > 0)
     {
@@ -173,11 +179,11 @@ io.on('connection', function(socket) {
       }
     }
 
-    lab_x = {"Lab_No" :lab_conf["Labs"][i], "status": status};
+    lab_x = {"Lab_No" :lab_conf.Labs[i], "status": status};
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('./courses.json'))
+  socket.emit('course details',require('./config/courses.json'));
 
   //emit lab status
   socket.emit('labs_status', labs_status);
@@ -190,7 +196,7 @@ io.on('connection', function(socket) {
     if(submission_pending.indexOf(id_number)!=-1)      // Check if there is a pending submission
     {                                                   // with the same ID number
       io.to(socket.id).emit('submission_pending',{});
-       return false
+       return false;
        
     }
     else 
@@ -198,26 +204,26 @@ io.on('connection', function(socket) {
         submission_pending.push(id_number);
          console.log("New request"); 
         current_time = new Date();
-        lab_config = require('./labs.json');
+        lab_config = require('./config/labs.json');
         flag=0;
         penalty=0;
-        for(var i=0;i<lab_config["Labs"].length;i++) {
-          if(lab_config["Labs"][i].Lab_No == lab_no)
+        for(var i=0;i<lab_config.Labs.length;i++) {
+          if(lab_config.Labs[i].Lab_No == lab_no)
           {
-            start=new Date(lab_config["Labs"][i].start_year, lab_config["Labs"][i].start_month -1 ,lab_config["Labs"][i].start_date, lab_config["Labs"][i].start_hour,lab_config["Labs"][i].start_minute, 0,0);
-            end=new Date(lab_config["Labs"][i].end_year, lab_config["Labs"][i].end_month -1 ,lab_config["Labs"][i].end_date, lab_config["Labs"][i].end_hour,lab_config["Labs"][i].end_minute, 0,0);
-            hard=new Date(lab_config["Labs"][i].hard_year, lab_config["Labs"][i].hard_month -1 ,lab_config["Labs"][i].hard_date, lab_config["Labs"][i].hard_hour,lab_config["Labs"][i].hard_minute, 0,0);
+            start=new Date(lab_config.Labs[i].start_year, lab_config.Labs[i].start_month -1 ,lab_config.Labs[i].start_date, lab_config.Labs[i].start_hour,lab_config.Labs[i].start_minute, 0,0);
+            end=new Date(lab_config.Labs[i].end_year, lab_config.Labs[i].end_month -1 ,lab_config.Labs[i].end_date, lab_config.Labs[i].end_hour,lab_config.Labs[i].end_minute, 0,0);
+            hard=new Date(lab_config.Labs[i].hard_year, lab_config.Labs[i].hard_month -1 ,lab_config.Labs[i].hard_date, lab_config.Labs[i].hard_hour,lab_config.Labs[i].hard_minute, 0,0);
             flag=1;
             break;
           }
         }
         id_number = id_number.replace(/\s+/, "");
         commit_hash = commit_hash.replace(/\s+/, "");
-        if(/^\w+$/.test(id_number)==false)
+        if(/^\w+$/.test(id_number)===false)
         {
           flag=0;
         }
-        if(/^\w*$/.test(commit_hash)==false)
+        if(/^\w*$/.test(commit_hash)===false)
         {
           flag=0;
         }
@@ -237,7 +243,7 @@ io.on('connection', function(socket) {
               if(current_time - hard < 0)
               {
                 status =2;
-                penalty=lab_config["Labs"][i].penalty;
+                penalty=lab_config.Labs[i].penalty;
               }
             }
           }
@@ -247,8 +253,8 @@ io.on('connection', function(socket) {
             host: load_balancer_hostname,
             port: load_balancer_port,
             path: '/userCheck',
-            key : fs.readFileSync('./key.pem'),
-            cert: fs.readFileSync('./cert.pem'),
+            key : fs.readFileSync('./ssl/key.pem'),
+            cert: fs.readFileSync('./ssl/cert.pem'),
             rejectUnauthorized:false,
           };
           var body=JSON.stringify(body_json);
@@ -261,13 +267,13 @@ io.on('connection', function(socket) {
               "Content-Type": "application/json",
               "Content-Length": Buffer.byteLength(body)
             },
-            key : fs.readFileSync('./key.pem'),
-            cert: fs.readFileSync('./cert.pem'),
+            key : fs.readFileSync('./ssl/key.pem'),
+            cert: fs.readFileSync('./ssl/cert.pem'),
             rejectUnauthorized:false,
           });
           request.end(body);
           request.on('error', function(e) {
-            console.log(e)
+            console.log(e);
             socket.emit("invalid", "Invalid Lab No");
           });
         }
@@ -276,5 +282,27 @@ io.on('connection', function(socket) {
         }
       }
    
+  });
+
+  console.log(JSON.stringify(require('./config/courses.json')));
+
+  socket.emit('lab_data',
+  {
+    course:require('./config/courses.json'),
+    lab:require('./config/labs.json')
+  });
+  
+
+
+  socket.on('save',function(data)
+  {
+   
+    console.log(data.labs);
+    var lab = {
+      Labs: data.labs
+    };
+    fs.writeFile('./config/lab2.json',JSON.stringify(lab,null,4));
+    fs.writeFile('./config/courses2.json',JSON.stringify(data.course,null,4));
+
   });
 });
