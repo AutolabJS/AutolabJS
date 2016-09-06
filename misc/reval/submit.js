@@ -1,4 +1,10 @@
-var main_server = require('../../load_balancer/nodes_data_conf.json').server_info
+var main_server = 
+{
+	hostname: require('../config/conf.json').host.hostname,
+	port: require('../config/conf.json').host_port.port
+}
+
+//console.log(main_server)
 var socket = require('./socket.io/node_modules/socket.io-client')('https://'+main_server.hostname+":"+main_server.port);
 
 var fs = require('fs');
@@ -27,22 +33,33 @@ var max_scores ={};
 socket.on('scores',function(data)
 {
 	var total_score =0;
-	for(score in data.marks) total_score+=Number(score);
-	if(max_scores[data.id]) max_scores[data.id] = Math.max(max_scores[data.id],total_score);
-	else max_scores[data.id]=total_score;
-	number_of_requests--;
-	if(!number_of_requests)
+	for(var i =0; i < data.marks.length;i++) total_score+=Number(data.marks[i]);
+	//console.log(data , number_of_requests)
+	if(max_scores[data.id_no]) max_scores[data.id_no] = Math.max(max_scores[data.id_no],total_score);
+	else max_scores[data.id_no]=total_score;
+	
+	
+	if(number_of_requests)
 	{
 		fd = fs.openSync('./reval_score.csv', 'w')
-		for( id in max_scores)
+
+		for( var id in max_scores)
 		{
-			fs.write(fd,id + "," + max_scores[id] + '\n');
+			fs.writeSync(fd,id + "," + max_scores[id] + '\n');
 		}
 		fs.closeSync(fd);
 	}
+	exit();
 })
 
-process.exit();
+function exit()     //Call this function each time scores are recieved. Exit the process after that the last data has benn writtern to csv file.
+{
+	number_of_requests--;
+	if(!number_of_requests) process.exit();
+	else return;
+}
+//while(number_of_requests>0);
+//process.exit();
 
 // fd = fs.openSync('./reval_score.csv', 'a')
 // fs.writeSync(fd,'ssdfd,sadfdfdf\n');

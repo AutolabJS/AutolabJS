@@ -1,8 +1,8 @@
 lab=$1
-gitlab_hostname=$4
+#gitlab_hostname=$4
 
-start_time=`date -d "$2" +"%s"`
-end_time=`date -d "$3" +"%s"`
+start_time=$2 #`date -d "$2" +"%s"`
+end_time=$3 #`date -d "$3" +"%s"`
 echo "$start_time      $end_time"
 
 
@@ -18,10 +18,12 @@ do
 	
 	cd ../lab_backups/$lab/$id
 	
-	git checkout master 							 #Point the head to the latest commit 
-	number_commits=`git log --since=$start_time  --until=$end_time --format="%H" | wc -l` 
+	git checkout master 	> /dev/null						 #Point the head to the latest commit 
+	number_commits=`git log --since "02/02/1970 08:08:08" --until "02/02/2017 08:08:08"  --format="%H" | wc -l` 
+	echo $number_commits
 	echo -e "$number_commits" >> ../../../reval/user_commits.txt
-	git log --since=$start_time  --until=$end_time --format="%H" >> ../../../reval/user_commits.txt
+	git log --since "$start_time"  --until "$end_time" --format="%H" 
+	git log --since "$start_time"  --until "$end_time" --format="%H" >> ../../../reval/user_commits.txt
 
 	cd ../../../reval
 done < ../userList
