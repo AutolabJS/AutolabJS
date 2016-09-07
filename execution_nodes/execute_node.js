@@ -2,13 +2,13 @@ var fs = require('fs');
 var express = require('express');
 var app = express();
 var https_config={
-  key : fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
+  key : fs.readFileSync('./ssl/key.pem'),
+  cert: fs.readFileSync('./ssl/cert.pem'),
   rejectUnauthorized:false,
-}
+};
 var https = require('https');
 var server = https.createServer(https_config,app);
-var sys = require('sys')
+var sys = require('sys');
 var http = require('http');
 var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
@@ -41,15 +41,15 @@ app.post('/requestRun', function(req, res){
     array.pop(); //remove last space
     comment.pop();
     var body=scores;
-    body["submission_details"].id_no=submission_id;
-    body["submission_details"].commit=commit;
-    body["submission_details"].marks=array;
-    body["submission_details"].comment=comment;
-    body["submission_details"].Lab_No=req.body.Lab_No;
-    body["submission_details"].time=req.body.time;
-    body["submission_details"].status=req.body.status;
-    body["submission_details"].penalty=req.body.penalty;
-    body["submission_details"].socket=req.body.socket;
+    body.submission_details.id_no=submission_id;
+    body.submission_details.commit=commit;
+    body.submission_details.marks=array;
+    body.submission_details.comment=comment;
+    body.submission_details.Lab_No=req.body.Lab_No;
+    body.submission_details.time=req.body.time;
+    body.submission_details.status=req.body.status;
+    body.submission_details.penalty=req.body.penalty;
+    body.submission_details.socket=req.body.socket;
     body=JSON.stringify(body);
 
     var https_request_options ={
@@ -64,33 +64,33 @@ app.post('/requestRun', function(req, res){
       key : fs.readFileSync('./key.pem'),
       cert: fs.readFileSync('./cert.pem'),
       rejectUnauthorized:false,
-    }
+    };
 
     var request = https.request(https_request_options,function(res)
     {
       res.on('data',function(chunk)
       {
         //Do nothing
-      })
-    })
+      });
+    });
 
     request.on('error',function(err)
   {
     console.log(err);
-  })
+  });
   request.end(body);
 
   });
 });
 
 
-load_balancer_hostname=conf["load_balancer"].hostname;
-load_balancer_port=conf["load_balancer"].port;
+load_balancer_hostname=conf.load_balancer.hostname;
+load_balancer_port=conf.load_balancer.port;
 
-gitlab_hostname=conf["gitlab"].hostname;
-gitlab_port=conf["gitlab"].port;
+gitlab_hostname=conf.gitlab.hostname;
+gitlab_port=conf.gitlab.port;
 
-var body=JSON.stringify(scores["node_details"]);
+var body=JSON.stringify(scores.node_details);
 var https_addnode_options ={
   hostname: load_balancer_hostname,
   port: load_balancer_port,
@@ -103,22 +103,22 @@ var https_addnode_options ={
   key : fs.readFileSync('./key.pem'),
   cert: fs.readFileSync('./cert.pem'),
   rejectUnauthorized:false,
-}
+};
 
 var request = https.request(https_addnode_options,function(res)
 {
   res.on('data',function(chunk)
   {
     //Do nothing
-  })
-})
+  });
+});
 
 request.on('error',function(err)
 {
   console.log(err);
-})
+});
 request.end(body);
 
 
-server.listen(conf["host_port"].port);
-console.log("Listening at "+conf["host_port"].port);
+server.listen(conf.host_port.port);
+console.log("Listening at "+conf.host_port.port);
