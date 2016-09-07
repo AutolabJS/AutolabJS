@@ -16,6 +16,17 @@ var http = require('http');
 var bodyParser = require('body-parser');
 
 var io = require('socket.io')(server);
+var session = require('express-session')({
+  secret:"Autolab",
+  httpOnly:true,
+  secure:true,
+  resave:true,
+  saveUninitialized:true
+});
+
+app.use(session);
+var socketSession = require('express-socket.io-session')
+
 var config_details = require('./config/conf.json');
 var mysql = require('mysql');
 
@@ -78,9 +89,17 @@ app.get('/', function (req,res) {
 });
 
 var path = require('path');
+app.get('/admin', function (req,res) {
+
+  res.sendFile(path.join(__dirname+ '/public/admin.html'));
+
+});
+
+
 app.get('/config',function(req,res)
 {
-    res.sendFile(path.join(__dirname+ '/public/config.html'));
+    if(!req.session.key) res.redirect('/admin')
+    else res.sendFile(path.join(__dirname+ '/public/config.html'));
 });
 
 app.post('/results', function(req, res){
@@ -154,8 +173,13 @@ app.get('/status', function (statusReq,statusRes) {
 
 });
 
+io.use(socketSession(session,{
+  autoSave:true
+}))
+
 
 io.on('connection', function(socket) {
+  require('./admin_config.js')(socket)
 
   lab_conf = require('./config/labs.json');
   var current_time= new Date();

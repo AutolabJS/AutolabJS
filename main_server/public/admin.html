@@ -1,0 +1,159 @@
+<html>
+
+  <head>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <meta charset="utf-8">
+   <title>Config</title>
+    <link href="css/icon.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <script type="text/javascript" src="js/FileSaver.js"></script>
+  
+
+  <body>
+    <nav class="light-blue darken-3" role="navigation" style="position: fixed; z-index: 1000">
+      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">Configuration</a>
+        <ul id="nav-mobile" class="right hide-on-med-and-down">
+        <li><a target="_blank" href="https://autolab.bits-goa.ac.in">GitLab</a></li>
+        <ul class="right hide-on-med-and-down">
+          <ul id="dropdown1" class="dropdown-content">
+            <li><a target="_blank" href="https://github.com/prasadtalasila/JavaAutolab/wiki/Making-a-Submission">Submission</a></li>
+            <li class="divider"></li>
+            <li><a target="_blank" href="https://github.com/prasadtalasila/JavaAutolab/wiki/Post-lab-self-evaluation">Post Lab</a></li>
+          </ul>
+          <li><a class="dropdown-button" href="" data-activates="dropdown1">Guides<i class="material-icons right">arrow_drop_down</i></a></li>
+        </ul>
+      </ul>
+      </div>
+    </nav>
+    <main>
+      <div class = "container">
+
+     
+
+      
+    <div class="row">
+     <br><br><br><br><br>
+    <form class ="input-field col s12 m12 l12" >
+    <input type="text" id="key" class="validate">
+    <label for="key">Key</label>
+    <button type = "submit" class="waves-effect blue btn"  id = "submit">Submit</a>
+    </form>
+     </div>
+	   
+     <div class="container row ">
+      <a class="btn dropdown-button" href="/config">Configure</a>
+      </div>
+      
+	   <ul id="dropdown" class="dropdown-content">
+         
+      </ul>    
+      <div class="container row">
+      <a class="btn dropdown-button" href="#" data-activates="dropdown">Revaluation</a>
+       </div>
+      <br>
+       
+     
+  <!-- Modal Structure -->
+  <div class="container">
+  
+  <div id="modal1" class="modal modal-fixed-footer">
+  	
+
+    <div class="modal-content" id="lab_content">
+    	
+      
+      <div class="collapsible-body">
+      <div class = "row l2">
+      <input type="text" id="start_date">
+      <label for="start_date">Start Date</label>
+      </div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat ">Agree</a>
+    </div>
+    </div>
+   
+
+  </div>
+  
+  </div>
+ <button data-target="modal1" class="btn modal-trigger">Modal</button>
+
+    </main>
+
+    <footer class="page-footer light-blue darken-3">
+      <div class="container">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">About</h5>
+            <p class="grey-text text-lighten-4">This is an autograder service.<br>
+              Please report any bugs to the instruction team. <br>
+              Interested in contributing? Find the source code <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/prasadtalasila/JavaAutolab"><b>here</b></a>.
+            </p>
+          </div>
+          <div class="col l4 offset-l2 s12">
+            <h5 class="white-text">Instructors</h5>
+            <ul id = "instructors">
+
+              
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+        <a class="grey-text text-lighten-4" target="_blank" href="http://rajatagarwal.me/">Developed by <b> Rajat Agarwal</b></a>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+
+  <script type="text/javascript">
+  $(document).ready(function() {
+  $('.modal-trigger').leanModal();
+});
+
+  $(document).ready(function(){
+    $('.collapsible').collapsible({
+      accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
+    });
+  });
+  function dropdownOnClick()
+  {
+  	socket.emit('revaluate',{
+  		lab:$(this).find('a').text()
+  	})
+  }
+  	var socket = io.connect();
+
+  	$('#submit').click(function(event)
+  	{
+  		event.preventDefault();
+  		socket.emit('authorize',{key:$('#key').val()});
+  		socket.emit('send_reval_data',{});
+  	}) 
+
+  	socket.on('reval',function(data)
+  	{
+  		console.log(data.Labs[0])
+  		$('#dropdown').html('<p id = "hack"></p>')
+  		for(var i = 0;i<data.Labs.length;i++)
+  		{
+  			$(' <li id = "reval' + i + '"><a href="#">'+data.Labs[i]+'</a></li>').click(dropdownOnClick).insertBefore('#hack')
+  		}
+  	})
+
+
+  </script>
+
+</html>
+
