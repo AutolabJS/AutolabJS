@@ -13,8 +13,8 @@ var http = require('http');
 var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var conf = require('./conf.json');
-var scores = require('./scores.json');
+var conf = require('./config/conf.json');
+var scores = require('./config/scores.json');
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -61,8 +61,8 @@ app.post('/requestRun', function(req, res){
           "Content-Type": "application/json",
           "Content-Length": Buffer.byteLength(body)
       },
-      key : fs.readFileSync('./key.pem'),
-      cert: fs.readFileSync('./cert.pem'),
+      key : fs.readFileSync('./ssl/key.pem'),
+      cert: fs.readFileSync('./ssl/cert.pem'),
       rejectUnauthorized:false,
     };
 
@@ -100,8 +100,8 @@ var https_addnode_options ={
       "Content-Type": "application/json",
       "Content-Length": Buffer.byteLength(body)
   },
-  key : fs.readFileSync('./key.pem'),
-  cert: fs.readFileSync('./cert.pem'),
+  key : fs.readFileSync('./ssl/key.pem'),
+  cert: fs.readFileSync('./ssl/cert.pem'),
   rejectUnauthorized:false,
 };
 
