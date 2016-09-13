@@ -1,0 +1,5 @@
+[mysql]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 sqldata=/opt/sqldata mysql_root_pass=root
+
+[gitlab]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_password=12345678
