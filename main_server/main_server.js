@@ -155,10 +155,12 @@ io.on('connection', function(socket) {
     end=new Date(lab_conf["Labs"][i].end_year, lab_conf["Labs"][i].end_month -1 ,lab_conf["Labs"][i].end_date, lab_conf["Labs"][i].end_hour,lab_conf["Labs"][i].end_minute, 0,0);
     hard=new Date(lab_conf["Labs"][i].hard_year, lab_conf["Labs"][i].hard_month -1 ,lab_conf["Labs"][i].hard_date, lab_conf["Labs"][i].hard_hour,lab_conf["Labs"][i].hard_minute, 0,0);
     var status = 0;
+    var delta = 0;
     if(current_time-start > 0)
     {
       if(current_time - end < 0)
       {
+        delta = Math.abs(end - current_time) / 1000);
         status=1;
       }
       else {
@@ -169,7 +171,7 @@ io.on('connection', function(socket) {
       }
     }
 
-    lab_x = {"Lab_No" :lab_conf["Labs"][i], "status": status};
+    lab_x = {"Lab_No" :lab_conf["Labs"][i], "status": status, "delta": delta};
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
