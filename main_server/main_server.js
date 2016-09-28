@@ -16,7 +16,7 @@ var http = require('http')
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var io = require('socket.io')(server);
-var config_details = require('./conf.json');
+var config_details = require('/etc/main_server/conf.json');
 var mysql = require('mysql');
 
 app.use(bodyParser.urlencoded({extended: true}));
