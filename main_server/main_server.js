@@ -27,7 +27,7 @@ var session = require('express-session')({
 app.use(session);
 var socketSession = require('express-socket.io-session')
 
-var config_details = require('./config/conf.json');
+var config_details = require('/etc/main_server/conf.json');
 var mysql = require('mysql');
 
 app.use(bodyParser.urlencoded({extended: true}));
