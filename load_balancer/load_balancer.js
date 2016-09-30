@@ -13,7 +13,7 @@ var bodyParser = require('body-parser');
 var fs = require('fs');
 var sys = require('sys');
 var exec = require('child_process').exec;
-var nodes_data = require('./config/nodes_data_conf.json');
+var nodes_data = require('/etc/load_balancer/nodes_data_conf.json');
 var mysql = require('mysql');
 
 

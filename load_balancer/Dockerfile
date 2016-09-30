@@ -2,9 +2,9 @@ FROM ubuntu:14.04.4
 
 COPY . /load_balancer
 
-RUN sudo apt-get update
-RUN sudo apt-get install --force-yes -y nodejs
-RUN sudo apt-get install --force-yes -y npm
+RUN sudo apt-get update && sudo apt-get install --force-yes -y nodejs npm git
 RUN cd load_balancer; npm install
-RUN sudo apt-get update
-RUN sudo apt-get install --force-yes -y git
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]

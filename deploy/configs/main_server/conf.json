@@ -1,0 +1,17 @@
+{
+"load_balancer": {
+  "hostname": "",
+  "port": ""
+},
+ "database" :
+ {
+   "host"     : "localhost",
+   "user"    : "root",
+   "password" : "root",
+   "database" : "Autolab"
+ },
+ "host_port" :
+ {
+   "port" : ""
+ }
+}
