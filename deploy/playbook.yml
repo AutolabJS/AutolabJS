@@ -67,8 +67,8 @@
       shell: "{{ item }}"
       with_items:
         - "docker exec gitlab mkdir -p /etc/gitlab/ssl"
-        - "docker cp ../localhost.key gitlab:/etc/gitlab/ssl/"
-        - "docker cp ../localhost.crt gitlab:/etc/gitlab/ssl/"
+        - "docker cp ../gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/"
+        - "docker cp ../gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/"
 
     - name: Transfer wait-for-it to host
       copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
