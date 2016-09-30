@@ -2,6 +2,13 @@
 - hosts: mysql
   become: yes
   tasks:
+    - name: Install pip
+      apt: name=python-pip update_cache=true
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install docker-py
+      pip: name=docker-py version=1.9.0
+
     - name: Build MySQL Container
       docker_container:
         name: autolab-db
@@ -34,7 +41,7 @@
         regexp: "^Port"
         line: "Port 2222"
       notify:
-        - restart sshd
+        - restart ssh
 
     - name: Build GitLab Container
       docker_container:
@@ -70,7 +77,7 @@
       shell: docker cp /tmp/wait-for-it.sh gitlab:/wait-for-it.sh
 
     - name: Waiting for Unicorn on GitLab server to be up
-      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 240 localhost:8080"
+      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
 
     - pause: seconds=10
 
@@ -96,8 +103,8 @@
         validate_certs: no
 
   handlers:
-    - name: restart sshd
-      service: name=sshd state=restarted
+    - name: restart ssh
+      service: name=ssh state=restarted
 
 - hosts: loadbalancer
   become: yes
@@ -177,9 +184,12 @@
 - hosts: executionnodes
   become: yes
   tasks:
-    # Assuming apt based system
-    - name: Install docker
-      apt: name=docker.io update_cache=yes
+    - name: Install pip
+      apt: name=python-pip update_cache=true
+      when: ansible_distribution == 'Ubuntu'
+
+    - name: Install docker-py
+      pip: name=docker-py version=1.9.0
 
     - name: Start docker
       service: name=docker state=started
