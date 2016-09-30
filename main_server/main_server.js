@@ -47,7 +47,7 @@ connection.connect();
 
 function initLabs()
 {
-  lab_config = require('./config/labs.json');
+  lab_config = require('/etc/main_server/labs.json');
   for(var j=0;j<lab_config.Labs.length;j++)
   {
     initScoreboard(lab_config.Labs[j].Lab_No);
@@ -115,7 +115,7 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
   console.log('Scoreboard requested');
   lab = req.params.Lab_no;
   flag=0;
-  lab_conf = require('./config/labs.json');
+  lab_conf = require('/etc/main_server/labs.json');
   for(var i=0;i<lab_conf.Labs.length;i++) {
     if(lab_conf.Labs[i].Lab_No == lab)
     {
@@ -179,9 +179,9 @@ io.use(socketSession(session,{
 
 
 io.on('connection', function(socket) {
-  require('./admin_config.js')(socket)
+  require('/etc/main_server/admin_config.js')(socket)
 
-  lab_conf = require('./config/labs.json');
+  lab_conf = require('/etc/main_server/labs.json');
   var current_time= new Date();
   labs_status=[];
   for(var i=0;i<lab_conf.Labs.length;i++) {
@@ -207,7 +207,7 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('./config/courses.json'));
+  socket.emit('course details',require('/etc/main_server/courses.json'));
 
   //emit lab status
   socket.emit('labs_status', labs_status);
@@ -228,7 +228,7 @@ io.on('connection', function(socket) {
         submission_pending.push(id_number);
          console.log("New request"); 
         current_time = new Date();
-        lab_config = require('./config/labs.json');
+        lab_config = require('/etc/main_server/labs.json');
         flag=0;
         penalty=0;
         for(var i=0;i<lab_config.Labs.length;i++) {
@@ -308,12 +308,12 @@ io.on('connection', function(socket) {
    
   });
 
-  console.log(JSON.stringify(require('./config/courses.json')));
+  console.log(JSON.stringify(require('/etc/main_server/courses.json')));
 
   socket.emit('lab_data',
   {
-    course:require('./config/courses.json'),
-    lab:require('./config/labs.json')
+    course:require('/etc/main_server/courses.json'),
+    lab:require('/etc/main_server/labs.json')
   });
   
 
@@ -325,8 +325,8 @@ io.on('connection', function(socket) {
     var lab = {
       Labs: data.labs
     };
-    fs.writeFile('./config/lab2.json',JSON.stringify(lab,null,4));
-    fs.writeFile('./config/courses2.json',JSON.stringify(data.course,null,4));
+    fs.writeFile('/etc/main_server/lab2.json',JSON.stringify(lab,null,4));
+    fs.writeFile('/etc/main_server/courses2.json',JSON.stringify(data.course,null,4));
 
   });
 });
