@@ -1,4 +1,19 @@
 ---
+- hosts: mainserver
+  become: yes
+  tasks:
+    - name: Add execution node to known hosts
+      shell: "ssh-keyscan -H {{ item }} >> ~/.ssh/known_hosts"
+      with_items: "{{ groups['executionnodes'] }}"
+
+- hosts: all
+  gather_facts: false
+  become: yes
+  tasks:
+    - raw: which python || apt-get update
+    - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
+
+# Note: We assume main server has ssh open on port 2222
 - hosts: mysql
   become: yes
   tasks:
@@ -35,14 +50,6 @@
 - hosts: gitlab
   become: yes
   tasks:
-    - name: Change SSH Port
-      lineinfile:
-        dest: "/etc/ssh/sshd_config"
-        regexp: "^Port"
-        line: "Port 2222"
-      notify:
-        - restart ssh
-
     - name: Build GitLab Container
       docker_container:
         name: gitlab
@@ -51,7 +58,7 @@
         hostname: gitlab.example.com
         env:
           GITLAB_ROOT_PASSWORD: "{{ gitlab_password }}"
-          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ inventory_hostname }}'"
+          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ inventory_hostname }}'; nginx['redirect_http_to_https'] = true;"
         published_ports:
           - "80:80"
           - "22:22"
@@ -62,16 +69,16 @@
           - "/srv/gitlab/logs:/var/log/gitlab"
           - "/srv/gitlab/data:/var/opt/gitlab"
 
-    # TODO: Add support for generating keys on the fly
+    ## TODO: Add support for generating keys on the fly
     - name: Copy the certificate
       shell: "{{ item }}"
       with_items:
         - "docker exec gitlab mkdir -p /etc/gitlab/ssl"
-        - "docker cp ../gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/"
-        - "docker cp ../gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/"
+        - "docker cp ../gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
+        - "docker cp ../gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
 
-    - name: Transfer wait-for-it to host
-      copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
+    #- name: Transfer wait-for-it to host
+      #copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
     - name: Copy wait-for-it to container
       shell: docker cp /tmp/wait-for-it.sh gitlab:/wait-for-it.sh
@@ -79,7 +86,7 @@
     - name: Waiting for Unicorn on GitLab server to be up
       shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
 
-    - pause: seconds=10
+    - pause: seconds=20
 
     - name: Get Private Token
       uri:
@@ -102,10 +109,6 @@
         body: "name=Test&private_token={{ session.private_token }}"
         validate_certs: no
 
-  handlers:
-    - name: restart ssh
-      service: name=ssh state=restarted
-
 - hosts: loadbalancer
   become: yes
   tasks:
@@ -116,6 +119,7 @@
     - name: Register public key
       shell: cat ./keys/load_balancer/id_rsa.pub
       register: ssh_key
+
     - name: Get Private Token
       uri:
         url: https://{{ gitlab_hostname }}/api/v3/session
@@ -184,6 +188,15 @@
 - hosts: executionnodes
   become: yes
   tasks:
+    - name: Get Docker installation script
+      get_url:
+        url: https://get.docker.com
+        dest: "{{ ansible_env.HOME}}/docker.sh"
+        mode: 0775
+
+    - name: Install Docker
+      shell: "{{ ansible_env.HOME}}/docker.sh"
+
     - name: Install pip
       apt: name=python-pip update_cache=true
       when: ansible_distribution == 'Ubuntu'
@@ -195,13 +208,13 @@
       service: name=docker state=started
 
     - name: mkdir for ssh keys
-      shell: "mkdir -p ~/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}"
+      shell: "mkdir -p {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}"
 
     - name: Generate SSH Key for GitLab
-      shell: "ssh-keygen -t rsa -C 'admin@javaautolab.com' -f ~/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa -N ''"
+      shell: "ssh-keygen -t rsa -C 'admin@javaautolab.com' -f {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa -N ''"
 
     - name: Register public key
-      shell: "cat ~/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa.pub"
+      shell: "cat {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa.pub"
       register: ssh_key
     - name: Get Private Token
       uri:
@@ -218,7 +231,7 @@
 
     - name: Add key to gitlab
       uri:
-        url: https://{{ inventory_hostname }}/api/v3/user/keys
+        url: https://{{ gitlab_hostname }}/api/v3/user/keys
         status_code: 201
         method: POST
         body_format: json
@@ -230,18 +243,21 @@
         return_content: yes
 
     - name: Copy executionnode
-      copy: src=../execution_node dest=~/.autolab
+      copy: "src=../execution_nodes dest={{ ansible_env.HOME}}/.autolab"
+
+    - name: Change permission of docker-entrypoint
+      file: "path={{ ansible_env.HOME}}/.autolab/execution_nodes/docker-entrypoint.sh mode=0755"
 
     - name: make config dir
-      shell: mkdir -p ~/.autolab/configs
+      shell: "mkdir -p {{ ansible_env.HOME}}/.autolab/configs"
 
     - name: Copy configs
-      copy: src=configs/execution_node dest=~/.autolab/configs
+      copy: "src=./configs/execution_nodes dest={{ ansible_env.HOME}}/.autolab/configs"
 
     - name: Build executionnode
       docker_image:
         name: execution_node
-        path: ~/.autolab/execution_nodes
+        path: "{{ ansible_env.HOME}}/.autolab/execution_nodes"
 
     - name: Start execution_node container
       docker_container:
@@ -252,7 +268,7 @@
         restart_policy: always
         volumes:
           - "/etc/localtime:/etc/localtime:ro"
-          - "~/.autolab/configs/execution_node:/etc/execution_node"
-          - "~/.autolab/keys/execution_node-{{ inventory_hostname }}-{{ port }}:/root/.ssh/"
+          - "{{ ansible_env.HOME}}/.autolab/configs/execution_nodes:/etc/execution_node"
+          - "{{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}:/root/.ssh/"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
