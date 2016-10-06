@@ -38,7 +38,7 @@ $(document).ready(function() {
   		event.preventDefault();
   		$('<div class="row">'+
 	        '<div class="input-field col s12">'+
-	          '<input id="instructor '+ (++number_of_instructors) +'" type="text" class="validate">'+
+	          '<input id="instructor'+ (++number_of_instructors) +'" type="text" class="validate">'+
 	          '<label for="instructors">Instructor '+(number_of_instructors) + '</label>'+
 	        '</div>'+
 	      '</div>').insertBefore('#add_instructor');
@@ -185,8 +185,8 @@ $(document).ready(function() {
   		{
   			$('<div class="row">'+
 	        '<div class="input-field col s12">'+
-	          '<input id="instructors" type="text" class="validate" value="'+course["other instructors"][i]+'">'+
-	          '<label for="instructors">Instructor '+(++number_of_instructors) + '</label>'+
+	          '<input id="instructor'+(++number_of_instructors)+'" type="text" class="validate" value="'+course["other instructors"][i]+'">'+
+	          '<label for="instructors">Instructor '+(number_of_instructors) + '</label>'+
 	        '</div>'+
 	      '</div>').insertBefore('#add_instructor');
   		}
@@ -208,7 +208,7 @@ $(document).ready(function() {
 
   		for(var  i=1;i<=number_of_instructors;i++) 
   		{
-  			course['other instructors'].push( $('#instructor '+i).val() );
+  			course['other instructors'].push( $('#instructor'+i).val() );
   		}
 
   		var labs=[]
@@ -256,7 +256,7 @@ $(document).ready(function() {
   		var courses = data.course;
   		var lab = data.lab.Labs;
   		addCourseDetails(courses);
-
+      console.log(courses)
       var existing_labs =[];
       
   		for(var i=0;i<lab.length;i++)
