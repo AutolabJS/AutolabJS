@@ -1,26 +1,14 @@
 $(document).ready(function() {
     $('.modal-trigger').leanModal();
     $('#logout-navbar').hide();
-
+    $('#takeToConfig').hide();
+    $('#reval_button').hide();
+    $('#reval_list').hide();
       $('.collapsible').collapsible({
         accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
       });
 
-      $('#dropdown2').dropdown({
-        belowOrigin:true,
-        constrain_width: false, 
-        hover: false,
-        gutter:0,
-        alignment:'left', 
-      })
-
-
-      $('#dropdown2').click(function(event)
-      {
-        event.preventDefault();
-
-        return false;
-      })
+     
 
 
 
@@ -75,7 +63,7 @@ $(document).ready(function() {
                 continue; //Dont create a new checkbox if there is already one with the same lab name
     			
 
-          $('<div class="collection-item" style="float:left;width:33%">'+
+          $('<div class="l3 m3 s3" style="float:left;width:33%">'+
              '<input type="checkbox" id="'+ data.Labs[i] +'" class = "filled-in revaluation" value="'+ data.Labs[i] +'"> '+
               '<label for ="'+ data.Labs[i] +'">'+ data.Labs[i] +'</label></div>').insertBefore('#dummy-modal')
     		}
@@ -84,8 +72,11 @@ $(document).ready(function() {
       socket.on('login_success',function(data)
       {
         console.log("Success")
-          $('#login-navbar').hide();
+          $('#login_card').hide();
           $('#logout-navbar').show();
+          $('#takeToConfig').show();
+          $('#reval_button').show();
+         // socket.emit('send_reval_data',{});
       })
 
 
@@ -95,6 +86,14 @@ $(document).ready(function() {
         event.preventDefault();
         socket.emit('logout');
         location.reload();
+      })
+
+
+      $('#reval_button').click(function(event)
+      {
+        event.preventDefault();
+        console.log('toggle')
+        $('#reval_list').toggle();
       })
 
 

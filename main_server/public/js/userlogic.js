@@ -17,7 +17,7 @@ $(document).ready(function() {
   $("#marks").hide();
   $("#scorecard").hide();
   $("#invalidLab").hide();
-  $("submission_pending").hide();
+  $("#submission_pending").hide();
   var socket = io.connect();
 
   socket.on('course details',function(data)
@@ -37,7 +37,7 @@ $(document).ready(function() {
     $("#marks").hide();
     $("#scorecard").hide();
     $("#invalidLab").hide();
-    $("submission_pending").hide();
+    $("#submission_pending").hide();
     $("#inactiveLabContainer .row").empty();
     $("#activeLabContainer .row").empty();
     for(var i=0;i<data.length;i++)

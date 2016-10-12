@@ -1,10 +1,14 @@
 var io = require('socket.io');
 var APIKeys = require('./config/APIKeys.json').keys
 var exec = require('child_process').exec
-var sys = require('sys')
+
 module.exports = function(socket)
 {
-	if(socket.handshake.session.key) socket.emit('login_success',{})	
+	if(socket.handshake.session.key) 
+		{
+			socket.emit('login_success',{})	
+			socket.emit("reval",{Labs:["lab2","lab3","lab4","lab5","lab6","lab7"]})
+		}
 	
 	socket.on('authorize',function(data)
 	{
@@ -45,6 +49,9 @@ module.exports = function(socket)
 	{
 		delete socket.handshake.session.key
 	})
+
+
+
 	
 	
 }

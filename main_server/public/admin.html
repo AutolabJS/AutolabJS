@@ -15,25 +15,14 @@
   <script type="text/javascript" src="js/FileSaver.js"></script>
   <script type="text/javascript" src = "js/adminLogic.js"></script>
   
-  <style type="text/css">
-    .dropdown-content#dropdown2{
-      min-width: 300px; /* Changed this to accomodate content width */
-      max-height: auto;
-       /* Add this to keep dropdown in line with edge of navbar */
-      overflow: hidden; /* Changed this from overflow-y:auto; to overflow:hidden; */
-      opacity: 0;
-      
-      white-space: nowrap;
-      z-index: 1;
-      will-change: width, height;
-    }
+ 
   </style>
   <body>
     <nav class="light-blue darken-3" role="navigation" style="position: fixed; z-index: 1000">
       <div class="nav-wrapper container"><a id="logo-container" href="/admin" class="brand-logo">Admin Portal</a>
         <ul class="right hide-on-med-and-down">
            
-           <li id = "login-navbar"><a class="dropdown-button" href="#" data-activates="dropdown2" data-beloworigin="true" id = "login_dropdown">Login</a></li>
+          
            <li id = "logout-navbar"><a href="#" id = "logout">Logout</a></li>
            <li><a target="_blank" href="https://autolab.bits-goa.ac.in">GitLab</a></li>
            <li><a class="dropdown-button" href="" data-activates="dropdown1">Guides<i class="material-icons right">arrow_drop_down</i></a></li>
@@ -57,68 +46,63 @@
           
     </ul>
 
-     <ul id="dropdown2" class="dropdown-content collection" >
-              <li class = "collection-item avatar">
-                <div class="container" style="text-align: left">
-                  <form>
-                      <input type="password" name = "APIKey" id = "APIKey" style="text-align:left">
-                      <label for = "APIKey">Key</label>
-                      <br/>
-                      <button type = "submit" class="waves-effect blue btn"  style="z-index: =2" id = "submit">Submit</button>
-                    </form>
-                </div>
-                 
-              </li>
-              
-              
-    </ul>
+     
     <main>
       <div class = "container">
 
      
+      <br><br><br>
 
-      
-	   
-     <div class="container row ">
-     <br><br><br><br><br>
-      <a class="btn dropdown-button" id="takeToConfig">Configure</a>
+      <div class="container center" id = "login_card">
+  	    <div class="row center">
+          <div class="col s12 m7 offset-s3 offset-m2 offset-l2">
+            <div class="card ">
+              <div class="card-content ">
+                <span class="card-title">Login</span>
+                
+                <div class="container" >
+                  <form>
+                      <input type="password" name = "APIKey" id = "APIKey" placeholder="Enter the API Key">
+                      
+                      <br/>
+                      <button type = "submit" class="waves-effect blue btn"  style="z-index: =2" id = "submit">Submit</button>
+                    </form>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+        </div>
       </div>
+
+
+       <div class="container row ">
+       <br><br><br><br><br>
+
+       <div class="col center">
+       <div class="row">
+        <a class="btn dropdown-button" id="takeToConfig" style="float:left">Configure</a>
+      </div>
+        
+        <div class="row">
+         <a id ="reval_button" class = "btn waves-effect blue-green" style="float:left">Revaluate</a>
+        </div>
+        </div>
+
+        <div class="card col" z-index = 10 id = "reval_list" style="float:right;height:100%">
+          <div class="container m3 l3 s3 offset-m2" >
+                  
+          <p id = "dummy-modal"></p>
+          </div>
+        </div>
+
+
+        </div>
       
-	   <ul id="dropdown" class="dropdown-content">
-         
-      </ul>    
-      <div class="container row">
-      <button data-target="modal1" class="btn modal-trigger">Revaluate</button>
        </div>
 
-       
-      <br>
-
-     
-  <!-- Modal Structure -->
-  <div class="container">
-  
-  <div id="modal1" class="modal modal-fixed-footer">
-  	
-
-    <div class="modal-content" id="lab_content">
-    	
-
-        
       
-    <p id = "dummy-modal"></p>
-    </div>
-    
-    <div class="modal-footer">
-      <a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat " id = "revalSubmit">Submit</a>
-    </div>
-    </div>
-   
 
-  </div>
-  
-  </div>
- 
 
     </main>
 

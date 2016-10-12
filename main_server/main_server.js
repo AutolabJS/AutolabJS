@@ -1,5 +1,6 @@
 var fs = require('fs');
 var express = require('express');
+var path = require('path');
 var app = express();
 
 var https_config={
@@ -8,11 +9,11 @@ var https_config={
   rejectUnauthorized:false,
 };
 var httpolyglot = require('httpolyglot');
-var https = require('https');
+
 //redirect to https
 
 var server = httpolyglot.createServer(https_config,app);
-var http = require('http');
+
 var bodyParser = require('body-parser');
 
 var io = require('socket.io')(server);
@@ -33,7 +34,7 @@ var mysql = require('mysql');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
-app.use(express.static(__dirname + '/public'));
+
 
 
 var load_balancer_hostname=config_details.load_balancer.hostname;
@@ -56,11 +57,13 @@ function initLabs()
 
 function initScoreboard(lab_no) {
   table_name='l'+lab_no;
+  console.log(table_name)
   connection.query('SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1', [config_details.database.database,table_name] ,function(err, rows, fields) {
       if(rows.length===0)
       {
         var q='CREATE TABLE l'+lab_no+'(id_no varchar(12), score int, time datetime)';
         connection.query(q, function(err, rows, fields) {
+          console.log(err,rows,fields)
         });
       }
   });
@@ -78,28 +81,39 @@ setInterval(function () {
 server.listen(config_details.host_port.port);
 console.log("Listening at "+config_details.host_port.port);
 
-
-var submission_pending = [];  // Holds the pending submissions of the users
-
-
 app.use(function(req,res,next)
 {
+
   if(req.protocol=='http')
   {
+    
     res.redirect('https://' + req.get('host') + req.originalUrl);
 
   }
 
-  else next()
+  else 
+    {
+      
+      next()
+    }
 })
-app.get('/', function (req,res) {
+
+
+app.use('/',express.static(__dirname + '/public'));
+
+
+var submission_pending = [];  // Holds the pending submissions of the users
+
+
+
+// app.get('/', function (req,res) {
 
   
-  res.send('./public/index.html');
+//   res.sendFile(path.join(__dirname + '/public/index.html'));
 
-});
+// });
 
-var path = require('path');
+
 app.get('/admin', function (req,res) {
 
   res.sendFile(path.join(__dirname+ '/public/admin.html'));
@@ -325,25 +339,55 @@ io.on('connection', function(socket) {
 
   socket.emit('lab_data',
   {
-    course:require('./config/courses.json'),
-    lab:require('./config/labs.json')
+    course:fs.readFileSync('./config/courses.json').toString('utf-8'),
+    lab:fs.readFileSync('./config/lab.json').toString('utf-8')
   });
   
-  console.log({
-    course:require('./config/courses.json')
-  })
+  
 
 
   socket.on('save',function(data)
   {
    
     if(!socket.handshake.session.key) return;
-    console.log(data);
+    
     var lab = {
       Labs: data.labs
     };
+
+    for(var i in data.labs)
+    {
+      if(!(data.labs[i]["Lab_No"]=== "" || data.labs[i]["Lab_No"] === undefined ))
+        {
+          initScoreboard(data.labs[i]["Lab_No"]);
+          console.log(data.labs[i]['Lab_No']);
+        }
+    }
     fs.writeFile('./config/lab.json',JSON.stringify(lab,null,4));
     fs.writeFile('./config/courses.json',JSON.stringify(data.course,null,4));
 
   });
+
+
+  socket.on('delete lab',function(tableName)
+  {
+    if(!socket.handshake.session.key) return;
+    console.log(tableName)
+    connection.query(' DROP TABLE l'+tableName, function(err, rows, fields) {
+      console.log(err,rows,fields)
+      if(rows.length!==0)
+      {
+        var lab_data = JSON.parse(fs.readFileSync('./config/lab.json').toString());
+
+        for(var i=0;i<lab_data.Labs.length;i++) 
+        {
+          console.log(lab_data.Labs[i]['Lab_No']==tableName)
+          if(lab_data["Labs"][i]["Lab_No"] == tableName) lab_data["Labs"].splice(i,1);
+        }
+
+        fs.writeFileSync('./config/lab.json',JSON.stringify(lab_data,null,4));
+      }
+  });
+
+  }) 
 });

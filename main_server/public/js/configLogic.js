@@ -24,13 +24,28 @@ $(document).ready(function() {
   {
   	var lab_id = $(this).attr('id')
   		
-  		
-  		$('div#'+lab_id).html('<i class="material-icons">mode_edit</i>' + $('form#'+lab_id+' input#'+lab_id).val())
-  		
+  		//console.log('div#'+lab_id + ' i.clear_lab')
+  		$('div#'+lab_id).html('<i class="material-icons">mode_edit</i>' + $('form#'+lab_id+' input#'+lab_id).val() +' <i class = "material-icons right clear_lab" >clear</i>')
+  		$('div#'+lab_id + ' i.clear_lab').click(function()
+      {
+        deletedLabs.push($(this).parent().parent().children().children().children().children().children().val())
+        $(this).parent().parent().detach();
+        return true;
+      })
   }
   	
-
-
+   deletedLabs =[];
+  function deleteLabListener(lab_id)
+  {
+      $('#lab'+lab_id + ' i.clear_lab').click(function(event)
+      {
+        event.preventDefault();
+        console.log(lab_id,$(this).parent().parent().children().children().children().children().children().val());
+        //socket.emit('delete lab',$(this).parent().parent().children().children().children().children().children().val());
+        deletedLabs.push($(this).parent().parent().children().children().children().children().children().val());
+        $(this).parent().parent().detach();
+      });
+  }
 
   	number_of_instructors =0;
   	$('#add_instructor').click(function(event)
@@ -52,13 +67,13 @@ $(document).ready(function() {
   		event.preventDefault();
 
   		$('<li class = "row" id = "lab'+(++number_of_labs) +'">'+
-     '<div class="collapsible-header"  id = "lab'+(number_of_labs)+'"><i class="material-icons">mode_edit</i>Lab'+(number_of_labs)+'</div>'+
+     '<div class="collapsible-header"  id = "lab'+(number_of_labs)+'"><i class="material-icons">mode_edit</i>Lab'+(number_of_labs)+'<i class = "material-icons right clear_lab" >clear</i></div>'+
      '<div class="collapsible-body">'+
 	   '<form class="col s12" id="lab'+(number_of_labs) +'">'+
 	      '<div class="row">'+
 	        '<div class="input-field col s12">'+
-	          '<input  type="text" class="validate listen" id="lab'+(number_of_labs)+'"">'+
-	          '<label for="name">Lab name</label>'+
+	          '<input  type="text" class="validate listen" id="lab'+(number_of_labs)+'">'+
+	          '<label for="lab'+(number_of_labs)+'">Lab name</label>'+
 	        '</div>'+
 	        
 	        '<div class="row">'+
@@ -105,6 +120,8 @@ $(document).ready(function() {
 	    '</form>'+
 	    '</div>'+
 	   '</li><br/>').keyup(changeName).insertBefore('#add_lab');
+
+      deleteLabListener(number_of_labs);
   	})
 
   	function getDate(date,month,year)
@@ -119,13 +136,14 @@ $(document).ready(function() {
   	function addLab(lab)
   	{
   		$('<li class = "row" id = "lab'+(++number_of_labs) +'">'+
-     '<div class="collapsible-header " id = "lab'+(number_of_labs)+'"><i class="material-icons">mode_edit</i>'+lab["Lab_No"]+'</div>'+
+     '<div class="collapsible-header " id = "lab'+(number_of_labs)+'"><i class="material-icons">mode_edit</i>'+lab["Lab_No"]+'<i class = "material-icons right clear_lab" >clear</i></div>'+
      '<div class="collapsible-body">'+
 	   '<form class="col s12" id="lab'+(number_of_labs) +'">'+
 	      '<div class="row">'+
 	        '<div class="input-field col s12">'+
-	          '<input id="name" type="text" class="validate listen" id="lab_name" value = "'+lab["Lab_No"]+'">'+
-	          '<label for="name">Lab name</label>'+
+	          '<input  type="text" class="validate listen" id="lab'+(number_of_labs)+'" value = "'+lab["Lab_No"]+'">'+
+	          
+            '<label for="lab'+(number_of_labs)+'">Lab name</label>'+
 	        '</div>'+
 	        
 	        '<div class="row">'+
@@ -172,6 +190,9 @@ $(document).ready(function() {
 	    '</form>'+
 	    '</div>'+
 	   '</li><br/>').keyup(changeName).insertBefore('#add_lab');
+
+      Materialize.updateTextFields();
+      deleteLabListener(number_of_labs);
   	}
 
 
@@ -190,6 +211,10 @@ $(document).ready(function() {
 	        '</div>'+
 	      '</div>').insertBefore('#add_instructor');
   		}
+
+
+      Materialize.updateTextFields()
+
   	}
 
 
@@ -198,6 +223,14 @@ $(document).ready(function() {
   	$('#save').click(function(event)
   	{
   		event.preventDefault();
+      for(var i=0;i<deletedLabs.length;i++)
+      {
+        var del_lab = deletedLabs[i];
+        console.log("Deleting lab :: " + del_lab)
+        socket.emit('delete lab',del_lab);
+      }
+      deletedLabs=[];
+
   		var course={
   			name:$('#name').val(),
   			"course number":$('#number').val(),
@@ -213,34 +246,34 @@ $(document).ready(function() {
 
   		var labs=[]
 
-  		for(var i=1;i<=number_of_labs;i++)
+  		for(var i=1,j=1;i<=number_of_labs;i++)
   		{
 
-
+        if($('form#lab'+ i + ' input#lab' + i).val()==undefined) continue;
   			var new_lab ={
-  				"Lab_No":$('form#lab'+ i + ' input#lab' + i).val(),
-  				start_date:$('form#lab'+ i + ' input#start_date').val().split('/')[0],
-  				start_month:$('form#lab'+ i + ' input#start_date').val().split('/')[1],
-  				start_year:$('form#lab'+ i + ' input#start_date').val().split('/')[2],
-  				start_hour: $('form#lab'+ i + ' input#start_time').val().split(':')[0],
-  				start_minute:$('form#lab'+ i + ' input#start_time').val().split(':')[1],
-  				end_date:$('form#lab'+ i + ' input#end_date').val().split('/')[0],
-  				end_month:$('form#lab'+ i + ' input#end_date').val().split('/')[1],
-  				end_year:$('form#lab'+ i + ' input#end_date').val().split('/')[2],
-  				end_hour:$('form#lab'+ i + ' input#end_time').val().split(':')[0],
-  				end_minute:$('form#lab'+ i + ' input#end_time').val().split(':')[1],
-  				hard_date:$('form#lab'+ i + ' input#hard_date').val().split('/')[0],
-  				hard_month:$('form#lab'+ i + ' input#hard_date').val().split('/')[1],
-  				hard_year:$('form#lab'+ i + ' input#hard_date').val().split('/')[2],
-  				hard_hour:$('form#lab'+ i + ' input#hard_time').val().split(':')[0],
-  				hard_minute:$('form#lab'+ i + ' input#hard_time').val().split(':')[1],
+  				"Lab_No":$('form#lab'+ i + ' input#lab' + i).val() || "",
+  				start_date:$('form#lab'+ i + ' input#start_date').val().split('/')[0] || "",
+  				start_month:$('form#lab'+ i + ' input#start_date').val().split('/')[1]|| "",
+  				start_year:$('form#lab'+ i + ' input#start_date').val().split('/')[2] || "",
+  				start_hour: $('form#lab'+ i + ' input#start_time').val().split(':')[0] || "",
+  				start_minute:$('form#lab'+ i + ' input#start_time').val().split(':')[1] || "",
+  				end_date:$('form#lab'+ i + ' input#end_date').val().split('/')[0] || "",
+  				end_month:$('form#lab'+ i + ' input#end_date').val().split('/')[1] || "",
+  				end_year:$('form#lab'+ i + ' input#end_date').val().split('/')[2] || "",
+  				end_hour:$('form#lab'+ i + ' input#end_time').val().split(':')[0] || "",
+  				end_minute:$('form#lab'+ i + ' input#end_time').val().split(':')[1] || "",
+  				hard_date:$('form#lab'+ i + ' input#hard_date').val().split('/')[0] || "",
+  				hard_month:$('form#lab'+ i + ' input#hard_date').val().split('/')[1] || "",
+  				hard_year:$('form#lab'+ i + ' input#hard_date').val().split('/')[2] || "",
+  				hard_hour:$('form#lab'+ i + ' input#hard_time').val().split(':')[0] || "",
+  				hard_minute:$('form#lab'+ i + ' input#hard_time').val().split(':')[1] || "",
   				penalty:$('form#lab'+ i + ' input#penalty').val(),
   			}
 
   			labs.push(new_lab);
 
   		}
-
+      console.log(labs)
   		socket.emit('save',{
   			course:course,
   			labs:labs,
@@ -252,11 +285,13 @@ $(document).ready(function() {
 
   	socket.on('lab_data',function(data)
   	{
+      data.lab = JSON.parse(data.lab)
+      data.course = JSON.parse(data.course)
   		
   		var courses = data.course;
   		var lab = data.lab.Labs;
   		addCourseDetails(courses);
-      console.log(courses)
+      console.log(lab)
       var existing_labs =[];
       
   		for(var i=0;i<lab.length;i++)
@@ -264,6 +299,8 @@ $(document).ready(function() {
   			console.log(lab[i].start_hour)
   			addLab(lab[i]);
   		}
+
+      
   	})
 
 
