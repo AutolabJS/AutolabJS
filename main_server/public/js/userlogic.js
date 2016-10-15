@@ -54,6 +54,11 @@ $(document).ready(function() {
         $("#activeLabContainer .row").append(lab_block);
       }
     }
+
+    $('.time').each(function(idx) {
+      startTimer(data[idx].delta, $(this));
+    });
+
     $("#labs").show();
 
     $('[id^=subl]').on('click', function(e) {

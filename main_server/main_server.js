@@ -206,7 +206,7 @@ io.use(socketSession(session,{
 
 
 io.on('connection', function(socket) {
-  require('./admin_config.js')(socket)
+  require('./admin.js')(socket)
 
   lab_conf = require('./config/labs.json');
   var current_time= new Date();
@@ -220,6 +220,7 @@ io.on('connection', function(socket) {
     {
       if(current_time - end < 0)
       {
+        delta = Math.abs((end - current_time) / 1000);
         status=1;
       }
       else {
@@ -248,7 +249,6 @@ io.on('connection', function(socket) {
     {                                                   // with the same ID number
       io.to(socket.id).emit('submission_pending',{});
        return false;
-       
     }
     else 
       {
@@ -332,25 +332,25 @@ io.on('connection', function(socket) {
           socket.emit("invalid", "Invalid Lab No");
         }
       }
-   
+
   });
 
- 
+
 
   socket.emit('lab_data',
   {
     course:fs.readFileSync('./config/courses.json').toString('utf-8'),
     lab:fs.readFileSync('./config/lab.json').toString('utf-8')
   });
-  
-  
+
+
 
 
   socket.on('save',function(data)
   {
-   
+
     if(!socket.handshake.session.key) return;
-    
+
     var lab = {
       Labs: data.labs
     };
