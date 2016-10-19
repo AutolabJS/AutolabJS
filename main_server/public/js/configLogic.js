@@ -320,4 +320,11 @@ $(document).ready(function() {
       location.reload();
     })
 
+
+    socket.on('course details',function(data)
+      {
+        $('#logo_container').html(data["course number"] + ' : Admin Portal');
+        console.log(data)
+      })
+
   });

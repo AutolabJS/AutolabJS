@@ -4,6 +4,7 @@ $(document).ready(function() {
     $('#takeToConfig').hide();
     $('#reval_button').hide();
     $('#reval_list').hide();
+    $('#updated_score_div').hide();
       $('.collapsible').collapsible({
         accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
       });
@@ -30,6 +31,8 @@ $(document).ready(function() {
 
           console.log($(this).val())
         })
+
+        $('#reval_list').hide();
       })
     
     	var socket = io.connect();
@@ -63,7 +66,7 @@ $(document).ready(function() {
                 continue; //Dont create a new checkbox if there is already one with the same lab name
     			
 
-          $('<div class="l3 m3 s3" style="float:left;width:33%">'+
+          $('<div class="l4 m4 s4" style="float:left;width:33%">'+
              '<input type="checkbox" id="'+ data.Labs[i] +'" class = "filled-in revaluation" value="'+ data.Labs[i] +'"> '+
               '<label for ="'+ data.Labs[i] +'">'+ data.Labs[i] +'</label></div>').insertBefore('#dummy-modal')
     		}
@@ -96,5 +99,21 @@ $(document).ready(function() {
         $('#reval_list').toggle();
       })
 
+      socket.on('course details',function(data)
+      {
+        $('#logo_container').html(data["course number"] + ' : Admin Portal');
+        console.log(data)
+      })
 
+
+      socket.on('update_score',function(lab)
+      {
+        $('#updated_score_div').show();
+        $('<a href="/revaluation/download/'+lab+'"  class="collection-item">'+lab+'</a>').insertBefore('#dummy_score')
+      })
+
+      socket.on('update_core_timeout',function(lab)
+      {
+        alert("Sorry the revaluation request for " + lab + " timed out! Try again later");
+      })
   });

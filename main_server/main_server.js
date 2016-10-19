@@ -2,7 +2,7 @@ var fs = require('fs');
 var express = require('express');
 var path = require('path');
 var app = express();
-
+var https = require('https');
 var https_config={
   key : fs.readFileSync('./ssl/key.pem'),
   cert: fs.readFileSync('./ssl/cert.pem'),
@@ -129,6 +129,19 @@ app.get('/config',function(req,res)
     else res.sendFile(path.join(__dirname+ '/public/config.html'));
 });
 
+
+app.get('/revaluation/download/:lab',function(req,res)
+{
+  if(!req.session.key) res.redirect('/admin')
+  var lab = req.params.lab;
+  // var file = fs.createReadStream('./reval/'+lab+'_reval_score.csv');
+  // file.pipe(res);
+
+  res.download('./reval/'+lab+'_reval_score.csv');
+
+  
+});
+
 app.post('/results', function(req, res){
   console.log('Results post request received');
   console.log(req.body);
@@ -203,6 +216,7 @@ app.get('/status', function (statusReq,statusRes) {
 io.use(socketSession(session,{
   autoSave:true
 }))
+
 
 
 io.on('connection', function(socket) {
@@ -340,7 +354,7 @@ io.on('connection', function(socket) {
   socket.emit('lab_data',
   {
     course:fs.readFileSync('./config/courses.json').toString('utf-8'),
-    lab:fs.readFileSync('./config/lab.json').toString('utf-8')
+    lab:fs.readFileSync('./config/labs.json').toString('utf-8')
   });
 
 
@@ -363,7 +377,7 @@ io.on('connection', function(socket) {
           console.log(data.labs[i]['Lab_No']);
         }
     }
-    fs.writeFile('./config/lab.json',JSON.stringify(lab,null,4));
+    fs.writeFile('./config/labs.json',JSON.stringify(lab,null,4));
     fs.writeFile('./config/courses.json',JSON.stringify(data.course,null,4));
 
   });
@@ -377,7 +391,7 @@ io.on('connection', function(socket) {
       console.log(err,rows,fields)
       if(rows.length!==0)
       {
-        var lab_data = JSON.parse(fs.readFileSync('./config/lab.json').toString());
+        var lab_data = JSON.parse(fs.readFileSync('./config/labs.json').toString());
 
         for(var i=0;i<lab_data.Labs.length;i++) 
         {
@@ -385,7 +399,7 @@ io.on('connection', function(socket) {
           if(lab_data["Labs"][i]["Lab_No"] == tableName) lab_data["Labs"].splice(i,1);
         }
 
-        fs.writeFileSync('./config/lab.json',JSON.stringify(lab_data,null,4));
+        fs.writeFileSync('./config/labs.json',JSON.stringify(lab_data,null,4));
       }
   });
 

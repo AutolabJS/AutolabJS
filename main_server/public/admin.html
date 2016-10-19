@@ -19,7 +19,7 @@
   </style>
   <body>
     <nav class="light-blue darken-3" role="navigation" style="position: fixed; z-index: 1000">
-      <div class="nav-wrapper container"><a id="logo-container" href="/admin" class="brand-logo">Admin Portal</a>
+      <div class="nav-wrapper container"><a id="logo_container" href="/admin" class="brand-logo">Admin Portal</a>
         <ul class="right hide-on-med-and-down">
            
           
@@ -77,9 +77,9 @@
 
 
        <div class="container row ">
-       <br><br><br><br><br>
+       
 
-       <div class="col center">
+       <div class="s3 m3 l3 col center">
        <div class="row">
         <a class="btn dropdown-button" id="takeToConfig" style="float:left">Configure</a>
       </div>
@@ -88,15 +88,30 @@
          <a id ="reval_button" class = "btn waves-effect blue-green" style="float:left">Revaluate</a>
         </div>
         </div>
+        <div class = "col" style="float:left;height:40%;top:35%;left:20%;padding-top:7.5%;">
+          <div class=" card s12 m12 l12" id = "reval_list" style="float:right;padding-bottom: 3%;" >
+            <div class=" card-content revaluation"  >
+              
+                <p id = "dummy-modal"></p>
+             
 
-        <div class="card col" z-index = 10 id = "reval_list" style="float:right;height:100%">
-          <div class="container m3 l3 s3 offset-m2" >
-                  
-          <p id = "dummy-modal"></p>
+            </div>
+
+            <div class="class-action center">
+            <br/>
+            <br/>
+            <br/>
+            
+                <a id ="revalSubmit" class = "btn waves-effect blue-green" >Submit</a>
+              </div>
           </div>
         </div>
 
+        </div>
 
+        <div class = "row container collection" id="updated_score_div">
+        
+          <p id ="dummy_score"></p>
         </div>
       
        </div>

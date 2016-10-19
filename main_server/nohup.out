@@ -1,0 +1,175 @@
+llab1
+llab2
+lassignment3
+Listening at 9000
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+[ 'q' ]
+0
+{ key: 'q' }
+Session {
+  cookie: 
+   { path: '/',
+     _expires: null,
+     originalMaxAge: null,
+     httpOnly: true },
+  key: 'q' }
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+Socket submission event triggered
+New request
+Missing error handler on `socket`.
+ReferenceError: https is not defined
+    at Socket.<anonymous> (/home/tejas/Desktop/JavaAutolab/main_server/main_server.js:314:25)
+    at emitOne (events.js:77:13)
+    at Socket.emit (events.js:169:7)
+    at Socket.onevent (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/socket.io/lib/socket.js:330:8)
+    at Socket.socket.onevent (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/express-socket.io-session/index.js:54:18)
+    at Socket.onpacket (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/socket.io/lib/socket.js:290:12)
+    at Client.ondecoded (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/socket.io/lib/client.js:193:14)
+    at Decoder.Emitter.emit (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/component-emitter/index.js:134:20)
+    at Decoder.add (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/socket.io-parser/index.js:247:12)
+    at Client.ondata (/home/tejas/Desktop/JavaAutolab/main_server/node_modules/socket.io/lib/client.js:175:18)
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query
+keep alive query

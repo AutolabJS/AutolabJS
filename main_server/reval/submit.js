@@ -25,6 +25,7 @@ while(students--)
 		var commit = user_commits[i++];
 		socket.emit('submission',[id,lab,commit,'autolab']);
 		number_of_requests++;
+		console.log('Request sent')
 		
 	}
 }
@@ -47,14 +48,15 @@ socket.on('scores',function(data)
 	{
 		for(var id in max_scores)
 		{
-			fs.appendFile('reval_score.csv',id + ',' + max_scores[id] + '\n',function()
+			fs.appendFile(lab + '_reval_score.csv',id + ',' + max_scores[id] + '\n',function()
 			{
 		 		// Do nothing
+		 		process.exit();
 		 	})
 
 		}
 		
-		
+		console.log(max_scores);
 		
 		// fs.writeSync(fd,data.id_no + "," + total_score + '\n');
 		
