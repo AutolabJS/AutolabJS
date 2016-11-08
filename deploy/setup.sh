@@ -6,6 +6,8 @@ wget -qO- https://get.docker.com/ | sh
 sudo apt update
 sudo apt install -y python-pip libssl-dev sshpass
 sudo pip install ansible
+sudo dockerd --storage-driver=overlay &
+sudo service docker restart
 cat << EOF
 Done installing base packages
 You may now edit the configuration files in configs directory and execute
