@@ -36,57 +36,17 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
-console.log(process.env.mode)
+
 
 var load_balancer_hostname=config_details.load_balancer.hostname;
 var load_balancer_port=config_details.load_balancer.port;
 
 var connection = require('./database.js');
 
-function initLabs()
-{
-  lab_config = require('./config/labs.json');
-  for(var j=0;j<lab_config.Labs.length;j++)
-  {
-    initScoreboard(lab_config.Labs[j].Lab_No);
-  }
-}
-
-function initScoreboard(lab_no) {
-  table_name='l'+lab_no;
-  console.log(table_name)
-  connection.query('SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1', [config_details.database.database,table_name] ,function(err, rows, fields) {
-
-      // if(err && process.env.environment !== "development")
-      // {
-      //   process.exit();
-      //   return;
-      // }
-       if(err)
-      {
-        console.log("Disabled connection with  MYSQL until testing completion.")
-        return;
-      }
-
-      if(rows!=undefined && rows.length===0)
-      {
-        var q='CREATE TABLE l'+lab_no+'(id_no varchar(12), score int, time datetime)';
-        connection.query(q, function(err, rows, fields) {
-          console.log(err,rows,fields)
-        });
-      }
-  });
-}
-
-initLabs();
-
-
-
 
 //Start the server if not running tests on the main server
 if(process.env.mode !== "TESTING")
 {
-  
     server.listen(config_details.host_port.port);
     console.log("Listening at "+config_details.host_port.port);
 }
@@ -162,76 +122,11 @@ app.post('/results', function(req, res){
   io.to(req.body.socket).emit('scores', req.body);
 });
 
-app.get('/scoreboard/:Lab_no', function(req, res) {
-  console.log('Scoreboard requested');
-  lab = req.params.Lab_no;
-  flag=0;
-  lab_conf = require('./config/labs.json');
-  for(var i=0;i<lab_conf.Labs.length;i++) {
-    if(lab_conf.Labs[i].Lab_No == lab)
-    {
-      flag=1;
-      break;
-    }
-  }
-  if(flag == 1)
-  {
-    connection.query('SELECT * FROM l'+lab+' ORDER BY score DESC, time' ,function(err, rows, fields) {
-      res.send(rows);
-    });
-  }
-  else {
-    res.send(false);
-  }
-});
-
-//status requested
-app.get('/status', function (statusReq,statusRes) {
-
-  console.log('Status requested');
-  //options for load_balancer get request
-  var options = {
-    host: load_balancer_hostname,
-    port: load_balancer_port,
-    path: '/connectionCheck',
-    key : fs.readFileSync('./ssl/key.pem'),
-    cert: fs.readFileSync('./ssl/cert.pem'),
-    rejectUnauthorized:false,
-  };
-
-  //send a get request and capture the response
-  var req = https.request(options, function(res){
-
-    // Buffer the body entirely for processing as a whole.
-    var bodyChunks = [];
-    res.on('data', function(chunk){
-      bodyChunks.push(chunk);
-    }).on('end', function(){
-
-      var body = Buffer.concat(bodyChunks);
-      var result = '';
-      result = result.concat(body);
-      statusRes.send(result);
-    });
-  });
-
-  req.on('error', function(e) {
-    statusRes.send('Load Balancer Error: ' + e.message);
-    console.log('Load Balancer Error: ' + e.message);
-  });
-
-  req.end();
-
-});
-
-io.use(socketSession(session,{
-  autoSave:true
-}))
-
 
 
 io.on('connection', function(socket) {
   require('./admin.js')(socket)
+
   lab_conf = require('./config/labs.json');
   var current_time= new Date();
   labs_status=[];

@@ -9,7 +9,7 @@ $(document).ready(function() {
         accordion : false // A setting that changes the collapsible behavior to expandable instead of the default accordion style
       });
 
-     
+
 
 
 
@@ -34,7 +34,7 @@ $(document).ready(function() {
 
         $('#reval_list').hide();
       })
-    
+
     	var socket = io.connect();
 
     	$('#submit').click(function(event)
@@ -43,13 +43,13 @@ $(document).ready(function() {
         $('#dropdown2').hide();
     		socket.emit('authorize',{key:$('#APIKey').val()});
     		socket.emit('send_reval_data',{});
-    	}) 
+    	})
 
     	socket.on('reval',function(data)
     	{
 
         //Get the already existing labs as returned by the server
-        
+
         var existing_boxes = [];
         var temp = document.getElementsByTagName('input');
         for(var i in temp)
@@ -59,12 +59,12 @@ $(document).ready(function() {
 
         console.log(existing_boxes)
     		console.log(data.Labs)
-    		
+
     		for(var i = 0;i<data.Labs.length;i++)
     		{
-          if(existing_boxes.indexOf(data.Labs[i])!=-1) 
+          if(existing_boxes.indexOf(data.Labs[i])!=-1)
                 continue; //Dont create a new checkbox if there is already one with the same lab name
-    			
+
 
           $('<div class="l4 m4 s4" style="float:left;width:33%">'+
              '<input type="checkbox" id="'+ data.Labs[i] +'" class = "filled-in revaluation" value="'+ data.Labs[i] +'"> '+
@@ -116,4 +116,7 @@ $(document).ready(function() {
       {
         alert("Sorry the revaluation request for " + lab + " timed out! Try again later");
       })
+
+
+      
   });

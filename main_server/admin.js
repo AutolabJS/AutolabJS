@@ -4,7 +4,9 @@ var exec = require('child_process').exec
 var fs = require('fs');
 module.exports = function(socket)
 {
-	if(socket.handshake.session.key) 
+
+
+	if(socket.handshake.session.key)
 		{
 			var labs = require('./config/labs.json').Labs
 			var lab_names =[]
@@ -12,30 +14,33 @@ module.exports = function(socket)
 			{
 				lab_names.push(lab["Lab_No"]);
 			})
-			socket.emit('login_success',{})	
+			socket.emit('login_success',{})
 			socket.emit("reval",{Labs:lab_names})
 		}
-	
+
 	socket.on('authorize',function(data)
 	{
+
 		if(APIKeys.indexOf(data.key) != -1 )
 		{
-			console.log(APIKeys)
-			console.log(APIKeys.indexOf(data.key))
+
+
 			socket.handshake.session.key = data.key;
+			socket.emit("successful login");
 
 		}
-		console.log(data)
-		
-		
+		else socket.emit("login failed");
+
+
+
 	})
 
-	
+
 	socket.on('send_reval_data',function(data)
 	{
-		console.log(socket.handshake.session)	
-		
-		if(socket.handshake.session.key) 
+
+
+		if(socket.handshake.session.key)
 			{
 				socket.emit('login_success',{})
 
@@ -45,32 +50,32 @@ module.exports = function(socket)
 				{
 					lab_names.push(lab["Lab_No"]);
 				})
-				socket.emit('login_success',{})	
+				socket.emit('login_success',{})
 				socket.emit("reval",{Labs:lab_names})
 
 			}
-	}) 
+	})
 
 	socket.on('revaluate',function(data)
 	{
 		if(!socket.handshake.session.key) return;
 		var labs = require('./config/labs.json').Labs;
-		
+
 		var i =0;
 		while( i < labs.length && labs[i]["Lab_No"]!=data.labname)i++;
 		if(i> labs.length) return;
-		
-		
-		
+
+
+
 		var start_date = labs[i].start_date + '/'+labs[i].start_month+'/'+labs[i].start_year + ' ' + labs[i].start_hour + ':' + labs[i].start_minute + ':00';
 		var end_date =  labs[i].end_date + '/'+ labs[i].end_month+'/'+labs[i].end_year + ' ' + labs[i].end_hour + ':' + labs[i].end_minute + ':00';
-		
+
 		exec('cd reval; bash reval.sh '+data.labname+' "'+start_date+'" "'+end_date+'" localhost ' ,function(error,stdout,stderr)
 		{
 			checkLab(data.labname);
-			
+
 		})
-		console.log(data)
+
 	})
 
 
@@ -78,6 +83,7 @@ module.exports = function(socket)
 	socket.on('logout',function(data)
 	{
 		delete socket.handshake.session.key
+		socket.emit('logged out');
 	})
 
 
@@ -89,7 +95,7 @@ module.exports = function(socket)
 		var time =0;
 		var handle = setInterval(function()
 		{
-			
+
 
 			fs.stat('./reval/'+lab+"_reval_score.csv",function(err,stat)
 			{
@@ -97,7 +103,7 @@ module.exports = function(socket)
 				{
 					console.log(err)
 					time++;
-					if(time > 30) 
+					if(time > 30)
 					{
 						clearInterval(handle);
 						socket.emit('update_score_timeout',lab);
@@ -109,8 +115,8 @@ module.exports = function(socket)
 					clearInterval(handle);
 				}
 			})
-			
+
 		},1000);
 	}
-	
+
 }

@@ -14,16 +14,43 @@ var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var conf,scores;
-if(process.env.mode === 'TESTING')
+
+
+conf = { "load_balancer" :{
+  "hostname": "localhost",
+  "port": "8081"
+},
+"gitlab" :{
+  "hostname": "localhost",
+  "port": "80"
+},
+"host_port" :
 {
-  conf = require('./config/conf.json');
-  scores = require('./config/scores.json');
+  "port" : "8082"
 }
-else
-{
-  conf = require('/etc/execution_node/conf.json');
-  scores = require('/etc/execution_node/scores.json');
 }
+
+scores = {
+  "node_details":
+    {
+      "hostname": "localhost",
+      "port": "8082"
+    },
+  "submission_details":
+    {
+      "marks" :[],
+      "comment" :[],
+      "id_no" :"",
+      "Lab_No": "",
+      "commit": "",
+      "time":"",
+      "status": "",
+      "penalty": "" ,
+      "socket": ""
+    }
+}
+
+
 
 
 app.use(express.static(__dirname + '/public'));
@@ -38,29 +65,19 @@ app.get('/connectionCheck', function (req,res) {
 app.post('/requestRun', function(req, res){
   console.log('requestRun post request recieved');
   res.send(true);
-  console.log(req.body);
-  var submission_id = req.body.id_no;
-  var lab = req.body.Lab_No;
-  var commit = req.body.commit;
-  var language = req.body.language;
-  var exec_command = 'bash extract_run.sh ';
-  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit + " " + language);
-  exec(exec_command,function (error, stdout, stderr) {
-    var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
-    var comment = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/comment.txt').toString().split("\n");
-    exec('bash cleanup.sh '.concat(submission_id+" "+lab));
-    array.pop(); //remove last space
-    comment.pop();
-    var body=scores;
-    body.submission_details.id_no=submission_id;
-    body.submission_details.commit=commit;
-    body.submission_details.marks=array;
-    body.submission_details.comment=comment;
-    body.submission_details.Lab_No=req.body.Lab_No;
-    body.submission_details.time=req.body.time;
-    body.submission_details.status=req.body.status;
-    body.submission_details.penalty=req.body.penalty;
+
+    var body={};
+    body.submission_details={};
+    body.submission_details.id_no='';
+    body.submission_details.commit='';
+    body.submission_details.marks='';
+    body.submission_details.comment='';
+    body.submission_details.Lab_No='';
+    body.submission_details.time='';
+    body.submission_details.status='';
+    body.submission_details.penalty='';
     body.submission_details.socket=req.body.socket;
+    console.log(req.body)
     body=JSON.stringify(body);
 
     var https_request_options ={
@@ -91,7 +108,7 @@ app.post('/requestRun', function(req, res){
   });
   request.end(body);
 
-  });
+
 });
 
 
