@@ -1,7 +1,7 @@
 {
 "load_balancer": {
-  "hostname": "",
-  "port": ""
+  "hostname": "localhost",
+  "port": "8081"
 },
  "database" :
  {
@@ -12,6 +12,6 @@
  },
  "host_port" :
  {
-   "port" : ""
+   "port" : "9000"
  }
 }
