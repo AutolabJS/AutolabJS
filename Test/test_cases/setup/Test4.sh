@@ -14,5 +14,5 @@ cp test_cases/tests/Test4.java working_dir/
 
 #copy the driver, compilation and testing codes
 cp Driver.java working_dir/
-cp $testDir/$testSetup/compile.sh working_dir/		#source path defaults to "test_cases/setup"
-cp $testDir/$testSetup/executeTest.sh working_dir/		#source path defaults to "test_cases/setup"
+cp $testDir/$testSetup/compile_$1.sh working_dir/		#source path defaults to "test_cases/setup"
+cp $testDir/$testSetup/executeTest_$1.sh working_dir/		#source path defaults to "test_cases/setup"

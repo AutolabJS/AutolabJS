@@ -12,6 +12,7 @@ var httpolyglot = require('httpolyglot');
 
 //redirect to https
 
+
 var server = httpolyglot.createServer(https_config,app);
 
 var bodyParser = require('body-parser');
@@ -35,16 +36,12 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
-
+console.log(process.env.mode)
 
 var load_balancer_hostname=config_details.load_balancer.hostname;
 var load_balancer_port=config_details.load_balancer.port;
 
-var connection = mysql.createConnection(
-  config_details.database
-);
-
-connection.connect();
+var connection = require('./database.js');
 
 function initLabs()
 {
@@ -59,7 +56,19 @@ function initScoreboard(lab_no) {
   table_name='l'+lab_no;
   console.log(table_name)
   connection.query('SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1', [config_details.database.database,table_name] ,function(err, rows, fields) {
-      if(rows.length===0)
+
+      // if(err && process.env.environment !== "development")
+      // {
+      //   process.exit();
+      //   return;
+      // }
+       if(err)
+      {
+        console.log("Disabled connection with  MYSQL until testing completion.")
+        return;
+      }
+
+      if(rows!=undefined && rows.length===0)
       {
         var q='CREATE TABLE l'+lab_no+'(id_no varchar(12), score int, time datetime)';
         connection.query(q, function(err, rows, fields) {
@@ -72,28 +81,30 @@ function initScoreboard(lab_no) {
 initLabs();
 
 
-setInterval(function () {
-  connection.query('SELECT 1' ,function(err, rows, fields) {
-    console.log("keep alive query");
-  });
-}, 10000);
 
-server.listen(config_details.host_port.port);
-console.log("Listening at "+config_details.host_port.port);
 
+//Start the server if not running tests on the main server
+if(process.env.mode !== "TESTING")
+{
+  
+    server.listen(config_details.host_port.port);
+    console.log("Listening at "+config_details.host_port.port);
+}
+
+// Redirection from HTTP to HTTPS for all the routes.
 app.use(function(req,res,next)
 {
 
   if(req.protocol=='http')
   {
-    
+
     res.redirect('https://' + req.get('host') + req.originalUrl);
 
   }
 
-  else 
+  else
     {
-      
+
       next()
     }
 })
@@ -108,7 +119,7 @@ var submission_pending = [];  // Holds the pending submissions of the users
 
 // app.get('/', function (req,res) {
 
-  
+
 //   res.sendFile(path.join(__dirname + '/public/index.html'));
 
 // });
@@ -139,7 +150,7 @@ app.get('/revaluation/download/:lab',function(req,res)
 
   res.download('./reval/'+lab+'_reval_score.csv');
 
-  
+
 });
 
 app.post('/results', function(req, res){
@@ -221,7 +232,6 @@ io.use(socketSession(session,{
 
 io.on('connection', function(socket) {
   require('./admin.js')(socket)
-
   lab_conf = require('./config/labs.json');
   var current_time= new Date();
   labs_status=[];
@@ -264,10 +274,10 @@ io.on('connection', function(socket) {
       io.to(socket.id).emit('submission_pending',{});
        return false;
     }
-    else 
+    else
       {
         submission_pending.push(id_number);
-         console.log("New request"); 
+         console.log("New request");
         current_time = new Date();
         lab_config = require('./config/labs.json');
         flag=0;
@@ -358,11 +368,8 @@ io.on('connection', function(socket) {
   });
 
 
-
-
   socket.on('save',function(data)
   {
-
     if(!socket.handshake.session.key) return;
 
     var lab = {
@@ -374,34 +381,39 @@ io.on('connection', function(socket) {
       if(!(data.labs[i]["Lab_No"]=== "" || data.labs[i]["Lab_No"] === undefined ))
         {
           initScoreboard(data.labs[i]["Lab_No"]);
-          console.log(data.labs[i]['Lab_No']);
         }
     }
     fs.writeFile('./config/labs.json',JSON.stringify(lab,null,4));
     fs.writeFile('./config/courses.json',JSON.stringify(data.course,null,4));
 
+    socket.emit("saved");
   });
 
 
   socket.on('delete lab',function(tableName)
   {
     if(!socket.handshake.session.key) return;
-    console.log(tableName)
     connection.query(' DROP TABLE l'+tableName, function(err, rows, fields) {
+
       console.log(err,rows,fields)
-      if(rows.length!==0)
+      if(process.env.mode === "TESTING" || (rows!=undefined && rows.length!==0))
       {
         var lab_data = JSON.parse(fs.readFileSync('./config/labs.json').toString());
 
-        for(var i=0;i<lab_data.Labs.length;i++) 
+        for(var i=0;i<lab_data.Labs.length;i++)
         {
-          console.log(lab_data.Labs[i]['Lab_No']==tableName)
           if(lab_data["Labs"][i]["Lab_No"] == tableName) lab_data["Labs"].splice(i,1);
         }
 
         fs.writeFileSync('./config/labs.json',JSON.stringify(lab_data,null,4));
+        socket.emit('deleted');
       }
   });
 
-  }) 
+  })
 });
+
+
+module.exports.app = app;
+module.exports.server = server;
+module.exports.connection = connection;

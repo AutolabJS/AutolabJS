@@ -1,7 +1,7 @@
 import java.io.*;
 class Test
 {
-  public int test()
+  public int test() throws Exception
   {
     Buyer x1=new Buyer(2);
     Seller x=new Seller(10);

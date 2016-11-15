@@ -6,14 +6,18 @@ var https_config={
   cert: fs.readFileSync('./ssl/cert.pem'),
   rejectUnauthorized:false,
 };
-var https = require('https');
-var server = https.createServer(https_config,app);
+var https =require('https');
+var httpolyglot = require('httpolyglot');
+var server = httpolyglot.createServer(https_config,app);
 var http = require('http');
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var sys = require('sys');
 var exec = require('child_process').exec;
-var nodes_data = require('/etc/load_balancer/nodes_data_conf.json');
+var nodes_data;
+if(process.env.mode ==  'TESTING')  nodes_data = require('./config/nodes_data_conf.json');
+else nodes_data = require('/etc/load_balancer/nodes_data_conf.json');
+
 var mysql = require('mysql');
 
 
@@ -80,6 +84,8 @@ app.get('/connectionCheck', function (req,res) {
 
 app.post('/submit', function(req, res){
   console.log('submit post request recieved');
+      console.log(req.body)
+
   res.send(true);
 
   if(node_queue.length!==0) {
@@ -214,6 +220,7 @@ app.post('/sendScores', function(req, res){
     table_name='l'+submission_json.Lab_No;
     q="SELECT * FROM "+table_name+" WHERE id_no = \'"+submission_json.id_no+"\'";
     connection.query(q ,function(err, rows, fields) {
+      if(process.env.mode == 'TESTING') return;
       if(rows.length===0)
       {
         var q1='INSERT INTO '+table_name+' VALUES (\''+submission_json.id_no+'\', '+ total_score+',\''+submission_json.time+'\')';
@@ -291,12 +298,22 @@ server_port=nodes_data.server_info.port;
 gitlab_hostname=nodes_data.gitlab.hostname;
 gitlab_port=nodes_data.gitlab.port;
 
-var connection = mysql.createConnection(
-  nodes_data.database
-);
+var connection;
 
-connection.connect();
 
+
+try {
+  var connection = mysql.createConnection(
+    nodes_data.database
+  );
+  connection.connect();
+
+} catch (e) {
+    console.log(e);
+
+} finally {
+
+}
 var node_queue=[];
 for(var i=0;i<nodes_data.Nodes.length;i++)
 {
@@ -340,8 +357,12 @@ checkConnRequest.end();
 }
 
 var job_queue = [];
-server.listen(nodes_data.host_port.port);
-console.log("Listening at "+nodes_data.host_port.port);
+if(process.env.mode !== "TESTING")
+{
+  server.listen(nodes_data.host_port.port);
+  console.log("Listening at "+nodes_data.host_port.port);
+}
+
 
 
 setInterval(function () {
@@ -349,3 +370,11 @@ setInterval(function () {
     console.log("keep alive query");
   });
 }, 10000);
+
+
+module.exports ={
+  app:app,
+  server:server,
+  node_queue:node_queue,
+  job_queue:job_queue
+}

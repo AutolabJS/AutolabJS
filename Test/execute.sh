@@ -6,7 +6,7 @@
 #
 # Purpose: script invoked by execution nodes without any command-line args
 #	   this script accomplishes one evaluation
-#	   
+#
 # Dependencies: proper setup of test_cases/checks, test_cases/setup and test_cases/tests
 #		see README.txt for more details
 #
@@ -14,6 +14,10 @@
 #		results/scores.txt	marks of each test case on a new line
 #		results/comment.txt	comments of each test case on a new line
 #
+# Arguments: The first(and only) argument provides the language chosen by the student.
+#            This will be appended to the the language specific compilation and 
+#            execution files.
+# 
 #	Variable definitions
 #	--------------------
 #	testLog		temporary test log file that holds compile and run-time logs from each test
@@ -25,7 +29,7 @@
 #					0				Wrong Answer
 #					1				Compilation Error
 #					2				Timeout
-#	
+#
 #	testDir		directory containing all the relevant tests; split up into three sub-directories
 #					checks/		contains files for comparison of outputs
 #					setup/		contains input and file copying shell script for each test
@@ -73,7 +77,8 @@ testStatusEncoder["Compilation Error"]=1
 testStatusEncoder["Timeout"]=2
 testStatusEncoder["Runtime Error"]=3		#not used at the moment
 testStatusEncoder["Partial Answer"]=4		#not used at the moment
-testStatusEncoder["Accepted"]=10			
+testStatusEncoder["Exception"]=5
+testStatusEncoder["Accepted"]=10
 
 #actually "Accepted" is not checked by the userlogic.js; comment defaults to this, but it is better to be explicit
 #during code refactoring, accepted should become zero to be consistent with Linux command exit codes
@@ -102,15 +107,18 @@ then
 else
 	mkdir working_dir
 fi
-
-
+#
+# if [ -d student_solution ]
+# then
+# 	rm -rf student_solution
+# fi
 
 #main test loop
 #read one test information each line of "test file" pointed to by testInfo and run a test
 while read -r line || [[ -n "$line" ]]
 do
 	#echo $line | awk '{print "\t"$1"\n\t-----"}'
-	
+
 	#obtain information from $line which is a line of test_info.txt
 	testName=$(echo "$line" | awk '{print $1}')
 	timeLimit=$(echo "$line" | awk '{print $2}')
@@ -124,7 +132,7 @@ do
 	cd working_dir
 
 	#language specific compile and run of each test case
-	source compile.sh
+	source compile_$1.sh
 
 	#check for compilation errors
 	if [ "$compilationStatus" == "0" ]
@@ -132,7 +140,7 @@ do
 		#if there are no errors, run the test
 		#echo "compilation success"
 		#code for successful test / failed test / timeout
-		source executeTest.sh
+		source executeTest_$1.sh
 
 		#interpret the timeout / successful test
 		#return status stored in timedOut variable has the following meaning
@@ -147,6 +155,10 @@ do
 		    if [ "$testMarks" == "0" ]
 		    then
 		        testStatus="Wrong Answer"
+				elif [ "$testMarks" == "125" ]
+				then
+					testStatus="Exception"
+					testMarks=0
 		    else
 		        testStatus="Accepted"
 		    fi

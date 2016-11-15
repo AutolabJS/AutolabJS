@@ -18,12 +18,15 @@ class Buyer
     this.cash=cash;
   }
 
-  public void buy(Seller x)
+  public void buy(Seller x) throws Exception
   {
+    if(cash>0)
+    {
       if(x.sell()==1)
       {
         cash--;
       }
-
+    }
+	throw new Exception();
   }
 }
