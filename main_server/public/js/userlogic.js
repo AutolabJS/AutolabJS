@@ -102,7 +102,8 @@ $(document).ready(function() {
    $("#evaluating").show();
    id_no=$('#nameField').val();
    commit_hash=$('#commitHash').val();
-   socket.emit('submission', [id_no, current_lab, commit_hash]);
+   language = $("#language").children("option").filter(":selected").text()
+   socket.emit('submission', [id_no, current_lab, commit_hash, language]);
    commit_hash="";
  });
 
