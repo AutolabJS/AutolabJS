@@ -1,11 +1,3 @@
----
-- hosts: mainserver
-  become: yes
-  tasks:
-    - name: Add execution node to known hosts
-      shell: "ssh-keyscan -H {{ item }} >> ~/.ssh/known_hosts"
-      with_items: "{{ groups['executionnodes'] }}"
-
 - hosts: all
   gather_facts: false
   become: yes
@@ -13,10 +5,6 @@
     - raw: which python || apt-get update
     - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
 
-# Note: We assume main server has ssh open on port 2222
-- hosts: mysql
-  become: yes
-  tasks:
     - name: Install pip
       apt: name=python-pip update_cache=true
       when: ansible_distribution == 'Ubuntu'
@@ -24,6 +12,10 @@
     - name: Install docker-py
       pip: name=docker-py version=1.9.0
 
+# Note: We assume main server has ssh open on port 2222
+- hosts: mysql
+  become: yes
+  tasks:
     - name: Build MySQL Container
       docker_container:
         name: autolab-db
@@ -229,13 +221,6 @@
 
     - name: Install Docker
       shell: "{{ ansible_env.HOME}}/docker.sh"
-
-    - name: Install pip
-      apt: name=python-pip update_cache=true
-      when: ansible_distribution == 'Ubuntu'
-
-    - name: Install docker-py
-      pip: name=docker-py version=1.9.0
 
     - name: Start docker
       service: name=docker state=started
