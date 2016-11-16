@@ -128,11 +128,11 @@ do
 	#shell script in next line copies student files, library files and needed files from author_solution/
 	# essentially determines the test strategy (unit/integration/load/library supported etc)
 	# the script file would also have redirection to copy the compile and execute scripts
-	source $testDir/$testSetup/${testName}.sh
+	source $testDir/$1/$testSetup/${testName}.sh
 	cd working_dir
 
 	#language specific compile and run of each test case
-	source compile_$1.sh
+	source compile.sh
 
 	#check for compilation errors
 	if [ "$compilationStatus" == "0" ]
@@ -140,7 +140,7 @@ do
 		#if there are no errors, run the test
 		#echo "compilation success"
 		#code for successful test / failed test / timeout
-		source executeTest_$1.sh
+		source executeTest.sh
 
 		#interpret the timeout / successful test
 		#return status stored in timedOut variable has the following meaning
