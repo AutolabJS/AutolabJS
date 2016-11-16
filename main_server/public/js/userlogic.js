@@ -87,7 +87,7 @@ $(document).ready(function() {
         download_marks=[];
         for(i=0;i<response.length;i++)
         {
-          entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> </tr>";
+          entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> <td>"+response[i].time.toLocaleTimeString() +"</td> </tr>";
           $("#scorecard tbody").append(entry);
           download_marks=download_marks+response[i].id_no+", "+response[i].score+"\n"
         }
