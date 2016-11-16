@@ -122,6 +122,7 @@ $(document).ready(function() {
     $("#evaluating").hide();
     $("#marks").show();
     total_score=0;
+    $("#log").text(atob(data.log));
     for(i=0;i<data.marks.length;i++)
     {
       total_score=total_score+ parseInt(data.marks[i]);

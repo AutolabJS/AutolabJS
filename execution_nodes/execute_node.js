@@ -48,6 +48,7 @@ app.post('/requestRun', function(req, res){
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
     var comment = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/comment.txt').toString().split("\n");
+    var log = btoa(fs.readFileSync('submissions/'+submission_id+'/'+lab+'/log.txt').toString().replace(/(?:\r\n|\r|\n)/g, '<br />'));
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     comment.pop();
@@ -61,6 +62,7 @@ app.post('/requestRun', function(req, res){
     body.submission_details.status=req.body.status;
     body.submission_details.penalty=req.body.penalty;
     body.submission_details.socket=req.body.socket;
+    body.submission_details.log=log;
     body=JSON.stringify(body);
 
     var https_request_options ={
