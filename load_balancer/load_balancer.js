@@ -15,7 +15,7 @@ var fs = require('fs');
 var sys = require('sys');
 var exec = require('child_process').exec;
 var nodes_data;
-if(process.env.mode ==  'TESTING')  nodes_data = require('./config/nodes_data_conf.json');
+if(process.env.mode ==  'TESTING')  nodes_data = require('/etc/load_balancer/nodes_data_conf.json');
 else nodes_data = require('/etc/load_balancer/nodes_data_conf.json');
 
 var mysql = require('mysql');

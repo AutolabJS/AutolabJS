@@ -16,8 +16,8 @@ var fs = require('fs');
 var conf,scores;
 if(process.env.mode === 'TESTING')
 {
-  conf = require('./config/conf.json');
-  scores = require('./config/scores.json');
+  conf = require('/etc/execution_nodes/conf.json');
+  scores = require('/etc/execution_nodes/scores.json');
 }
 else
 {

@@ -29,7 +29,7 @@ var session = require('express-session')({
 app.use(session);
 var socketSession = require('express-socket.io-session')
 
-var config_details = require('./config/conf.json');
+var config_details = require('/conf.json');
 var mysql = require('mysql');
 
 app.use(bodyParser.urlencoded({extended: true}));
@@ -45,7 +45,7 @@ var connection = require('./database.js');
 
 function initLabs()
 {
-  lab_config = require('./config/labs.json');
+  lab_config = require('/etc/main_server/labs.json');
   for(var j=0;j<lab_config.Labs.length;j++)
   {
     initScoreboard(lab_config.Labs[j].Lab_No);
@@ -86,7 +86,7 @@ initLabs();
 //Start the server if not running tests on the main server
 if(process.env.mode !== "TESTING")
 {
-  
+
     server.listen(config_details.host_port.port);
     console.log("Listening at "+config_details.host_port.port);
 }
@@ -166,7 +166,7 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
   console.log('Scoreboard requested');
   lab = req.params.Lab_no;
   flag=0;
-  lab_conf = require('./config/labs.json');
+  lab_conf = require('/etc/main_server/labs.json');
   for(var i=0;i<lab_conf.Labs.length;i++) {
     if(lab_conf.Labs[i].Lab_No == lab)
     {
@@ -232,7 +232,7 @@ io.use(socketSession(session,{
 
 io.on('connection', function(socket) {
   require('./admin.js')(socket)
-  lab_conf = require('./config/labs.json');
+  lab_conf = require('/etc/main_server/labs.json');
   var current_time= new Date();
   labs_status=[];
   for(var i=0;i<lab_conf.Labs.length;i++) {
@@ -259,7 +259,7 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('./config/courses.json'));
+  socket.emit('course details',require('/etc/main_server/courses.json'));
 
   //emit lab status
   socket.emit('labs_status', labs_status);
@@ -279,7 +279,7 @@ io.on('connection', function(socket) {
         submission_pending.push(id_number);
          console.log("New request");
         current_time = new Date();
-        lab_config = require('./config/labs.json');
+        lab_config = require('/etc/main_server/labs.json');
         flag=0;
         penalty=0;
         for(var i=0;i<lab_config.Labs.length;i++) {
@@ -363,8 +363,8 @@ io.on('connection', function(socket) {
 
   socket.emit('lab_data',
   {
-    course:fs.readFileSync('./config/courses.json').toString('utf-8'),
-    lab:fs.readFileSync('./config/labs.json').toString('utf-8')
+    course:fs.readFileSync('/etc/main_server/courses.json').toString('utf-8'),
+    lab:fs.readFileSync('/etc/main_server/labs.json').toString('utf-8')
   });
 
 
@@ -383,8 +383,8 @@ io.on('connection', function(socket) {
           initScoreboard(data.labs[i]["Lab_No"]);
         }
     }
-    fs.writeFile('./config/labs.json',JSON.stringify(lab,null,4));
-    fs.writeFile('./config/courses.json',JSON.stringify(data.course,null,4));
+    fs.writeFile('/etc/main_server/labs.json',JSON.stringify(lab,null,4));
+    fs.writeFile('/etc/main_server/courses.json',JSON.stringify(data.course,null,4));
 
     socket.emit("saved");
   });
@@ -398,14 +398,14 @@ io.on('connection', function(socket) {
       console.log(err,rows,fields)
       if(process.env.mode === "TESTING" || (rows!=undefined && rows.length!==0))
       {
-        var lab_data = JSON.parse(fs.readFileSync('./config/labs.json').toString());
+        var lab_data = JSON.parse(fs.readFileSync('/etc/main_server/labs.json').toString());
 
         for(var i=0;i<lab_data.Labs.length;i++)
         {
           if(lab_data["Labs"][i]["Lab_No"] == tableName) lab_data["Labs"].splice(i,1);
         }
 
-        fs.writeFileSync('./config/labs.json',JSON.stringify(lab_data,null,4));
+        fs.writeFileSync('/etc/main_server/labs.json',JSON.stringify(lab_data,null,4));
         socket.emit('deleted');
       }
   });

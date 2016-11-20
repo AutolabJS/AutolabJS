@@ -26,7 +26,8 @@ $(document).ready(function() {
         $('.revaluation:checked').each(function()
         {
           socket.emit('revaluate',{
-            labname: $(this).val()
+            labname: $(this).val(),
+            
           })
 
           console.log($(this).val())
@@ -66,9 +67,14 @@ $(document).ready(function() {
                 continue; //Dont create a new checkbox if there is already one with the same lab name
 
 
-          $('<div class="l4 m4 s4" style="float:left;width:33%">'+
-             '<input type="checkbox" id="'+ data.Labs[i] +'" class = "filled-in revaluation" value="'+ data.Labs[i] +'"> '+
-              '<label for ="'+ data.Labs[i] +'">'+ data.Labs[i] +'</label></div>').insertBefore('#dummy-modal')
+          $('<div class="l4 m4 s4 " style="float:left;width:33%">'+
+             '<input type="checkbox" id="'+ data.Labs[i] +'" class = "filled-in revaluation" value="'+ data.Labs[i] +'">'+
+              '<label for ="'+ data.Labs[i] +'">'+ data.Labs[i] +'</label> <br/>'+
+              '<input type="text" style="width:50%"  id="'+data.Labs[i]+'_start">'+
+              '<label for ="'+ data.Labs[i] +'_start"> Start time</label><br/>'+
+              '<input type="text" style="width:50%" id="'+data.Labs[i]+'_end">'+
+              '<label for ="'+ data.Labs[i] +'_end"> End time</label><br/>'+
+              '</div>').insertBefore('#dummy-modal');
     		}
     	})
 
@@ -118,5 +124,5 @@ $(document).ready(function() {
       })
 
 
-      
+
   });

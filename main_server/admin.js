@@ -1,5 +1,5 @@
 var io = require('socket.io');
-var APIKeys = require('./config/APIKeys.json').keys
+var APIKeys = require('/etc/main_server/APIKeys.json').keys
 var exec = require('child_process').exec
 var fs = require('fs');
 module.exports = function(socket)
@@ -8,7 +8,7 @@ module.exports = function(socket)
 
 	if(socket.handshake.session.key)
 		{
-			var labs = require('./config/labs.json').Labs
+			var labs = require('/etc/main_server/labs.json').Labs
 			var lab_names =[]
 			labs.map(function(lab)
 			{
@@ -44,7 +44,7 @@ module.exports = function(socket)
 			{
 				socket.emit('login_success',{})
 
-				var labs = require('./config/labs.json').Labs
+				var labs = require('/etc/main_server/labs.json').Labs
 				var lab_names =[]
 				labs.map(function(lab)
 				{
@@ -59,7 +59,7 @@ module.exports = function(socket)
 	socket.on('revaluate',function(data)
 	{
 		if(!socket.handshake.session.key) return;
-		var labs = require('./config/labs.json').Labs;
+		var labs = require('/etc/main_server/labs.json').Labs;
 
 		var i =0;
 		while( i < labs.length && labs[i]["Lab_No"]!=data.labname)i++;

@@ -169,6 +169,39 @@
 - hosts: mainserver
   become: yes
   tasks:
+    - name: Generate SSH Key for GitLab
+      shell: "ssh-keygen -t rsa -C 'admin@javaautolab.com' -f keys/main_server/id_rsa -N ''"
+
+    - name: Register public key
+      shell: cat ./keys/main_server/id_rsa.pub
+      register: ssh_key
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Add key to gitlab
+      uri:
+        url: https://{{ inventory_hostname }}/api/v3/user/keys
+        status_code: 201
+        method: POST
+        body_format: json
+        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
+        body:
+          title: "rootkey"
+          key: "{{ ssh_key.stdout }}"
+        validate_certs: no
+        return_content: yes
+
     - name: Build mainserver
       docker_image:
         name: main_server

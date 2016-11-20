@@ -4,12 +4,12 @@ if __name__ == '__main__':
 
 	check = test.Test();
 
-	print check.run()
-	# try:
-	# 	print check.run();
+	# print check.run()
+	try:
+		print check.run();
 
-	# except Exception as e:
-	# 	print 125
-	# else:
-	# 	pass
+	except Exception as e:
+		print 125
+	else:
+		pass
 
