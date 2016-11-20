@@ -25,12 +25,25 @@ $(document).ready(function() {
         console.log("Clicked")
         $('.revaluation:checked').each(function()
         {
+
+          var id = $(this).attr('id');
+          var s_date = $('#'+id+'_start').text().split(' ');
+          var e_date = $('#'+id+'_end').text().split(' ');
+          if(s_date.lenth!=2 || e_date.length != 2) alert("Enter the date in the following format\n DD/MM/YYYY HH:MM")
           socket.emit('revaluate',{
             labname: $(this).val(),
-            
+            start_date:s_date[0].split('/')[0],
+            start_month:s_date[0].split('/')[1],
+            start_year:s_date[0].split('/')[2],
+            start_hour:s_date[1].split('/')[0],
+            start_minute:s_date[1].split('/')[1],
+            end_date:e_date[0].split('/')[0],
+            end_month:e_date[0].split('/')[1],
+            end_year:e_date[0].split('/')[2],
+            end_hour:e_date[1].split('/')[0],
+            end_minute:e_date[1].split('/')[1],
           })
 
-          console.log($(this).val())
         })
 
         $('#reval_list').hide();
