@@ -1,5 +1,5 @@
 lab=$1
-#gitlab_hostname=$4
+gitlab_hostname=$4
 
 start_time=$2 #`date -d "$2" +"%s"`
 end_time=$3 #`date -d "$3" +"%s"`
@@ -9,7 +9,9 @@ echo "$start_time      $end_time"
 rm -f user_commits.txt
 
 # Get the backups of all the labs
-sudo bash get_submissions $lab $4
+cd ..
+sudo bash get_submissions.sh $lab $4
+cd reval
 echo "$lab" >> user_commits.txt
 number_users=`cat ../userList| wc -l`
 echo -e "$number_users" >> user_commits.txt

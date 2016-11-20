@@ -1,5 +1,6 @@
 var io = require('socket.io');
 var APIKeys = require('/etc/main_server/APIKeys.json').keys
+var config = require('/etc/main_server/conf.json');
 var exec = require('child_process').exec
 var fs = require('fs');
 module.exports = function(socket)
