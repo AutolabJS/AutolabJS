@@ -2,7 +2,7 @@ var mysql = require('mysql');
 
 
 var connection = mysql.createConnection(
-  require('./config/conf.json').database
+  require('/etc/main_server/conf.json').database
 );
 
 connection.connect();
