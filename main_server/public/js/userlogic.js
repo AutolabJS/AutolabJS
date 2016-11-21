@@ -87,7 +87,7 @@ $(document).ready(function() {
         download_marks=[];
         for(i=0;i<response.length;i++)
         {
-          entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> </tr>";
+          entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> <td>"+response[i].time.toLocaleTimeString() +"</td> </tr>";
           $("#scorecard tbody").append(entry);
           download_marks=download_marks+response[i].id_no+", "+response[i].score+"\n"
         }
@@ -102,7 +102,8 @@ $(document).ready(function() {
    $("#evaluating").show();
    id_no=$('#nameField').val();
    commit_hash=$('#commitHash').val();
-   socket.emit('submission', [id_no, current_lab, commit_hash]);
+   language = $("#language").children("option").filter(":selected").text()
+   socket.emit('submission', [id_no, current_lab, commit_hash, language]);
    commit_hash="";
  });
 
@@ -122,6 +123,7 @@ $(document).ready(function() {
     $("#evaluating").hide();
     $("#marks").show();
     total_score=0;
+    $("#log").text(atob(data.log));
     for(i=0;i<data.marks.length;i++)
     {
       total_score=total_score+ parseInt(data.marks[i]);

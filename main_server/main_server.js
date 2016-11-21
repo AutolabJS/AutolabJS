@@ -269,6 +269,7 @@ io.on('connection', function(socket) {
     id_number=data[0];
     lab_no=data[1];
     commit_hash=data[2];
+    language=data[3];
     if(submission_pending.indexOf(id_number)!=-1)      // Check if there is a pending submission
     {                                                   // with the same ID number
       io.to(socket.id).emit('submission_pending',{});
@@ -322,7 +323,7 @@ io.on('connection', function(socket) {
               }
             }
           }
-          body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "commit": commit_hash, "status": status, "penalty": penalty, "socket": socket.id};
+          body_json= {"id_no" :id_number.toUpperCase(), "Lab_No": lab_no, "time":current_time.toISOString().slice(0, 19).replace('T', ' '), "commit": commit_hash, "status": status, "penalty": penalty, "socket": socket.id, "language": language};
 
           var options = {
             host: load_balancer_hostname,

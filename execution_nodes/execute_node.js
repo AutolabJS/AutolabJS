@@ -44,10 +44,12 @@ app.post('/requestRun', function(req, res){
   var commit = req.body.commit;
   var language = req.body.language;
   var exec_command = 'bash extract_run.sh ';
-  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit + " " + language);
+  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit);
+  process.env.LANGUAGE = language;
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
     var comment = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/comment.txt').toString().split("\n");
+    var log = btoa(fs.readFileSync('submissions/'+submission_id+'/'+lab+'/log.txt').toString().replace(/(?:\r\n|\r|\n)/g, '<br />'));
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     comment.pop();
@@ -61,6 +63,7 @@ app.post('/requestRun', function(req, res){
     body.submission_details.status=req.body.status;
     body.submission_details.penalty=req.body.penalty;
     body.submission_details.socket=req.body.socket;
+    body.submission_details.log=log;
     body=JSON.stringify(body);
 
     var https_request_options ={
