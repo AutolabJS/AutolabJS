@@ -45,6 +45,7 @@ app.post('/requestRun', function(req, res){
   var language = req.body.language;
   var exec_command = 'bash extract_run.sh ';
   exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit);
+  process.env.LANGUAGE = language;
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
     var comment = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/comment.txt').toString().split("\n");
