@@ -22,8 +22,8 @@ if(process.env.mode === 'TESTING')
 }
 else
 {
-  conf = require('../deploy/configs/execution_nodes/conf.json');
-  scores = require('../deploy/configs/execution_nodes/scores.json');
+  conf = require('/etc/execution_node/conf.json');
+  scores = require('/etc/execution_node/scores.json');
 }
 
 
