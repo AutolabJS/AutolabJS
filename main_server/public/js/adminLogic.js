@@ -27,8 +27,8 @@ $(document).ready(function() {
         {
 
           var id = $(this).attr('id');
-          var s_date = $('#'+id+'_start').text().split(' ');
-          var e_date = $('#'+id+'_end').text().split(' ');
+          var s_date = $('#'+id+'_start').val().split(' ');
+          var e_date = $('#'+id+'_end').val().split(' ');
           if(s_date.lenth!=2 || e_date.length != 2) alert("Enter the date in the following format\n DD/MM/YYYY HH:MM")
           socket.emit('revaluate',{
             labname: $(this).val(),
@@ -121,7 +121,7 @@ $(document).ready(function() {
       socket.on('course details',function(data)
       {
         $('#logo_container').html(data["course number"] + ' : Admin Portal');
-        console.log(data)
+        console.log(data);
       })
 
 

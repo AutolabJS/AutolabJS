@@ -13,16 +13,17 @@ var http = require('http');
 var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
 var fs = require('fs');
+var path = require('path');
 var conf,scores;
 if(process.env.mode === 'TESTING')
 {
-  conf = require('/etc/execution_nodes/conf.json');
-  scores = require('/etc/execution_nodes/scores.json');
+  conf = require('../deploy/configs/execution_nodes/conf.json');
+  scores = require('../deploy/configs/execution_nodes/scores.json');
 }
 else
 {
-  conf = require('/etc/execution_node/conf.json');
-  scores = require('/etc/execution_node/scores.json');
+  conf = require('../deploy/configs/execution_nodes/conf.json');
+  scores = require('../deploy/configs/execution_nodes/scores.json');
 }
 
 
@@ -44,12 +45,12 @@ app.post('/requestRun', function(req, res){
   var commit = req.body.commit;
   var language = req.body.language;
   var exec_command = 'bash extract_run.sh ';
-  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit);
+  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit + " " + language);
   process.env.LANGUAGE = language;
   exec(exec_command,function (error, stdout, stderr) {
-    var array = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/scores.txt').toString().split("\n");
-    var comment = fs.readFileSync('submissions/'+submission_id+'/'+lab+'/comment.txt').toString().split("\n");
-    var log = btoa(fs.readFileSync('submissions/'+submission_id+'/'+lab+'/log.txt').toString().replace(/(?:\r\n|\r|\n)/g, '<br />'));
+    var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/scores.txt')).toString().split("\n");
+    var comment = fs.readFileSync(path.join(__dirname + 'submissions/'+submission_id+'/'+lab+'/comment.txt')).toString().split("\n");
+    var log = new Buffer(fs.readFileSync(path.join(__dirname + 'submissions/'+submission_id+'/'+lab+'/log.txt')).toString().replace(/(?:\r\n|\r|\n)/g, '<br />')).toString('base64');
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     comment.pop();

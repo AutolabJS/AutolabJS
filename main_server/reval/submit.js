@@ -16,6 +16,7 @@ var students = Number(user_commits[i++]);
 
 number_of_requests=0; 
 
+languages = ['c','cpp','cpp14','java','python2','python3'];
 while(students--)
 {
 	var id = user_commits[i++];
@@ -23,9 +24,13 @@ while(students--)
 	while(number_commits--)
 	{
 		var commit = user_commits[i++];
-		socket.emit('submission',[id,lab,commit,'autolab']);
-		number_of_requests++;
-		console.log('Request sent')
+		for each(var lang in languages)
+		{
+			socket.emit('submission',[id,lab,commit,lang];
+			number_of_requests++;
+			console.log('Request sent')
+		}
+		
 		
 	}
 }
