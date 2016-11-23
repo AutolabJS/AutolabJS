@@ -18,6 +18,7 @@ $(document).ready(function() {
   $("#scorecard").hide();
   $("#invalidLab").hide();
   $("#submission_pending").hide();
+  $("select").material_select();
   var socket = io.connect();
 
   socket.on('course details',function(data)
