@@ -1,10 +1,10 @@
-- hosts: all
+- hosts: mainserver,executionnodes
   become: yes
   tasks:
     - raw: which python || apt-get update
     - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
 
-- hosts: all
+- hosts: mainserver,executionnodes
   become: yes
   tasks:
     - name: Install pip
@@ -34,12 +34,12 @@
       copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
     - name: Waiting for MySQL server to be up
-      shell: /tmp/wait-for-it.sh -t 60 {{ inventory_hostname}}:3306
+      shell: ./wait-for-it.sh -t 60 {{ inventory_hostname}}:3306
 
     - pause: seconds=10
 
-    - name: Create Autolab database
-      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
+#    - name: Create Autolab database
+#      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
 
 - hosts: gitlab
   become: yes
@@ -75,7 +75,7 @@
       #copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
     - name: Copy wait-for-it to container
-      shell: docker cp /tmp/wait-for-it.sh gitlab:/wait-for-it.sh
+      shell: docker cp wait-for-it.sh gitlab:/wait-for-it.sh
 
     - name: Waiting for Unicorn on GitLab server to be up
       shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
