@@ -50,7 +50,7 @@ app.post('/requestRun', function(req, res){
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/scores.txt')).toString().split("\n");
     var comment = fs.readFileSync(path.join(__dirname + 'submissions/'+submission_id+'/'+lab+'/comment.txt')).toString().split("\n");
-    var log = new Buffer(fs.readFileSync(path.join(__dirname + 'submissions/'+submission_id+'/'+lab+'/log.txt')).toString().replace(/(?:\r\n|\r|\n)/g, '<br />')).toString('base64');
+    var log = fs.readFileSync(path.join(__dirname + 'submissions/'+submission_id+'/'+lab+'/log.txt')).toString();
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     comment.pop();
