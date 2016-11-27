@@ -48,9 +48,9 @@ app.post('/requestRun', function(req, res){
   exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" "+commit + " " + language);
   process.env.LANGUAGE = language;
   exec(exec_command,function (error, stdout, stderr) {
-    var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/scores.txt')).toString().split("\n");
-    var comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/comment.txt')).toString().split("\n");
-    var log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/log.txt')).toString();
+    var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/scores.txt')).toString().split("\n");
+    var comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/comment.txt')).toString().split("\n");
+    var log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString();
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     comment.pop();
