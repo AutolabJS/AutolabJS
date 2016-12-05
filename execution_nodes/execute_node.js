@@ -50,7 +50,12 @@ app.post('/requestRun', function(req, res){
   exec(exec_command,function (error, stdout, stderr) {
     var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/scores.txt')).toString().split("\n");
     var comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/comment.txt')).toString().split("\n");
-    var log = btoa(fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString());
+    var log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString();
+    if(!log.length)
+    {
+        log = "NO LOGS FOR THIS EVALUATION";
+    }
+    var log_b64 = new Buffer(log).toString('base64');
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
     array.pop(); //remove last space
     comment.pop();
@@ -64,7 +69,7 @@ app.post('/requestRun', function(req, res){
     body.submission_details.status=req.body.status;
     body.submission_details.penalty=req.body.penalty;
     body.submission_details.socket=req.body.socket;
-    body.submission_details.log=log;
+    body.submission_details.log=log_b64;
     body=JSON.stringify(body);
 
     var https_request_options ={
