@@ -5,6 +5,7 @@ sudo true
 wget -qO- https://get.docker.com/ | sh
 sudo apt update
 sudo apt install -y python-pip libssl-dev sshpass libffi-dev
+sudo pip install --upgrade pip
 sudo pip install ansible
 sudo service docker restart
 cat << EOF
