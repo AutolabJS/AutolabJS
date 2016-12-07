@@ -2,11 +2,19 @@
 ######################################################
 #
 # Author: TSRK Prasad
-# Date: 18-Sep-2016
+# Date: 06-Dec-2016
+# Previous Versions: Sep-2016
 #
-# Purpose: script invoked by execution nodes without any command-line args
+# Purpose: script invoked by execution nodes with one command-line arguement
 #	   this script accomplishes one evaluation
 #
+# Invocation: $./execute.sh language
+#		the language can be any of the following: java, c, python2, python3, cpp, cpp14
+#
+# Arguments: The first(and only) argument provides the language chosen by the student.
+#            This will be appended to the the language specific compilation and 
+#            execution files.
+# 
 # Dependencies: proper setup of test_cases/checks, test_cases/setup and test_cases/tests
 #		see README.txt for more details
 #
@@ -14,28 +22,28 @@
 #		results/scores.txt	marks of each test case on a new line
 #		results/comment.txt	comments of each test case on a new line
 #
-# Arguments: The first(and only) argument provides the language chosen by the student.
-#            This will be appended to the the language specific compilation and 
-#            execution files.
-# 
 #	Variable definitions
 #	--------------------
 #	testLog		temporary test log file that holds compile and run-time logs from each test
-#	log			temporary log file that collects compile and run-time logs from all tests
+#	log		temporary log file that collects compile and run-time logs from all tests
 #	marks		array containing marks from all the tests
 #	comments	coded comments from all the tests
 #				comment code		meaning
 #				------------		-------
-#					0				Wrong Answer
-#					1				Compilation Error
-#					2				Timeout
+#					0		Wrong Answer
+#					1		Compilation Error
+#					2		Timeout
+#					10		Accepted
 #
-#	testDir		directory containing all the relevant tests; split up into three sub-directories
+#	testDir		directory containing all the relevant tests for each language supported for an assignment; 
+#			At the top-level of testDir, there would be language-specific folders. The contents of each folder are
+#			split up into three sub-directories
 #					checks/		contains files for comparison of outputs
 #					setup/		contains input and file copying shell script for each test
 #					tests/		contains the language-specific testing code
 #								(in the code represented by testSetup variable)
 #	testInfo	file containing all the tests from the lab author
+#			this file is common for all languages and is programming language agnostic
 #				file needs to be formatted as tab-separated value file with three columns
 #				Test# <Tab> Timeout
 #			Ex:	Test1		1
@@ -47,6 +55,14 @@
 #	testMarks	marks obtained in one test case
 ######################################################
 
+if [ "$#" -ne 1 ]
+then
+	echo "Proper Invocation: $./execute.sh language"
+	echo "The language can be any of the following: java, c, python2, python3, cpp, cpp14"
+	exit
+fi
+
+
 unset JAVA_TOOL_OPTIONS
 export CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
 
@@ -54,6 +70,9 @@ export CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
 suffix=$(awk 'BEGIN{srand(); printf "%d\n",rand()*10000000000}')
 testLog="testLog$suffix"
 log="../results/log$suffix"
+
+#language option chosen
+language=$1
 
 #make these filenames available in child scripts as well
 export testLog log
@@ -77,13 +96,24 @@ testStatusEncoder["Compilation Error"]=1
 testStatusEncoder["Timeout"]=2
 testStatusEncoder["Runtime Error"]=3		#not used at the moment
 testStatusEncoder["Partial Answer"]=4		#not used at the moment
-testStatusEncoder["Exception"]=5
+testStatusEncoder["Exception"]=5		#not used at the moment
+testStatusEncoder["Files Not Available"]=6	#not used at the moment
+testStatusEncoder["Unsupported Language"]=7
 testStatusEncoder["Accepted"]=10
 
 #actually "Accepted" is not checked by the userlogic.js; comment defaults to this, but it is better to be explicit
 #during code refactoring, accepted should become zero to be consistent with Linux command exit codes
 #ideally, we would just be returning comment strings from execution nodes, not encoded comments
 
+
+#associative array pointing to language-specific driver file
+declare -A driver
+driver[c]="Driver.c"
+driver[cpp]="Driver.cpp"
+driver[cpp14]="Driver14.cpp"
+driver[java]="Driver.java"
+driver[python2]="Driver.py"
+driver[python3]="Driver3.py"
 
 #reset all the three variables used to parse each line of "testInfo" file
 unset testName timeLimit
@@ -97,6 +127,21 @@ then
 	rm -rf results/*
 else
 	mkdir results
+fi
+
+#check if the chosen language is supported by the instructor
+if [ -d test_cases/$language ] && [ -f ${driver[$language]} ]
+then
+	#echo "supported language"
+	:	#no operation
+else
+	touch results/scores.txt
+	touch results/comment.txt
+	echo "UNSUPPORTED LANGUAGE CHOSEN" > results/log.txt
+	echo "Your instructor does not wish to evaluate code submissions in $1 language" >> results/log.txt
+	cp -f results/scores.txt scores.txt
+	cp -f results/comment.txt comment.txt
+	exit
 fi
 
 #create temporary working directory for running test cases
