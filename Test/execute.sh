@@ -27,21 +27,17 @@
 #	testLog		temporary test log file that holds compile and run-time logs from each test
 #	log		temporary log file that collects compile and run-time logs from all tests
 #	marks		array containing marks from all the tests
-#	comments	coded comments from all the tests
-#				comment code		meaning
-#				------------		-------
-#					0		Wrong Answer
-#					1		Compilation Error
-#					2		Timeout
-#					10		Accepted
+#	comments	"Wrong Answer", "Compilation Error", "Timeout", "Accepted"
+#	comments to be added in future: "Runtime Error", "Partial Answer", "Exception", "Files Not Available", 
+#					"Unsupported Language"
 #
 #	testDir		directory containing all the relevant tests for each language supported for an assignment; 
 #			At the top-level of testDir, there would be language-specific folders. The contents of each folder are
-#			split up into three sub-directories
-#					checks/		contains files for comparison of outputs
 #					setup/		contains input and file copying shell script for each test
 #					tests/		contains the language-specific testing code
 #								(in the code represented by testSetup variable)
+#					apart from the above, there would also be language-agnostic, IO check files put in
+#					checks/		contains files for comparison of outputs
 #	testInfo	file containing all the tests from the lab author
 #			this file is common for all languages and is programming language agnostic
 #				file needs to be formatted as tab-separated value file with three columns
@@ -86,25 +82,6 @@ testInfo="test_info.txt"	#contains information on test case numbers, marks and t
 #temporary variables to hold test scores and comments
 marks=()	#array for holding marks of all test cases
 comments=()	#array for holding comments of all test cases
-
-#associative array to encode the test status before sending results to json
-#status code extracted from https://github.com/prasadtalasila/JavaAutolab/blob/master/main_server/public/js/userlogic.js
-#commit details: 8edd5c26f3643b0938ede1c22bd559f5006bfa5a
-declare -A testStatusEncoder
-testStatusEncoder["Wrong Answer"]=0
-testStatusEncoder["Compilation Error"]=1
-testStatusEncoder["Timeout"]=2
-testStatusEncoder["Runtime Error"]=3		#not used at the moment
-testStatusEncoder["Partial Answer"]=4		#not used at the moment
-testStatusEncoder["Exception"]=5		#not used at the moment
-testStatusEncoder["Files Not Available"]=6	#not used at the moment
-testStatusEncoder["Unsupported Language"]=7
-testStatusEncoder["Accepted"]=10
-
-#actually "Accepted" is not checked by the userlogic.js; comment defaults to this, but it is better to be explicit
-#during code refactoring, accepted should become zero to be consistent with Linux command exit codes
-#ideally, we would just be returning comment strings from execution nodes, not encoded comments
-
 
 #associative array pointing to language-specific driver file
 declare -A driver
@@ -217,8 +194,7 @@ do
 
 	#update marks and comments arrays
 	marks+=($testMarks)
-	codedStatus=${testStatusEncoder[$testStatus]}
-	comments+=($codedStatus)
+	comments+=($testStatus)
 
 	#echo "testMarks = $testMarks, testStatus = $testStatus, codedStatus = $codedStatus"
 	#echo ${marks[@]}, ${comments[@]}
