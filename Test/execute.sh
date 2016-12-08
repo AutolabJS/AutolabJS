@@ -169,27 +169,27 @@ do
 		#	124 - timeout, 0 - in-time completion of execution
 		if [ "$timedOut" == "124" ]	#timeout
 		then
-		    testStatus="Timeout"
+		    testStatus='Timeout'
 		    testMarks=0
 		elif [ "$timedOut" == "0" ]      #not timed out
 		then
 		    #if test score is zero, then it's obviously wrong answer
 		    if [ "$testMarks" == "0" ]
 		    then
-		        testStatus="Wrong Answer"
+		        testStatus='WrongAnswer'
 				elif [ "$testMarks" == "125" ]
 				then
-					testStatus="Exception"
+					testStatus='Exception'
 					testMarks=0
 		    else
-		        testStatus="Accepted"
+		        testStatus='Accepted'
 		    fi
 		fi
 
 	else	#compilation errors case
 		#echo "compilation error"
 		testMarks=0						#no marks for compilation failure
-		testStatus="Compilation Error"	#"compilation Error"
+		testStatus='CompilationError'				#"compilation Error"
 	fi
 
 	#update marks and comments arrays
@@ -233,10 +233,6 @@ do
 done
 
 cd ..
-
-#keep a copy of score and comment files at top-level for compatibility with the existing code
-cp -f results/scores.txt scores.txt
-cp -f results/comment.txt comment.txt
 
 
 

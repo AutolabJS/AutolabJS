@@ -1,7 +1,7 @@
 
 ############
 # Author: TSRK Prasad
-# Date: 18-Sep-2016
+# Date: 08-Dec-2016
 # 
 # script fragment used by ../../execute.sh to perform run-time tests. This script is not invoked directly
 #
@@ -17,7 +17,7 @@
 #compilation is successful, now run the test
 
 #syntax: timeout -k soft-limit hard-limit <cmd>
-timeout -k 0.5 $timeLimit python Driver.py 2>&1 | tee $testLog > /dev/null
+timeout -k 0.5 $timeLimit python2 Driver.py 2>&1 | tee $testLog > /dev/null
 #comment above line and uncomment below line for MAC systems
 #gtimeout -k 0.5 $timeLimit java -cp $CLASSPATH:. Driver 2>&1 | tee $testLog > /dev/null
 

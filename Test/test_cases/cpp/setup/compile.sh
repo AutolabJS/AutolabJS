@@ -1,7 +1,7 @@
 
 ######################
 # Author: TSRK Prasad
-# Date: 18-Sep-2016
+# Date: 08-Dec-2016
 #
 # script fragment used for run-time tests
 # used by ../../execute.sh; not invoked directly
@@ -13,7 +13,7 @@
 unset compilationStatus
 
 #language specific compile and run of each test case
-g++ Driver.cpp $testname -o Driver 2>&1 | tee $testLog > /dev/null
+g++-6  -std=c++11 *.cpp -o Driver 2>&1 | tee $testLog > /dev/null
 compilationStatus=${PIPESTATUS[0]}
 
 #collect the log of this compilation to overall log.txt

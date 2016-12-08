@@ -18,7 +18,7 @@ class Buyer
     this.cash=cash;
   }
 
-  public void buy(Seller x) throws Exception
+  public void buy(Seller x)
   {
     if(cash>0)
     {
@@ -27,6 +27,5 @@ class Buyer
         cash--;
       }
     }
-	throw new Exception();
   }
 }

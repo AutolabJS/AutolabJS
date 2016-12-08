@@ -1,7 +1,7 @@
 
 ######################
 # Author: TSRK Prasad
-# Date: 18-Sep-2016
+# Date: 08-Dec-2016
 #
 # script fragment used for run-time tests
 # used by ../../execute.sh; not invoked directly
@@ -13,7 +13,7 @@
 unset compilationStatus
 
 #language specific compile and run of each test case
-python -m py_compile *.py 2>&1 | tee $testLog > /dev/null
+python2 -m py_compile *.py 2>&1 | tee $testLog > /dev/null
 compilationStatus=${PIPESTATUS[0]}
 
 #collect the log of this compilation to overall log.txt

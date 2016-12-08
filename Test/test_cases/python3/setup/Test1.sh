@@ -1,14 +1,14 @@
 #copy all the files under test from "student_solution/" and support files from "author_solution/"
 #copy all source files first
 
-cp -f student_solution/python3/calc.py working_dir/
+cp -f student_solution/python3/Seller.py working_dir/
 
 
 
 #copy the test file
 cp test_cases/python3/tests/Test1.py working_dir/
-mv working_dir/Test1.py working_dir/test.py
-testName="Test1.py"
+mv working_dir/Test1.py working_dir/Test.py
+
 #	DANGER ZONE
 #UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE
 

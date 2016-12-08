@@ -1,9 +1,24 @@
-#include <iostream>
-#include "add.cpp"
+#include "Seller.hpp"
+
 using namespace std;
 
 int test()
 {
-	if(add(3,4,5)==12) return 1;
-	else return 0;
+    Seller seller(100);
+    if(seller.getQuantity()==100)
+    {
+      seller.setQuantity(20);
+      if(seller.getQuantity()==20)
+      {
+        return 1;
+      }
+      else
+      {
+        return 0;
+      }
+    }
+    else
+    {
+      return 0;
+    }
 }

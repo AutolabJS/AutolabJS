@@ -13,7 +13,7 @@
 unset compilationStatus
 
 #language specific compile and run of each test case
-python -m py_compile *.py 2>&1 | tee $testLog > /dev/null
+python3 -m py_compile *.py 2>&1 | tee $testLog > /dev/null
 compilationStatus=${PIPESTATUS[0]}
 
 #collect the log of this compilation to overall log.txt

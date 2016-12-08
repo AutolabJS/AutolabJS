@@ -1,10 +1,13 @@
-from calc import calc
+from Seller import Seller
 
 class Test:
-	
-	def __init__(self):
-		self.Mycalc=calc();
-
-	def run(self):
-		if self.Mycalc.add([2,3,5])==10: return 10;
-		return 0;
+	def test(self):
+		seller = Seller(100)
+		if seller.getQuantity()==100:
+			seller.setQuantity(20)
+			if seller.getQuantity()==20:
+				return 1
+			else:
+				return 0
+		else:
+			return 0

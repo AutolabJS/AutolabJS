@@ -1,14 +1,14 @@
-import test
+from Test import Test
 
 if __name__ == '__main__':
 
-	check = test.Test();
+	check = Test()
 
-	# print check.run()
 	try:
-		print check.run();
+		score = check.test()
+		print score;
 
-	except Exception as e:
+	except Exception:
 		print 125
 	else:
 		pass
