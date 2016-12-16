@@ -10,6 +10,11 @@
    "password" : "root",
    "database" : "Autolab"
  },
+ "gitlab" :
+ {
+   "username":"root",
+   "password" : "qweasdzxc"
+ },
  "host_port" :
  {
    "port" : "9000"

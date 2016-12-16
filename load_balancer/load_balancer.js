@@ -86,9 +86,11 @@ app.post('/submit', function(req, res){
   console.log('submit post request recieved');
       console.log(req.body)
 
+
   res.send(true);
 
   if(node_queue.length!==0) {
+     console.log(node_queue.length + ' ' + job_queue.length)
     var assigned_node = node_queue.pop();
     var assigned_hostname = assigned_node.hostname;
     var assigned_port = assigned_node.port;
@@ -250,9 +252,13 @@ app.post('/sendScores', function(req, res){
 
 app.post('/addNode', function(req, res){
   console.log('addNode post request recieved');
+  res.send(true);
+  // Check if the Execution node is already accounted for in the queue,return if it is.
+  for(var node in node_queue) if(node_queue[node].hostname === req.body.hostname && node_queue[node].port === req.body.port) return;
+  console.log(req.body)
   node_queue.push(req.body);
   console.log("Added "+req.body.hostname+":"+req.body.port+" to queue");
-  res.send(true);
+  
   if(job_queue.length!==0)
   {
     var assigned_node = node_queue.pop();

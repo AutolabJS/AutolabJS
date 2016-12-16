@@ -21,6 +21,7 @@ $(document).ready(function() {
 
       $('#revalSubmit').click(function(event)
       {
+        reval_labs =[];
         event.preventDefault();
         console.log("Clicked")
         $('.revaluation:checked').each(function()
@@ -29,23 +30,23 @@ $(document).ready(function() {
           var id = $(this).attr('id');
           var s_date = $('#'+id+'_start').val().split(' ');
           var e_date = $('#'+id+'_end').val().split(' ');
-          if(s_date.lenth!=2 || e_date.length != 2) alert("Enter the date in the following format\n DD/MM/YYYY HH:MM")
-          socket.emit('revaluate',{
+          if(s_date.length!=2 || e_date.length != 2) alert("Enter the date in the following format\n DD/MM/YYYY HH:MM")
+          reval_labs.push({
             labname: $(this).val(),
             start_date:s_date[0].split('/')[0],
             start_month:s_date[0].split('/')[1],
             start_year:s_date[0].split('/')[2],
-            start_hour:s_date[1].split('/')[0],
-            start_minute:s_date[1].split('/')[1],
+            start_hour:s_date[1].split(':')[0],
+            start_minute:s_date[1].split(':')[1],
             end_date:e_date[0].split('/')[0],
             end_month:e_date[0].split('/')[1],
             end_year:e_date[0].split('/')[2],
-            end_hour:e_date[1].split('/')[0],
-            end_minute:e_date[1].split('/')[1],
+            end_hour:e_date[1].split(':')[0],
+            end_minute:e_date[1].split(':')[1],
           })
 
         })
-
+        socket.emit('revaluate',reval_labs)
         $('#reval_list').hide();
       })
 
@@ -127,11 +128,12 @@ $(document).ready(function() {
 
       socket.on('update_score',function(lab)
       {
+        console.log(lab)
         $('#updated_score_div').show();
         $('<a href="/revaluation/download/'+lab+'"  class="collection-item">'+lab+'</a>').insertBefore('#dummy_score')
       })
 
-      socket.on('update_core_timeout',function(lab)
+      socket.on('update_score_timeout',function(lab)
       {
         alert("Sorry the revaluation request for " + lab + " timed out! Try again later");
       })

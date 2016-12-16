@@ -2,6 +2,7 @@ var io = require('socket.io');
 var APIKeys = require('/etc/main_server/APIKeys.json').keys
 var config = require('/etc/main_server/conf.json');
 var exec = require('child_process').exec
+var path = require('path')
 var fs = require('fs');
 module.exports = function(socket)
 {
@@ -60,21 +61,58 @@ module.exports = function(socket)
 	socket.on('revaluate',function(data)
 	{
 		if(!socket.handshake.session.key) return;
+		console.log(socket.handshake.session.key)
+		var lab_revaluation = [];
 		var labs = require('/etc/main_server/labs.json').Labs;
 
-		var i =0;
-		while( i < labs.length && labs[i]["Lab_No"]!=data.labname)i++;
-		if(i> labs.length) return;
-
-
-
-		var start_date = labs[i].start_date + '/'+labs[i].start_month+'/'+labs[i].start_year + ' ' + labs[i].start_hour + ':' + labs[i].start_minute + ':00';
-		var end_date =  labs[i].end_date + '/'+ labs[i].end_month+'/'+labs[i].end_year + ' ' + labs[i].end_hour + ':' + labs[i].end_minute + ':00';
-
-		exec('cd reval; bash reval.sh '+data.labname+' "'+start_date+'" "'+end_date+'" localhost ' ,function(error,stdout,stderr)
+		console.log(data)
+		for(var rev in data)
 		{
-			checkLab(data.labname);
+			var i =0;
+			while( i < labs.length && labs[i]["Lab_No"]!=rev.labname)i++;
+			if(i> labs.length) continue;
+			var start_date = data[rev].start_date + '/'+data[rev].start_month+'/'+data[rev].start_year + ' ' + data[rev].start_hour + ':' + data[rev].start_minute + ':00';
+		var end_date =  data[rev].end_date + '/'+ data[rev].end_month+'/'+data[rev].end_year + ' ' + data[rev].end_hour + ':' + data[rev].end_minute + ':00';
+			lab_revaluation.push({
+				lab:data[rev].labname,
+				startDate: new Date(start_date),
+				endDate: new Date(end_date),
+				admin_key : socket.handshake.session.key
+			})
+		}
+		
 
+
+		
+		console.log(lab_revaluation)
+
+		require('./reval/reval.js')(lab_revaluation,function(err,newScores)
+		{
+			console.log(newScores)
+			for(var i in newScores)
+			{
+				 var write_to_file = fs.createWriteStream(path.join(__dirname,'/reval/',newScores[i]['labName']+'_reval_score.csv'),{flags:'w'});
+
+				 write_to_file.on('open',function(file)
+				 {
+				 	var score_string ="";
+				 	for(var id in newScores[i]['score'])
+				 	{
+				 		score_string = score_string + id + ',' + newScores[i]['score'][id] + '\n';
+				 	}
+
+				 	write_to_file.write(score_string,function()
+				 	{
+				 		socket.emit('update_score',newScores[i]['labName'])
+				 	})
+				 })
+
+				 write_to_file.on('error',function(err)
+				 {
+				 	console.log(error);
+				 })
+
+			}
 		})
 
 	})

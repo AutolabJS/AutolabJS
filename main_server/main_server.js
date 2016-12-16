@@ -36,7 +36,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
 
-console.log(process.env.mode)
+
 
 var load_balancer_hostname=config_details.load_balancer.hostname;
 var load_balancer_port=config_details.load_balancer.port;
@@ -62,7 +62,7 @@ function initScoreboard(lab_no) {
       //   process.exit();
       //   return;
       // }
-       if(err)
+       if(err && process.env.mode === "TESTING")
       {
         console.log("Disabled connection with  MYSQL until testing completion.")
         return;
@@ -265,13 +265,18 @@ io.on('connection', function(socket) {
   socket.emit('labs_status', labs_status);
 
   socket.on('submission', function(data) {
+
+    var APIKeys = require('/etc/main_server/APIKeys.json').keys
     console.log('Socket submission event triggered');
     id_number=data[0];
     lab_no=data[1];
     commit_hash=data[2];
     language=data[3];
-    if(submission_pending.indexOf(id_number)!=-1)      // Check if there is a pending submission
-    {                                                   // with the same ID number
+    if(data.length == 5) admin_key = data[4];
+    else admin_key=null;
+    if((admin_key==null || APIKeys.indexOf(admin_key)==-1 ) && submission_pending.indexOf(id_number)!=-1)       // Check if there is a pending submission
+    {   
+      console.log("Pending Submission request" + ' ' + admin_key)                                                // with the same Non-Admin ID number 
       io.to(socket.id).emit('submission_pending',{});
        return false;
     }
@@ -411,6 +416,11 @@ io.on('connection', function(socket) {
       }
   });
 
+  })
+
+  socket.on('disconnect',function()
+  {
+    console.log("DISCONNECTED")
   })
 });
 
