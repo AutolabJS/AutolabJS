@@ -34,3 +34,4 @@ ratings:
   - "**.rb"
 exclude_paths:
 - test/
+- main_server/reval/node_modules/
