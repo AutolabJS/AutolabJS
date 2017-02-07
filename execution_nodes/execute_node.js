@@ -13,8 +13,8 @@ var http = require('http');
 var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
 var fs = require('fs');
-var conf = require('./conf.json');
-var scores = require('./scores.json');
+var conf = require('/etc/execution_node/conf.json');
+var scores = require('/etc/execution_node/scores.json');
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
