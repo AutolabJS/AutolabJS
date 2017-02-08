@@ -249,3 +249,7 @@ socket.on("submission", function(data) {
     }
   });
 });
+
+module.exports.app = app;
+module.exports.server = server;
+module.exports.connection = connection;
