@@ -9,7 +9,7 @@ if __name__ == '__main__':
 		print (score);
 
 	except Exception:
-		print 125
+		print (125)
 	else:
 		pass
 
