@@ -1,7 +1,7 @@
 var fs = require("fs");
 var express = require("express");
 var app = express();
-var https_config={
+var https_config = {
   key : fs.readFileSync("./ssl/key.pem"),
   cert: fs.readFileSync("./ssl/cert.pem"),
   rejectUnauthorized:false
@@ -14,12 +14,12 @@ var bodyParser = require("body-parser");
 var path = require("path");
 var conf = require("/etc/execution_node/conf.json");
 var scores = require("/etc/execution_node/scores.json");
-var body=JSON.stringify(scores.node_details);
-var load_balancer_hostname=conf.load_balancer.hostname;
-var load_balancer_port=conf.load_balancer.port;
-var gitlab_hostname=conf.gitlab.hostname;
-var gitlab_port=conf.gitlab.port;
-var https_addnode_options ={
+var body = JSON.stringify(scores.node_details);
+var load_balancer_hostname = conf.load_balancer.hostname;
+var load_balancer_port = conf.load_balancer.port;
+var gitlab_hostname = conf.gitlab.hostname;
+var gitlab_port = conf.gitlab.port;
+var https_addnode_options = {
   hostname: load_balancer_hostname,
   port: load_balancer_port,
   path: "/addNode",
@@ -30,13 +30,13 @@ var https_addnode_options ={
   },
   key : fs.readFileSync("./ssl/key.pem"),
   cert: fs.readFileSync("./ssl/cert.pem"),
-  rejectUnauthorized:false,
+  rejectUnauthorized:false
 };
 
 server.listen(conf.host_port.port);
-console.log("Listening at "+conf.host_port.port);
+console.log("Listening at " + conf.host_port.port);
 
-app.use(express.static(__dirname +"/public"));
+app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
@@ -53,16 +53,16 @@ app.post("/requestRun", function(req, res){
   lab = req.body.Lab_No,
   commit = req.body.commit,
   language = req.body.language,
-  exec_command ="bash extract_run.sh ";
+  exec_command = "bash extract_run.sh";
 
-  exec_command = exec_command.concat(submission_id+" "+lab+" "+gitlab_hostname+" \""+commit + "\" " + language);
+  exec_command = exec_command.concat(submission_id + " " + lab + " " + gitlab_hostname + "\"" + commit + "\"" + language);
   process.env.LANGUAGE = language;
-  console.log(exec_command)
+  console.log(exec_command);
   exec(exec_command,function (error, stdout, stderr) {
     
-    var marks = fs.readFileSync(path.join(__dirname +"/submissions/"+submission_id+"/"+lab+"/results/scores.txt")).toString().split("\n");
-    var comment = fs.readFileSync(path.join(__dirname +"/submissions/"+submission_id+"/"+lab+"/results/comment.txt")).toString().split("\n");
-    var log = fs.readFileSync(path.join(__dirname +"/submissions/"+submission_id+"/"+lab+"/results/log.txt")).toString();
+    var marks = fs.readFileSync(path.join(__dirname + "/submissions/" + submission_id + "/" + lab + "/results/scores.txt")).toString().split("\n");
+    var comment = fs.readFileSync(path.join(__dirname + "/submissions/" + submission_id + "/" + lab + "/results/comment.txt")).toString().split("\n");
+    var log = fs.readFileSync(path.join(__dirname + "/submissions/" + submission_id + "/" + lab + "/results/log.txt")).toString();
     var body;
     if(!log.length)
     {
@@ -84,7 +84,7 @@ app.post("/requestRun", function(req, res){
     };
     var request;
 
-    exec("bash cleanup.sh ".concat(submission_id+" "+lab));
+    exec("bash cleanup.sh ".concat(submission_id + " " + lab));
     marks.pop(); //remove last space
     comment.pop();
     body = scores;
