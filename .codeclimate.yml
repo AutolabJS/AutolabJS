@@ -6,7 +6,7 @@ engines:
   csslint:
     enabled: true
   duplication:
-    enabled: false
+    enabled: true
     config:
       languages:
       - ruby
@@ -34,9 +34,6 @@ ratings:
   - "**.rb"
 exclude_paths:
 - test/
-- main_server/
-- load_balancer/
-- misc/
 - main_server/reval/node_modules/
 - main_server/test/node_modules/
 - main_server/public/js/jquery.min.js
