@@ -1,12 +1,15 @@
-FROM ubuntu:14.04.4
+FROM ubuntu:16.04
 
 COPY . /execution_nodes
-RUN sudo apt-get update
-RUN sudo apt-get install --force-yes -y nodejs
-RUN sudo apt-get install --force-yes -y npm
-RUN sudo apt-get install --force-yes -y software-properties-common 
+RUN apt-get update &&  apt-get install -y software-properties-common && \
+  apt-add-repository -y ppa:webupd8team/java && apt-get update && \
+  echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | \
+   debconf-set-selections && apt-get install -y --force-yes oracle-java8-installer \
+  nodejs npm git && add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+  apt-get update && apt-get install -y gcc-6 g++-6
+
 RUN cd execution_nodes; npm install
-RUN sudo apt-add-repository -y  ppa:webupd8team/java
-RUN sudo apt-get update
-RUN sudo apt-get install --force-yes -y git
-RUN echo "oracle-java8-installer shared/accepted-oracle-license-v1-1 select true" | sudo debconf-set-selections; sudo apt-get install --force-yes -y oracle-java8-installer 
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]

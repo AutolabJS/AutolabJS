@@ -1,0 +1,94 @@
+- hosts: mysql
+  become: yes
+  tasks:
+    - name: Stop and Remove Database Container
+      docker_container:
+        name: autolab-db
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove Database Image
+      docker_image:
+        name: "mysql:latest"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove Database Volume
+      file: "dest={{ sqldata }} state=absent"
+      ignore_errors: yes
+
+- hosts: gitlab
+  become: yes
+  tasks:
+    - name: Stop and Remove Gitlab Container
+      docker_container:
+        name: gitlab
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove Gitlab Image
+      docker_image:
+        name: "gitlab/gitlab-ce:latest"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove gitlab directory
+      file: "dest=/srv/gitlab state=absent"
+      ignore_errors: yes
+
+- hosts: loadbalancer
+  become: yes
+  tasks:
+    - name: Remove SSH Key
+      file: dest=keys/load_balancer/{{ item }} state=absent
+      with_items:
+        - id_rsa.pub
+        - id_rsa
+        - known_hosts
+      ignore_errors: yes
+
+    - name: Stop and Remove Loadbalancer container
+      docker_container:
+        name: loadbalancer
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove Loadbalancer Image
+      docker_image:
+        name: load_balancer
+        state: absent
+      ignore_errors: yes
+
+- hosts: mainserver
+  become: yes
+  tasks:
+    - name: Stop and remove mainserver container
+      docker_container:
+        name: mainserver
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove mainserver Image
+      docker_image:
+        name: main_server
+        state: absent
+      ignore_errors: yes
+
+- hosts: executionnodes
+  become: yes
+  tasks:
+    - name: Remove autolab directory
+      file: "dest={{ ansible_env.HOME}}/.autolab state=absent"
+      ignore_errors: yes
+
+    - name: Stop and remove execution_node container
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port }}"
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove executionnode Image
+      docker_image:
+        name: execution_node
+        state: absent
+      ignore_errors: yes

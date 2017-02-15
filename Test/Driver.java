@@ -12,7 +12,7 @@ class Driver
     }
     catch(Throwable e)
     {
-      System.out.println("0");
+      System.out.println("125");
     }
 
   }

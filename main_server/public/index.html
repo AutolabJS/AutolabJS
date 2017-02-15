@@ -116,6 +116,17 @@
               <input id = "commitHash" type="text" class = "validate">
               <label for="commitHash">Commit Hash (leave blank for latest commit in master)</label>
             </div>
+            <div class = "input-field width-20">
+              <select id="language">
+                <option value="java">Java</option>
+                <option value="c">C</option>
+                <option value="cpp">C++</option>
+                <option value="cpp14">C++ 14</option>
+                <option value="python2">Python 2</option>
+                <option value="python3">Python 3</option>
+              </select>
+              <label for="language">Language</label>
+            </div>
               <a id="submitButton" class="btn waves-effect waves-light light-blue darken-3" style = "width: 100%;">Submit</a>
             </div>
           </div>
@@ -181,7 +192,11 @@
             <tbody>
             </tbody>
           </table>
-          <br><br>
+          <br>
+          <br>
+          <div>
+            <pre id="log"></pre>
+          </div>
         </div>
 
         <div id="scorecard">
@@ -194,6 +209,7 @@
                 <th data-field="rank">Position</th>
                 <th data-field="id">ID Number</th>
                 <th data-field="score">Score</th>
+                <th data-field="time">Time</th>
               </tr>
             </thead>
 
@@ -206,6 +222,11 @@
           <br><br><br><br><br><br><br>
           <h4 class = "header light">Access Denied.</h4>
           <p class = "header light">Please try submitting again.</p>
+        </div>
+        <div id="submission_pending">
+          <br><br><br><br><br><br><br>
+          <h4 class = "header light">You have a pending submission</h4>
+          <p class = "header light">Please try after some time.</p>
         </div>
     </div>
     </main>
@@ -232,7 +253,7 @@
       </div>
       <div class="footer-copyright">
         <div class="container">
-        <a class="grey-text text-lighten-4" target="_blank" href="http://rajatagarwal.me/">Developed by <b> Rajat Agarwal</b></a>
+        <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/prasadtalasila/JavaAutolab/wiki"><b>Contributors</b></a>
         </div>
       </div>
     </footer>

@@ -1,0 +1,22 @@
+{
+"load_balancer": {
+  "hostname": "localhost",
+  "port": "8081"
+},
+ "database" :
+ {
+   "host"     : "localhost",
+   "user"    : "root",
+   "password" : "root",
+   "database" : "Autolab"
+ },
+ "gitlab" :
+ {
+   "username":"root",
+   "password" : "qweasdzxc"
+ },
+ "host_port" :
+ {
+   "port" : "9000"
+ }
+}

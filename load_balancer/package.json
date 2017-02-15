@@ -4,13 +4,14 @@
   "description": "ERROR: No README data found!",
   "main": "load_balancer.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha ./test/test_lb.js  && exit 0"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "1.8",
     "express": "^4.13.4",
+    "httpolyglot": "^0.1.1",
     "mysql": ""
   }
 }

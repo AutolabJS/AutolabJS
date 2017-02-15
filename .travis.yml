@@ -5,10 +5,8 @@ language: node_js
 node_js:
   - 10
 
-before_install: ./test.sh 
-
-install: true
- 
+script:
+ - bash test.sh 
 
 branches:
   only:

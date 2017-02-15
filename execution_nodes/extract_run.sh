@@ -11,4 +11,5 @@ cd $2
 git checkout $4
 cd ..
 mv $2 student_solution
-bash execute.sh
+echo $5
+bash execute.sh $5 

@@ -17,7 +17,8 @@ $(document).ready(function() {
   $("#marks").hide();
   $("#scorecard").hide();
   $("#invalidLab").hide();
-
+  $("#submission_pending").hide();
+  $("select").material_select();
   var socket = io.connect();
 
   socket.on('course details',function(data)
@@ -37,6 +38,7 @@ $(document).ready(function() {
     $("#marks").hide();
     $("#scorecard").hide();
     $("#invalidLab").hide();
+    $("#submission_pending").hide();
     $("#inactiveLabContainer .row").empty();
     $("#activeLabContainer .row").empty();
     for(var i=0;i<data.length;i++)
@@ -53,6 +55,11 @@ $(document).ready(function() {
         $("#activeLabContainer .row").append(lab_block);
       }
     }
+
+    $('.time').each(function(idx) {
+      startTimer(data[idx].delta, $(this));
+    });
+
     $("#labs").show();
 
     $('[id^=subl]').on('click', function(e) {
@@ -60,12 +67,14 @@ $(document).ready(function() {
       current_lab=$(this).attr('id').substring(4);
       $('#labs').hide();
       $('#submission').show();
+      $('#submission_pending').hide();
     });
 
     $('[id^=scol]').on('click', function(e) {
       e.preventDefault();
       current_lab=$(this).attr('id').substring(4);
       $('#labs').hide();
+      $('#submission_pending').hide();
       $('#loadingDiv').show();
       request = $.ajax({
         url: "/scoreboard/"+current_lab,
@@ -79,9 +88,9 @@ $(document).ready(function() {
         download_marks=[];
         for(i=0;i<response.length;i++)
         {
-          entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> </tr>";
+          entry ="<tr> <td>"+(i+1)+"</td><td>"+response[i].id_no+"</td> <td>"+response[i].score+"</td> <td>"+response[i].time +"</td> </tr>";
           $("#scorecard tbody").append(entry);
-          download_marks=download_marks+response[i].id_no+", "+response[i].score+"\n"
+          download_marks=download_marks+response[i].id_no+", "+response[i].score+"\n";
         }
       });
     });
@@ -90,10 +99,12 @@ $(document).ready(function() {
   $('#submitButton').on('click', function(e) {
    e.preventDefault();
    $("#submission").hide();
+   $('#submission_pending').hide();
    $("#evaluating").show();
    id_no=$('#nameField').val();
    commit_hash=$('#commitHash').val();
-   socket.emit('submission', [id_no, current_lab, commit_hash]);
+   language = $("#language").children("option").filter(":selected").val()
+   socket.emit('submission', [id_no, current_lab, commit_hash, language]);
    commit_hash="";
  });
 
@@ -102,23 +113,22 @@ $(document).ready(function() {
     $("#invalidLab").show();
   });
 
+  socket.on('submission_pending',function(data)
+  {
+    console.log("Pending recieved")
+    $("#evaluating").hide();
+    $("#submission_pending").show();
+  })
+
   socket.on('scores', function(data) {
     $("#evaluating").hide();
     $("#marks").show();
     total_score=0;
+    $("#log").text(atob(data.log));
     for(i=0;i<data.marks.length;i++)
     {
       total_score=total_score+ parseInt(data.marks[i]);
-      status = "Accepted";
-      if(data.comment[i]==0) {
-        status="Wrong Answer"
-      }
-      if(data.comment[i]==1 && data.marks[i]==0) {
-        status="Compilation Error"
-      }
-      if(data.comment[i]==2 && data.marks[i]==0) {
-        status="Timeout"
-      }
+      status = data.comment[i];
       entry ="<tr> <td>"+(i+1)+"</td><td>"+status+"</td> <td>"+data.marks[i]+"</td> </tr>";
       $("#marks tbody").append(entry);
     }
