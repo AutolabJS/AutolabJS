@@ -9,23 +9,13 @@ var https_config={
 var https = require('https');
 var server = https.createServer(https_config,app);
 var sys = require('sys');
-var http = require('http');
 var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
-var fs = require('fs');
 var path = require('path');
 var conf,scores;
-if(process.env.mode === 'TESTING')
-{
-  conf = require('../deploy/configs/execution_nodes/conf.json');
-  scores = require('../deploy/configs/execution_nodes/scores.json');
-}
-else
-{
-  conf = require('/etc/execution_node/conf.json');
-  scores = require('/etc/execution_node/scores.json');
-}
 
+conf = require('/etc/execution_node/conf.json');
+scores = require('/etc/execution_node/scores.json');
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));

@@ -6,7 +6,7 @@ if __name__ == '__main__':
 
 	try:
 		score = check.test()
-		print score;
+		print (score);
 
 	except Exception:
 		print 125

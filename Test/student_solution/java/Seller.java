@@ -1,4 +1,5 @@
 import java.io.*;
+
 class Seller
 {
   private int quantity;

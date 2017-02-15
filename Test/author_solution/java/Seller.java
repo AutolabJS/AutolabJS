@@ -1,4 +1,5 @@
 import java.io.*;
+
 class Seller
 {
   private int quantity;
@@ -24,8 +25,7 @@ class Seller
     {
       quantity--;
       return 1;
-    }
-    else
+    }else
     {
       return 0;
     }

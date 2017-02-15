@@ -1,4 +1,5 @@
 import java.io.*;
+
 class Test
 {
   public int test() {
@@ -9,13 +10,11 @@ class Test
       if(x1.getCash()==20)
       {
         return 1;
-      }
-      else
+      }else
       {
         return 0;
       }
-    }
-    else
+    }else
     {
       return 0;
     }
