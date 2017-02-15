@@ -6,7 +6,7 @@ engines:
   csslint:
     enabled: true
   duplication:
-    enabled: true
+    enabled: false
     config:
       languages:
       - ruby
@@ -34,8 +34,9 @@ ratings:
   - "**.rb"
 exclude_paths:
 - test/
-<<<<<<< HEAD
-=======
+- main_server/
+- load_balancer/
+- misc/
 - main_server/reval/node_modules/
 - main_server/test/node_modules/
 - main_server/public/js/jquery.min.js
@@ -49,4 +50,3 @@ exclude_paths:
 - main_server/public/css/materialize.min.css
 - misc/submission_script/socket.io/
 - misc/reval/socket.io/
->>>>>>> 2a442e8e5bcde17412f951e783484a3ef9a4c420
