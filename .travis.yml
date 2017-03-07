@@ -11,10 +11,10 @@ services:
 
 before_install:
  - bash ./deploy/setup.sh
- - docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
 
 script:
- 
+ - docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
+
 
 branches:
   only:
