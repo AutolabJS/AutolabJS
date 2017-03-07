@@ -18,8 +18,3 @@ before_script:
  
 script:
  - docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
-
-
-branches:
-  only:
-  - overlay
