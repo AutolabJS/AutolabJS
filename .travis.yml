@@ -10,12 +10,12 @@ services:
  -mysql
  
 install:
- - docker build -t autolab-db
- - docker run -d -p 127.0.0.1:80:80 -- name autolab-db autolab-db
+ - pip install ansible
 
 before_script:
  - npm install
- - bash ./deploy/setup.sh
+ - cd ./deploy/
+ - bash setup.sh
  
 script:
- - docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
+ - sudo ansible-playbook -i inventory playbook.yml
