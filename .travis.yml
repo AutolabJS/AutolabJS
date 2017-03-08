@@ -18,4 +18,4 @@ before_script:
  - bash setup.sh
  
 script:
- - sudo ansible-playbook -i inventory playbook.yml -u <username2> --ask-sudo-pass
+ - sudo ansible-playbook -i inventory playbook.yml
