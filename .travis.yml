@@ -15,4 +15,4 @@ before_script:
  - bash setup.sh
  
 script:
- - sudo ansible-playbook -i inventory playbook.yml
+ - ansible-playbook -i inventory playbook.yml
