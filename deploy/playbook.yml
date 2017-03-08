@@ -97,10 +97,10 @@
     - name: Create Test Project
       uri:
        url: https://{{ inventory_hostname }}/api/v3/projects
-        method: POST
-        status_code: 201
-        body: "name=Test&private_token={{ session.private_token }}"
-        validate_certs: no
+       method: POST
+       status_code: 201
+       body: "name=Test&private_token={{ session.private_token }}"
+       validate_certs: no
 
 - hosts: loadbalancer
   become: yes
