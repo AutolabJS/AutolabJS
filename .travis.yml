@@ -4,10 +4,6 @@ dist: trusty
 language: node_js
 node_js:
   - "6"
-
-services: 
- - docker
- - mysql
  
 install:
  - pip install ansible
