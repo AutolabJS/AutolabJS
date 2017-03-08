@@ -41,67 +41,66 @@
 #    - name: Create Autolab database
 #      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
 
-#- hosts: gitlab
-#  become: yes
-#  tasks:
-#    - name: Build GitLab Container
-#      docker_container:
-#        name: gitlab
-#        image: "gitlab/gitlab-ce:latest"
-#        detach: yes
-#        hostname: gitlab.example.com
-#        env:
-#          GITLAB_ROOT_PASSWORD: "{{ gitlab_password }}"
-#          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ inventory_hostname }}'; nginx['redirect_http_to_https'] = true;"
-#        published_ports:
-#          - "80:80"
-#          - "22:22"
-#          - "443:443"
-#        restart_policy: always
-#        volumes:
-#          - "/srv/gitlab/config:/etc/gitlab"
-#          - "/srv/gitlab/logs:/var/log/gitlab"
-#          - "/srv/gitlab/data:/var/opt/gitlab"
-
+- hosts: gitlab
+  become: yes
+  tasks:
+    - name: Build GitLab Container
+      docker_container:
+        name: gitlab
+        image: "gitlab/gitlab-ce:latest"
+        detach: yes
+        hostname: gitlab.example.com
+        env:
+          GITLAB_ROOT_PASSWORD: "{{ gitlab_password }}"
+          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ inventory_hostname }}'; nginx['redirect_http_to_https'] = true;"
+        published_ports:
+          - "80:80"
+          - "22:22"
+          - "443:443"
+        restart_policy: always
+        volumes:
+          - "/srv/gitlab/config:/etc/gitlab"
+          - "/srv/gitlab/logs:/var/log/gitlab"
+          - "/srv/gitlab/data:/var/opt/gitlab"
     ## TODO: Add support for generating keys on the fly
-#    - name: Copy the certificate
-#      shell: "{{ item }}"
-#      with_items:
-#        - "docker exec gitlab mkdir -p /etc/gitlab/ssl"
-#        - "docker cp ../gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
-#        - "docker cp ../gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
+    - name: Copy the certificate
+      shell: "{{ item }}"
+      with_items:
+        - "docker exec gitlab mkdir -p /etc/gitlab/ssl"
+        - "docker cp ../gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
+        - "docker cp ../gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
 
     #- name: Transfer wait-for-it to host
       #copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
-#    - name: Copy wait-for-it to container
-#      shell: docker cp wait-for-it.sh gitlab:/wait-for-it.sh
+    - name: Copy wait-for-it to container
+      shell: docker cp wait-for-it.sh gitlab:/wait-for-it.sh
 
-#    - name: Waiting for Unicorn on GitLab server to be up
-#      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
+    - name: Waiting for Unicorn on GitLab server to be up
+      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
 
-#    - pause: seconds=20
+    - pause: seconds=20
 
-#    - name: Get Private Token
-#      uri:
-#        url: https://{{ inventory_hostname }}/api/v3/session
-#        status_code: 201
-#        method: POST
-#        body: "login=root&password={{ gitlab_password }}"
-#        validate_certs: no
-#        return_content: yes
-#      register: session_json
+    - name: Get Private Token
+      uri:
+        url: https://{{ inventory_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
 
-#    - set_fact:
-#        session: "{{ session_json.content | from_json }}"
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
 
-#    - name: Create Test Project
-#      uri:
-#        url: https://{{ inventory_hostname }}/api/v3/projects
-#        method: POST
-#        status_code: 201
-#        body: "name=Test&private_token={{ session.private_token }}"
-#        validate_certs: no
+    - name: Create Test Project
+      uri:
+       url: https://{{ inventory_hostname }}/api/v3/projects
+        method: POST
+        status_code: 201
+        body: "name=Test&private_token={{ session.private_token }}"
+        validate_certs: no
 
 - hosts: loadbalancer
   become: yes
