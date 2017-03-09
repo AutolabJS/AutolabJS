@@ -1,4 +1,5 @@
 import java.io.*;
+
 class Buyer
 {
   private int cash;
@@ -18,11 +19,11 @@ class Buyer
     this.cash=cash;
   }
 
-  public void buy(Seller x)
+  public void buy(Seller seller)
   {
     if(cash>0)
     {
-      if(x.sell()==1)
+      if(seller.sell()==1)
       {
         cash--;
       }
