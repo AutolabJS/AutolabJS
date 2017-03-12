@@ -34,4 +34,4 @@ npm install body-parser
 npm install mysql
 node main_server.js&
 sleep 20
-curl --ipv4 https://127.0.0.1:9000
+curl --ipv4 -k https://127.0.0.1:9000
