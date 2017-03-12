@@ -4,17 +4,15 @@ dist: trusty
 language: node_js
 node_js:
   - "6"
+
 services:
  - mysql
- - docker
  
 install:
  - pip install --upgrade pip
- - npm install -g express-generator
 
 before_script:
  - npm install
- - npm install -g express
  
 script:
  - node ./main_server/main_server.js
