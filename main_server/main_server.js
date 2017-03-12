@@ -67,11 +67,11 @@ function initScoreboard(lab_no){
 
 initLabs();
 
-/*setInterval(function(){
+setInterval(function(){
   connection.query("SELECT 1", function(err, rows, fields){
     console.log("keep alive query");
   });
-}, 10000);*/
+}, 10000);
 
 server.listen(config_details.host_port.port);
 console.log("Listening at " + config_details.host_port.port);
