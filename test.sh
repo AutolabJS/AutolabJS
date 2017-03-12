@@ -24,10 +24,7 @@ jshint ../execution_nodes/execute_node.js
 eslint ../execution_nodes/execute_node.js
 
 chmod +x main_server.js
-chmod +x ../load_balancer/load_balancer.js
-chmod +x ../execution_nodes/execute_node.js
 
-cd ../load_balancer
 npm install express
 npm install httpolyglot
 npm install socket.io
@@ -35,7 +32,6 @@ npm install express-session
 npm install express-socket.io-session
 npm install body-parser
 npm install mysql
-
-node load_balancer.js
-
-
+node main_server.js&
+sleep 20
+curl --ipv4 https://127.0.0.1:9000
