@@ -32,4 +32,5 @@ npm install express-session
 npm install express-socket.io-session
 npm install body-parser
 npm install mysql
-node main_server.js
+node main_server.js&
+curl --ipv4 https://127.0.0.1:9000
