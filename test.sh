@@ -3,7 +3,7 @@
 sudo npm install -g jshint
 sudo npm install -g eslint
 
-cd ../main_server
+cd ./main_server
 
 jshint main_server.js
 eslint main_server.js
