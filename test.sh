@@ -25,9 +25,5 @@ eslint ../execution_nodes/execute_node.js
 
 chmod +x main_server.js
 
-sudo apt-get install iptables
-sudo iptables -A INPUT -p tcp --dport 9000 -j ACCEPT
-sudo /etc/init.d/iptables restart
-
 node main_server.js
 curl http://localhost:9000
