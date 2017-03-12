@@ -31,5 +31,6 @@ npm install socket.io
 npm install express-session
 npm install express-socket.io-session
 npm install body-parser
+npm install mysql
 node main_server.js
 curl http://localhost:9000
