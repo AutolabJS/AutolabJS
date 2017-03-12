@@ -25,13 +25,13 @@ eslint ../execution_nodes/execute_node.js
 
 chmod +x main_server.js
 
-npm install -g express
-npm install -g httpolyglot
-npm install -g socket.io
-npm install -g express-session
-npm install -g express-socket.io-session
-npm install -g body-parser
-npm install -g mysql
+npm install express
+npm install httpolyglot
+npm install socket.io
+npm install express-session
+npm install express-socket.io-session
+npm install body-parser
+npm install mysql
 
 node ../load_balancer/load_balancer.js
 
