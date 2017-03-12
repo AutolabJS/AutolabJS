@@ -7,13 +7,9 @@ node_js:
 
 services:
  - mysql
- 
-install:
- - pip install --upgrade pip
 
 before_script:
  - npm install -g jshint
- - npm install
  
 script:
  - bash test.sh
