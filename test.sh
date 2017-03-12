@@ -32,7 +32,7 @@ npm install -g express-session
 npm install -g express-socket.io-session
 npm install -g body-parser
 npm install -g mysql
-node main_server.js&
-node ../load_balancer/load_balancer.js&
-node ../execution_nodes/execute_node.js&
-curl --ipv4 https://127.0.0.1:9000
+
+node ../load_balancer/load_balancer.js
+
+
