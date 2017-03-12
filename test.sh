@@ -10,12 +10,15 @@ cd ../load_balancer
 sudo npm install
 
 sudo npm install -g jshint
+sudo npm install -g eslint
 
 cd ../main_server
 
 jshint main_server.js
-jslint main_server.js
-jshint ../load_balancer/load_balancer.js;
-jslint ../load_balancer/load_balancer.js;
-jshint ../execution_nodes/execute_node.js;
-jslint ../execution_nodes/execute_node.js;
+eslint main_server.js
+
+jshint ../load_balancer/load_balancer.js
+eslint ../load_balancer/load_balancer.js
+
+jshint ../execution_nodes/execute_node.js
+eslint ../execution_nodes/execute_node.js
