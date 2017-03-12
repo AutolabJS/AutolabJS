@@ -7,12 +7,9 @@ node_js:
  
 install:
  - pip install --upgrade pip
- - pip install ansible
 
 before_script:
  - npm install
- - cd ./deploy/
- - bash setup.sh
  
 script:
- - ansible-playbook -i inventory playbook.yml
+ - node ./main_server/main_server.js
