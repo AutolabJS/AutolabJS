@@ -11,6 +11,7 @@ services:
 before_script:
  - npm install -g jshint
  - npm install -g eslint
+ - npm install -g express
  
 script:
  - bash test.sh
