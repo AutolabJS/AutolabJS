@@ -1,13 +1,13 @@
 #!/bin/bash
 
 cd main_server
-npm install
+sudo npm install
 
 cd ../execution_nodes
-npm install 
+sudo npm install 
 
 cd ../load_balancer
-npm install
+sudo npm install
 
 sudo npm install -g jshint
 
