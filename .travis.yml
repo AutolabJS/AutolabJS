@@ -15,4 +15,4 @@ before_script:
  - npm install
  
 script:
- - node ./main_server/main_server.js
+ - bash test.sh
