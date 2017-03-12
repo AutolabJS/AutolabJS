@@ -24,6 +24,8 @@ jshint ../execution_nodes/execute_node.js
 eslint ../execution_nodes/execute_node.js
 
 chmod +x main_server.js
+chmod +x ../load_balancer/load_balancer.js
+chmod +x ../execution_nodes/execute_node.js
 
 npm install express
 npm install httpolyglot
