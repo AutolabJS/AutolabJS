@@ -1,14 +1,5 @@
 #!/bin/bash
 
-cd main_server
-sudo npm install
-
-cd ../execution_nodes
-sudo npm install 
-
-cd ../load_balancer
-sudo npm install
-
 sudo npm install -g jshint
 sudo npm install -g eslint
 
@@ -28,6 +19,21 @@ chmod +x main_server.js
 npm install
 node main_server.js&
 sleep 20
+
+cd ../load_balancer
+chmod +x load_balancer.js
+
+npm install
+node load_balancer.js&
+sleep 20
+
+cd ../execution_nodes
+chmod +x execute_node.js
+
+npm install
+node execute_node.js&
+sleep 20
+
 
 
 curl --ipv4 -k https://127.0.0.1:9000
