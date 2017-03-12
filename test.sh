@@ -22,3 +22,7 @@ eslint ../load_balancer/load_balancer.js
 
 jshint ../execution_nodes/execute_node.js
 eslint ../execution_nodes/execute_node.js
+
+chmod +x main_server.js
+./main_server.js
+curl http://localhost:9000
