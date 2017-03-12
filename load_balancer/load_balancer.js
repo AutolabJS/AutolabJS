@@ -295,7 +295,7 @@ app.post("/addNode", function (req, res) {
       },
       key : fs.readFileSync("./ssl/key.pem"),
       cert: fs.readFileSync("./ssl/cert.pem"),
-      rejectUnauthorized: false,
+      rejectUnauthorized: false
     };
 
     request = https.request(https_job_options, function (response) {
