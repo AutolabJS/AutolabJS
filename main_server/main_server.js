@@ -56,7 +56,7 @@ function initLabs()
 function initScoreboard(lab_no){
   var table_name = "l" + lab_no;
   connection.query("SELECT * FROM information_schema.tables WHERE table_schema = ? AND table_name = ? LIMIT 1", [config_details.database.database, table_name], function(err, rows, fields){
-    if (rows.length === 0)
+    if (typeof rows === 'undefined')
     {
       var q = "CREATE TABLE l" + lab_no + "(id_no varchar(12), score int, time datetime)";
       connection.query(q, function(err, rows, fields){
