@@ -12,8 +12,8 @@ var server = https.createServer(https_config,app);
 var exec = require("child_process").exec;
 var bodyParser = require("body-parser");
 var path = require("path");
-var conf = require("./deploy/configs/execution_node/conf.json");
-var scores = require("./deploy/configs/execution_node/scores.json");
+var conf = require("../deploy/configs/execution_node/conf.json");
+var scores = require("../deploy/configs/execution_node/scores.json");
 
 var load_balancer_hostname = conf.load_balancer.hostname;
 var load_balancer_port = conf.load_balancer.port;
