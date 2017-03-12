@@ -5,7 +5,7 @@
   "strict":    true,
   "newcap":    false,
   "undef":     true,
-  "unused":    true,
+  "unused":    false,
   "onecase":   true,
   "lastsemic": true
 }
