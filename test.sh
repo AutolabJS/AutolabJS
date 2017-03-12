@@ -25,5 +25,6 @@ eslint ../execution_nodes/execute_node.js
 
 chmod +x main_server.js
 
+npm install express
 node main_server.js
 curl http://localhost:9000
