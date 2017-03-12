@@ -25,13 +25,9 @@ eslint ../execution_nodes/execute_node.js
 
 chmod +x main_server.js
 
-npm install express
-npm install httpolyglot
-npm install socket.io
-npm install express-session
-npm install express-socket.io-session
-npm install body-parser
-npm install mysql
+npm install
 node main_server.js&
 sleep 20
+
+
 curl --ipv4 -k https://127.0.0.1:9000
