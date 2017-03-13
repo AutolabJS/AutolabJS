@@ -13,6 +13,7 @@ before_script:
  - npm install -g eslint
  - mysql -e 'CREATE DATABASE Autolab;'
  - mysql -e 'USE Autolab;'
+ - mysql -e 'SHOW DATABASES;'
  
 script:
  - bash test.sh
