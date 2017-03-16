@@ -7,7 +7,7 @@
  {
    "host"     : "localhost",
    "user"    : "root",
-   "password" : "",
+   "password" : "autolab",
    "database" : "Autolab"
  },
  "gitlab" :
