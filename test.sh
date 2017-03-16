@@ -14,7 +14,7 @@ eslint ../load_balancer/load_balancer.js
 jshint ../execution_nodes/execute_node.js
 eslint ../execution_nodes/execute_node.js
 
-grep -rl --exclude-dir=node_modules '/etc' . | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
+grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
 
 
 chmod +x main_server.js
