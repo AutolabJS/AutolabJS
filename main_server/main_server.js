@@ -25,11 +25,11 @@ var session = require("express-session")({
 
 var socketSession = require("express-socket.io-session");
 var bodyParser = require("body-parser");
-var config_details = require("../deploy/configs/main_server/conf.json");
+var config_details = require("/etc/main_server/conf.json");
 var mysql = require("mysql");
 
-var lab_config = require("../deploy/configs/main_server/labs.json");
-var course_details = require("../deploy/configs/main_server/courses.json");
+var lab_config = require("/etc/main_server/labs.json");
+var course_details = require("/etc/main_server/courses.json");
 
 app.use(session);
 app.use(bodyParser.urlencoded({extended: true}));
@@ -210,7 +210,7 @@ io.on("connection", function(socket){
 
   socket.on("submission", function(data){
     console.log("Socket submission event triggered");
-    var APIKeys = require("../deploy/configs/main_server/APIKeys.json").keys;
+    var APIKeys = require("/etc/main_server/APIKeys.json").keys;
     var id_number = data[0];
     var lab_no = data[1];
     var commit_hash = data[2];
@@ -317,8 +317,8 @@ io.on("connection", function(socket){
             initScoreboard(lab_available.Lab_No);
           }
     });
-    fs.writeFile("../deploy/configs/main_server/labs.json", JSON.stringify(lab, null, 4));
-    fs.writeFile("../deploy/configs/main_server/courses.json", JSON.stringify(data.course, null, 4));
+    fs.writeFile("/etc/main_server/labs.json", JSON.stringify(lab, null, 4));
+    fs.writeFile("/etc/main_server/courses.json", JSON.stringify(data.course, null, 4));
     socket.emit("saved");
     });
 
@@ -335,7 +335,7 @@ io.on("connection", function(socket){
         {
           if (lab_data.Labs[i].Lab_No === tableName) {lab_data.Labs.splice(i, 1);}
         }
-        fs.writeFileSync("../deploy/configs/main_server/labs.json", JSON.stringify(lab_data, null, 4));
+        fs.writeFileSync("/etc/main_server/labs.json", JSON.stringify(lab_data, null, 4));
         socket.emit("deleted");
       }
     });

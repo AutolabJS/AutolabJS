@@ -14,7 +14,7 @@ var bodyParser = require("body-parser");
 var exec = require("child_process").exec;
 var mysql = require("mysql");
 
-var nodes_data = require("../deploy/configs/load_balancer/nodes_data_conf.json");
+var nodes_data = require("/etc/load_balancer/nodes_data_conf.json");
 var server_hostname = nodes_data.server_info.hostname;
 var server_port = nodes_data.server_info.port;
 var gitlab_hostname = nodes_data.gitlab.hostname;
