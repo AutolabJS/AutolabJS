@@ -12,6 +12,7 @@ before_script:
  - npm install -g jshint
  - npm install -g eslint
  - mysql -e 'CREATE DATABASE Autolab;'
+ - echo "USE mysql;\nUPDATE user SET password=PASSWORD('autolab') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root 
  
 script:
  - bash test.sh
