@@ -269,7 +269,8 @@ io.on("connection", function(socket){
           "commit": commit_hash,
           "status": status,
           "penalty": penalty,
-          "socket": socket.id
+          "socket": socket.id,
+          "language": language
         };
 
         var body = JSON.stringify(body_json);
