@@ -56,6 +56,25 @@
       "hard_hour": "23",
       "hard_minute": "30",
       "penalty": "1"
+    },
+    {
+      "Lab_No": "labtest",
+      "start_date": "01",
+      "start_month": "1",
+      "start_year": "2017",
+      "start_hour": "3",
+      "start_minute": "00",
+      "end_date": "28",
+      "end_month": "6",
+      "end_year": "2050",
+      "end_hour": "22",
+      "end_minute": "00",
+      "hard_date": "28",
+      "hard_month": "4",
+      "hard_year": "2050",
+      "hard_hour": "23",
+      "hard_minute": "10",
+      "penalty": "10"
     }
   ]
 }
