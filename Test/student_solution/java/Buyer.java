@@ -1,7 +1,7 @@
 import java.io.*;
 class Buyer
 {
-  private int cash;
+  //private int cash;
 
   public Buyer(int cash)
   {
