@@ -12,7 +12,8 @@ jshint ../execution_nodes/execute_node.js
 eslint ../execution_nodes/execute_node.js
 
 grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
-
+rm ../execution_nodes/extract_run.sh
+mv ../execution_nodes/extract_run_test.sh ../execution_nodes/extract_run.sh
 
 chmod +x main_server.js
 
