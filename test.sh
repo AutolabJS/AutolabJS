@@ -35,6 +35,13 @@ npm install
 node execute_node.js&
 sleep 20
 
-
-
 curl --ipv4 -k https://127.0.0.1:9000
+
+cd ../Test
+chmod +x submit.js
+
+npm install
+node submit.js -i 2015A7PS006G -l labtest
+
+
+
