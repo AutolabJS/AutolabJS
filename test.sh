@@ -1,9 +1,5 @@
 #!/bin/bash
 
-sudo npm install -g jshint
-sudo npm install -g eslint
-sudo npm install -g autolabcli
-
 cd ./main_server
 
 jshint main_server.js
