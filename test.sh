@@ -43,7 +43,8 @@ chmod +x submit.js
 npm install minimist
 npm install cli-table
 npm install socket.io-client
-node submit.js -i 2015A7PS006G -l labtest
+node submit.js -i 2015A7PS006G -l labtest&
+sleep 20
 
 
 
