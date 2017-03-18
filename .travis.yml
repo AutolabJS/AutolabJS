@@ -11,7 +11,6 @@ services:
 before_script:
  - npm install -g jshint
  - npm install -g eslint
- - npm install -g autolabcli
  - npm install -g minimist
  - npm install -g cli-table
  - mysql -e 'CREATE DATABASE Autolab;'
