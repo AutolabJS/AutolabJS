@@ -40,7 +40,8 @@ curl --ipv4 -k https://127.0.0.1:9000
 cd ../Test
 chmod +x submit.js
 
-npm install
+npm install minimist
+npm install cli-table
 node submit.js -i 2015A7PS006G -l labtest
 
 
