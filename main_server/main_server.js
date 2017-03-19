@@ -60,6 +60,11 @@ function initScoreboard(lab_no){
     {
       var q = "CREATE TABLE l" + lab_no + "(id_no varchar(12), score int, time datetime)";
       connection.query(q, function(err, rows, fields){
+        if (err) {
+          console.log(err);
+        } else {
+          console.log("Table created without errors");
+        }
       });
     }
   });
