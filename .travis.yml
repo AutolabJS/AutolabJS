@@ -1,14 +1,21 @@
-
 sudo: required
 dist: trusty
 
 language: node_js
 node_js:
-  - 10
+  - "6"
 
+services:
+ - mysql
+
+before_script:
+ - npm install -g jshint
+ - npm install -g eslint
+ - npm install -g minimist
+ - npm install -g cli-table
+ - mysql -e 'CREATE DATABASE Autolab;'
+ - mysql -e 'USE Autolab;'
+ - echo "USE mysql;\nUPDATE user SET password=PASSWORD('autolab') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root 
+ 
 script:
- - bash test.sh 
-
-branches:
-  only:
-  - overlay
+ - bash test.sh
