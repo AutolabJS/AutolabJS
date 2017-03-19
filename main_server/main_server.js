@@ -215,7 +215,6 @@ io.on("connection", function(socket){
     var lab_no = data[1];
     var commit_hash = data[2];
     var language = data[3];
-    console.log(data[3]);
     var labFound = false;
     var penalty = 0;
     var curr_penalty = 0;
