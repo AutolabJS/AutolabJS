@@ -29,10 +29,8 @@
           - "/etc/localtime:/etc/localtime:ro"
         env:
           MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
-
     - name: Transfer wait-for-it
       copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
-
     - name: Waiting for MySQL server to be up
       shell: ./wait-for-it.sh -t 60 {{ inventory_hostname}}:3306
 
@@ -62,7 +60,6 @@
           - "/srv/gitlab/config:/etc/gitlab"
           - "/srv/gitlab/logs:/var/log/gitlab"
           - "/srv/gitlab/data:/var/opt/gitlab"
-
     ## TODO: Add support for generating keys on the fly
     - name: Copy the certificate
       shell: "{{ item }}"
@@ -97,11 +94,11 @@
 
     - name: Create Test Project
       uri:
-        url: https://{{ inventory_hostname }}/api/v3/projects
-        method: POST
-        status_code: 201
-        body: "name=Test&private_token={{ session.private_token }}"
-        validate_certs: no
+       url: https://{{ inventory_hostname }}/api/v3/projects
+       method: POST
+       status_code: 201
+       body: "name=Test&private_token={{ session.private_token }}"
+       validate_certs: no
 
 - hosts: loadbalancer
   become: yes

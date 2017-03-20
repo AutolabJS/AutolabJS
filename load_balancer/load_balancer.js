@@ -226,7 +226,7 @@ app.post("/sendScores", function (req, res) {
     }
 
     connection.query(q, function (err, rows, fields) {
-      if (rows.length === 0) {
+      if (typeof rows === 'undefined') {
         q1 = "INSERT INTO " + table_name + " VALUES (\"" + submission_json.id_no + "\", " + total_score + ",\"" + submission_json.time + "\")";
         connection.query(q1, function (err, rows, fields) {
           console.log(err);
@@ -295,7 +295,7 @@ app.post("/addNode", function (req, res) {
       },
       key : fs.readFileSync("./ssl/key.pem"),
       cert: fs.readFileSync("./ssl/cert.pem"),
-      rejectUnauthorized: false,
+      rejectUnauthorized: false
     };
 
     request = https.request(https_job_options, function (response) {

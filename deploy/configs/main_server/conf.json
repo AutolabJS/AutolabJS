@@ -7,13 +7,13 @@
  {
    "host"     : "localhost",
    "user"    : "root",
-   "password" : "root",
+   "password" : "auto",
    "database" : "Autolab"
  },
  "gitlab" :
  {
    "username":"root",
-   "password" : "qweasdzxc"
+   "password" : "12345678"
  },
  "host_port" :
  {

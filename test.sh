@@ -1,24 +1,50 @@
 #!/bin/bash
 
-cd main_server
-sudo npm install
+cd ./main_server
 
-cd ../execution_nodes
-sudo npm install 
+#jshint main_server.js
+#eslint main_server.js
+
+jshint ../load_balancer/load_balancer.js
+eslint ../load_balancer/load_balancer.js
+
+jshint ../execution_nodes/execute_node.js
+eslint ../execution_nodes/execute_node.js
+
+grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
+rm ../execution_nodes/extract_run.sh
+mv ../execution_nodes/extract_run_test.sh ../execution_nodes/extract_run.sh
+
+chmod +x main_server.js
+
+npm install
+node main_server.js&
+sleep 20
 
 cd ../load_balancer
-sudo npm install
+chmod +x load_balancer.js
 
-sudo npm install -g jshint
+npm install
+node load_balancer.js&
+sleep 20
 
-cd ../main_server
+cd ../execution_nodes
+chmod +x execute_node.js
 
-jshint main_server.js
-jshint database.js
-jshint ../load_balancer/load_balancer.js;
-jshint ../execution_nodes/execute_node.js;
+npm install
+node execute_node.js&
+sleep 20
 
-sudo npm test
+curl --ipv4 -k https://127.0.0.1:9000
 
-cd ../load_balancer;
-sudo npm test;
+cd ../Test
+chmod +x submit.js
+
+npm install minimist
+npm install cli-table
+npm install socket.io-client
+node submit.js -i 2015A7PS006G -l labtest&
+sleep 20
+
+
+

@@ -1,7 +1,8 @@
 import java.io.*;
+ahaa this is a syntax error now //this is a comment
 class Buyer
 {
-  private int cash;
+  //private int cash;
 
   public Buyer(int cash)
   {
@@ -25,7 +26,8 @@ class Buyer
       if(x.sell()==1)
       {
         cash--;
-      }
+        
+      //}
     }
   }
 }
