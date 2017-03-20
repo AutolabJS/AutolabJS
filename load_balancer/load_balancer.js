@@ -226,7 +226,7 @@ app.post("/sendScores", function (req, res) {
     }
 
     connection.query(q, function (err, rows, fields) {
-      if (typeof rows === 'undefined') {
+      if (typeof rows === 'undefined' || rows.length === 0) {
         q1 = "INSERT INTO " + table_name + " VALUES (\"" + submission_json.id_no + "\", " + total_score + ",\"" + submission_json.time + "\")";
         connection.query(q1, function (err, rows, fields) {
           console.log(err);
