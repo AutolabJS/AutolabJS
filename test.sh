@@ -2,8 +2,8 @@
 
 cd ./main_server
 
-jshint main_server.js
-eslint main_server.js
+#jshint main_server.js
+#eslint main_server.js
 
 jshint ../load_balancer/load_balancer.js
 eslint ../load_balancer/load_balancer.js
