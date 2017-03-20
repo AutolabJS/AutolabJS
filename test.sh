@@ -19,21 +19,21 @@ chmod +x main_server.js
 
 npm install
 node main_server.js&
-sleep 20
+sleep 2
 
 cd ../load_balancer
 chmod +x load_balancer.js
 
 npm install
 node load_balancer.js&
-sleep 20
+sleep 2
 
 cd ../execution_nodes
 chmod +x execute_node.js
 
 npm install
 node execute_node.js&
-sleep 20
+sleep 2
 
 curl --ipv4 -k https://127.0.0.1:9000
 
@@ -44,7 +44,7 @@ npm install minimist
 npm install cli-table
 npm install socket.io-client
 node submit.js -i 2015A7PS006G -l labtest&
-sleep 20
+sleep 10
 
 
 
