@@ -17,5 +17,3 @@ before_script:
  - mysql -e 'USE Autolab;'
  - echo "USE mysql;\nUPDATE user SET password=PASSWORD('autolab') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root 
  
-script:
-# - bash tests/test.sh
