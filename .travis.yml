@@ -5,15 +5,22 @@ language: node_js
 node_js:
   - "6"
 
+cache:
+  apt: true
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-6
+    - g++-6
+
 services:
  - mysql
 
 before_script:
- - npm install -g jshint
- - npm install -g eslint
- - npm install -g minimist
- - npm install -g cli-table
- - mysql -e 'CREATE DATABASE Autolab;'
- - mysql -e 'USE Autolab;'
- - echo "USE mysql;\nUPDATE user SET password=PASSWORD('autolab') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root 
+ - bash tests/install.sh
  
+script:
+ - bash tests/test.sh
