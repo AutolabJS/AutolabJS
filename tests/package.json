@@ -1,0 +1,29 @@
+{
+  "name": "tests",
+  "version": "0.2.0",
+  "description": "tests for autolab evaluation software",
+  "main": "test.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasadtalasila/JavaAutolab.git"
+  },
+  "keywords": [
+    "autolab",
+    "lab",
+    "evaluation"
+  ],
+  "author": "Prasad Talasila",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/prasadtalasila/JavaAutolab/issues"
+  },
+  "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki",
+  "dependencies": {
+    "cli-table": "^0.3.1",
+    "minimist": "^1.2.0",
+    "socket.io-client": "^1.7.3"
+  }
+}
