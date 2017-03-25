@@ -56,7 +56,7 @@ curl --ipv4 -k https://127.0.0.1:9000/status
 # run the tests
 cd tests
 chmod +x submit.js
-
+npm install
 #npm install minimist
 #npm install cli-table
 #npm install socket.io-client
