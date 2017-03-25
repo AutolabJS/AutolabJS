@@ -1,16 +1,31 @@
 {
   "name": "execution_nodes",
-  "version": "0.0.0",
-  "description": "ERROR: No README data found!",
+  "version": "0.2.0",
+  "description": "execution node component of autolab evaluation sofware",
   "main": "execute_node.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node execute_node.js"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasadtalasila/JavaAutolab.git"
+  },
+  "keywords": [
+    "autolab",
+    "lab",
+    "evaluation"
+  ],
+  "author": "Rajat Agarwal",
+  "contributors": [
+    "Tejas Sangol", "Gaurav Narula"
+  ],
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/prasadtalasila/JavaAutolab/issues"
+  },
+  "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki",
   "dependencies": {
     "body-parser": "1.8",
     "express": "^4.13.4"
-  },
-  "devDependencies": {}
+  }
 }

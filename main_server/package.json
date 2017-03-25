@@ -1,13 +1,29 @@
 {
   "name": "main_server",
-  "version": "0.0.0",
-  "description": "",
+  "version": "0.2.0",
+  "description": "main server component of autolab evaluation sofware",
   "main": "main_server.js",
   "scripts": {
-    "test": "mocha ./test/test_main.js && exit 0"
+    "start": "node main_server.js"
   },
-  "author": "",
-  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prasadtalasila/JavaAutolab.git"
+  },
+  "keywords": [
+    "autolab",
+    "lab",
+    "evaluation"
+  ],
+  "author": "Rajat Agarwal",
+  "contributors": [
+    "Tejas Sangol", "Gaurav Narula"
+  ],
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/prasadtalasila/JavaAutolab/issues"
+  },
+  "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki",
   "dependencies": {
     "body-parser": "1.8",
     "chai": "^3.5.0",
