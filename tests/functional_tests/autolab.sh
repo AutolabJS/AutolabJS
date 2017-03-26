@@ -14,7 +14,7 @@
 
 set -e	#exit on error
 
-TMPDIR="../../tmp"
+#TMPDIR="../../tmp"
 alias bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
