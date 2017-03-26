@@ -22,8 +22,14 @@
   },
   "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki",
   "dependencies": {
+    "bats": "git+https://github.com/sstephenson/bats.git",
+    "bats-support": "git+https://github.com/ztombol/bats-support.git",
+    "bats-assert": "git+https://github.com/ztombol/bats-assert.git",
+    "bats-file": "git+https://github.com/ztombol/bats-file.git",
     "cli-table": "^0.3.1",
+    "install": "^0.8.7",
     "minimist": "^1.2.0",
+    "npm": "^4.4.4",
     "socket.io-client": "^1.7.3"
   }
 }

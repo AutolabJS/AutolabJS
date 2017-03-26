@@ -49,16 +49,10 @@ node main_server.js&
 sleep 20
 cd ..
 
-# check the live website by fetching the home page
-curl --ipv4 -k https://127.0.0.1:9000
-curl --ipv4 -k https://127.0.0.1:9000/status
-
 # run the tests
 cd tests
 chmod +x submit.js
 npm install
-#npm install minimist
-#npm install cli-table
-#npm install socket.io-client
-node submit.js -i 2015A7PS006G -l lab1&
-sleep 20
+
+bash functional_tests/autolab.sh
+sleep 2
