@@ -1,5 +1,4 @@
 var argv = require('minimist')(process.argv.slice(2));
-var Table = require('cli-table');
 
 var submit = function(id_no, current_lab, commit_hash) {
 	var commit_hash = "";
@@ -18,7 +17,8 @@ var submit = function(id_no, current_lab, commit_hash) {
 	socket.on('scores', function(data) {
 		total_score=0;
 		console.log('\nSubmission successful. Retreiving results');
-		console.log("\nevaluation object: %j", data);
+		delete data.socket;
+		console.log("\nResults object: %j", data);
 	    	process.exit(0);
 	});
 };
