@@ -14,7 +14,7 @@
 
 set -e	#exit on error
 
-#TMPDIR="../../tmp"
+TMPDIR="../../tmp"
 alias bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
@@ -28,6 +28,7 @@ rm -rf $TMPDIR/index-page
 
 #mkdir $TMPDIR/status
 curl -s --ipv4 -k https://127.0.0.1:9000/status
+echo -e "\n\n"
 #curl -s --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
 #sleep 5
 #cmp $TMPDIR/status/status.txt data/autolab-start/status.txt
