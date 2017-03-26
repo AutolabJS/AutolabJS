@@ -23,10 +23,10 @@ var submit = function(id_no, current_lab, commit_hash, language) {
 };
 if (argv.l && argv.i) {
 	if (argv.h) {
-		submit(argv.i, argv.l, argv.h, arg.la)
+		submit(argv.i, argv.l, argv.h, argv.la)
 	}
 	else {
-		submit(argv.i, argv.l, '', arg.la);
+		submit(argv.i, argv.l, '', argv.la);
 	}
 }
 else {
