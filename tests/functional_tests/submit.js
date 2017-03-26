@@ -19,44 +19,7 @@ var submit = function(id_no, current_lab, commit_hash) {
 		total_score=0;
 		console.log('\nSubmission successful. Retreiving results');
 		console.log("\nevaluation object: %j", data);
-		var table = new Table({
-			chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗',
-			'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝', 
-			'left': '║' , 'left-mid': '╟' , 'mid': '─' , 'mid-mid': '┼',
-			'right': '║' , 'right-mid': '╢' , 'middle': '│' },
-			head: ['Test Case #', 'Status', 'Score'],
-			colWidths: [15,25,15]
-		});
-
-		for(i=0;i<data.marks.length;i++) {
-	    	total_score=total_score+ parseInt(data.marks[i]);
-	    	status = 'Accepted';
-	    	if(data.comment[i]===0) {
-	    		status='Wrong Answer';
-	    	}
-	    	if(data.comment[i]==1 && data.marks[i]===0) {
-	    		status='Compilation Error';
-	    	}
-	    	if(data.comment[i]==2 && data.marks[i]===0) {
-	    		status='Timeout';
-	    	}
-	    	table.push(
-	    		[(i+1), status, data.marks[i]]
-	    		);
-	    }
-	    console.log(table.toString());
-	    if (total_score < 0) {
-	    	total_score = 0;
-	    }
-	    if (data.status!==0) {
-	    	console.log('Penalty:' + data.penalty);
-	    }
-	    console.log('Total Score = ' + total_score);
-	    if (data.status===0) {
-	    	console.log('Warning:' + 'This lab is not active. The result of this evaluation is not added to the scoreboard.');
-	    }
-	    console.log(new Buffer(data.log, 'base64').toString());
-	    process.exit(0);
+	    	process.exit(0);
 	});
 };
 if (argv.l && argv.i) {
