@@ -18,21 +18,7 @@ TMPDIR="../../tmp"
 alias bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
-npm --quiet install
-
-# check the live website by fetching the home page
-#mkdir -p $TMPDIR/index-page
-#curl -s --ipv4 -k https://127.0.0.1:9000 -o $TMPDIR/index-page/index.html
-#cmp data/autolab-start/index.html $TMPDIR/index-page/index.html
-#rm -rf $TMPDIR/index-page
-
-#mkdir $TMPDIR/status
-#curl -s --ipv4 -k https://127.0.0.1:9000/status
-#echo -e "\n\n"
-#curl -s --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
-#sleep 5
-#cmp $TMPDIR/status/status.txt data/autolab-start/status.txt
-#rm -rf $TMPDIR/status
+npm --quiet install 1>/dev/null
 
 bats autolab.bats
 

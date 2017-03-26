@@ -19,32 +19,27 @@ set -e # Exit with nonzero exit code if anything fails
 
 #change the config file paths in all the relevant js files
 sed -i 's/\/etc\/execution_node/\.\.\/deploy\/configs\/execution_nodes/' execution_nodes/execute_node.js
-grep -e 'deploy/configs' execution_nodes/execute_node.js
-
 grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
 
 cp -f tests/extract_run_test.sh execution_nodes/extract_run.sh
 
 # run the execution node server
 cd execution_nodes
-#chmod +x execute_node.js
-npm --quiet install
+npm --quiet install 1>/dev/null
 node execute_node.js&
 sleep 5
 cd ..
 
 # run the load balancer server
 cd load_balancer
-#chmod +x load_balancer.js
-npm --quiet install
+npm --quiet install 1>/dev/null
 node load_balancer.js&
 sleep 5
 cd ..
 
 # run the main server
 cd main_server
-#chmod +x main_server.js
-npm --quiet install
+npm --quiet install 1>/dev/null
 node main_server.js&
 sleep 5
 cd ..
