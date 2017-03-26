@@ -23,14 +23,13 @@ npm install
 mkdir -p $TMPDIR/index-page
 curl -s --ipv4 -k https://127.0.0.1:9000 -o $TMPDIR/index-page/index.html
 cmp data/autolab-start/index.html $TMPDIR/index-page/index.html
-cat $TMPDIR/index-page/index.html
 rm -rf $TMPDIR/index-page
 
-mkdir $TMPDIR/status
-curl -s --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
-sleep 5
-cmp $TMPDIR/status/status.txt data/autolab-start/status.txt
-cat $TMPDIR/status/status.txt
-rm -rf $TMPDIR/status
+#mkdir $TMPDIR/status
+curl -s --ipv4 -k https://127.0.0.1:9000/status
+#curl -s --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
+#sleep 5
+#cmp $TMPDIR/status/status.txt data/autolab-start/status.txt
+#rm -rf $TMPDIR/status
 
 node submit.js -i 2015A7PS006G -l lab1&
