@@ -21,6 +21,13 @@ var submit = function(id_no, current_lab, commit_hash, language) {
 	    	process.exit(0);
 	});
 };
+/*
+ commandline options are:
+	-l	lab name
+	-i	student id number
+	-h	commit hash of the student repository
+	-la	programming language
+*/
 if (argv.l && argv.i) {
 	if (argv.h) {
 		submit(argv.i, argv.l, argv.h, argv.la)
