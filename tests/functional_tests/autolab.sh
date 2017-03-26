@@ -18,7 +18,7 @@ TMPDIR="../../tmp"
 alias bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
-npm install
+npm --quiet install
 
 # check the live website by fetching the home page
 #mkdir -p $TMPDIR/index-page

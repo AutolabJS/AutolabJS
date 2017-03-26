@@ -10,6 +10,7 @@
 }
 
 @test "check status page" {
+	mkdir $BATS_TMPDIR/status
 	curl -s --ipv4 -k https://127.0.0.1:9000/status -o $BATS_TMPDIR/status/status.txt
 	cmp $BATS_TMPDIR/status/status.txt data/autolab-start/status.txt
 	rm -rf $BATS_TMPDIR/status

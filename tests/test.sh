@@ -27,26 +27,26 @@ cp -f tests/extract_run_test.sh execution_nodes/extract_run.sh
 
 # run the execution node server
 cd execution_nodes
-chmod +x execute_node.js
-npm install
+#chmod +x execute_node.js
+npm --quiet install
 node execute_node.js&
-sleep 20
+sleep 5
 cd ..
 
 # run the load balancer server
 cd load_balancer
-chmod +x load_balancer.js
-npm install
+#chmod +x load_balancer.js
+npm --quiet install
 node load_balancer.js&
-sleep 20
+sleep 5
 cd ..
 
 # run the main server
 cd main_server
-chmod +x main_server.js
-npm install
+#chmod +x main_server.js
+npm --quiet install
 node main_server.js&
-sleep 20
+sleep 5
 cd ..
 
 # run the functional tests for autolab
