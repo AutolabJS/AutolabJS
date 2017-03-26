@@ -4,4 +4,4 @@
 main_server/lab_backups/
 main_server/test/npm-debug.log
 main_server/test/node_modules/
-tests/node_modules
+tests/functional_tests/node_modules/
