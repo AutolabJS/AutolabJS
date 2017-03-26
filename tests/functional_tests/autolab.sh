@@ -21,13 +21,14 @@ npm install
 
 # check the live website by fetching the home page
 mkdir -p $TMPDIR/index-page
-curl --ipv4 -k https://127.0.0.1:9000 -o $TMPDIR/index-page/index.html
+curl -s --ipv4 -k https://127.0.0.1:9000 -o $TMPDIR/index-page/index.html
 cmp data/autolab-start/index.html $TMPDIR/index-page/index.html
 cat $TMPDIR/index-page/index.html
 rm -rf $TMPDIR/index-page
 
 mkdir $TMPDIR/status
-curl --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
+curl -s --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
+sleep 5
 cmp $TMPDIR/status/status.txt data/autolab-start/status.txt
 cat $TMPDIR/status/status.txt
 rm -rf $TMPDIR/status
