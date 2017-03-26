@@ -15,6 +15,7 @@
 set -e	#exit on error
 
 TMPDIR="../../tmp"
+alias bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
 npm install
@@ -31,5 +32,7 @@ curl -s --ipv4 -k https://127.0.0.1:9000/status
 #sleep 5
 #cmp $TMPDIR/status/status.txt data/autolab-start/status.txt
 #rm -rf $TMPDIR/status
+
+bats autolab.bats
 
 node submit.js -i 2015A7PS006G -l lab1&
