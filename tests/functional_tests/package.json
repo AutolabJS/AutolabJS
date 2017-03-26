@@ -4,18 +4,18 @@
   "description": "functional tests for complete autolab application software",
   "main": "test.js",
   "dependencies": {
-    "bats": "^0.4.0",
+    "bats": ">0.4.0",
     "bats-support": "git+https://github.com/ztombol/bats-support.git",
-    "bats-file": "^0.2.0",
+    "bats-assert": ">0.3.0",
+    "bats-file": "git+https://github.com/ztombol/bats-file.git",
     "cli-table": "^0.3.1",
     "install": "^0.8.7",
     "minimist": "^1.2.0",
     "npm": "^4.4.4",
-    "socket.io-client": "^1.7.3",
-    "bats-assert": "^0.3.0"
+    "socket.io-client": "^1.7.3"
   },
   "scripts": {
-     "start": "node test.js"
+    "start": "node test.js"
   },
   "repository": {
     "type": "git",

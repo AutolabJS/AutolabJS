@@ -49,9 +49,7 @@ node main_server.js&
 sleep 20
 cd ..
 
-# run the tests
-cd tests
-npm install
-
-bash functional_tests/autolab.sh
+# run the functional tests for autolab
+cd tests/functional_tests
+bash autolab.sh
 sleep 2
