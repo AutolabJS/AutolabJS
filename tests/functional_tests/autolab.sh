@@ -12,12 +12,20 @@
 # Invocation: ./autolab.sh
 ###########
 
+TMPDIR="../../tmp"
+
+# install node dependencies
+npm install
 
 # check the live website by fetching the home page
-curl --ipv4 -k https://127.0.0.1:9000 -o /tmp/functional_tests/autolab/index.html
-cat /tmp/functional_tests/autolab/index.html
+mkdir -p $TMPDIR/index-page
+curl --ipv4 -k https://127.0.0.1:9000 -o $TMPDIR/index-page/index.html
+cat $TMPDIR/index-page/index.html
+rm -rf $TMPDIR/index-page
 
-curl --ipv4 -k https://127.0.0.1:9000/status -o /tmp/functional_tests/autolab/status.txt
-cat /tmp/functional_tests/autolab/status.txt
+mkdir $TMPDIR/status
+curl --ipv4 -k https://127.0.0.1:9000/status -o $TMPDIR/status/status.txt
+cat $TMPDIR/status/status.txt
+rm -rf $TMPDIR/status
 
 node submit.js -i 2015A7PS006G -l lab1&
