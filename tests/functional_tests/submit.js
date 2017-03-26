@@ -18,6 +18,7 @@ var submit = function(id_no, current_lab, commit_hash) {
 	socket.on('scores', function(data) {
 		total_score=0;
 		console.log('\nSubmission successful. Retreiving results');
+		console.log("\nevaluation object: %j", data);
 		var table = new Table({
 			chars: { 'top': '═' , 'top-mid': '╤' , 'top-left': '╔' , 'top-right': '╗',
 			'bottom': '═' , 'bottom-mid': '╧' , 'bottom-left': '╚' , 'bottom-right': '╝', 

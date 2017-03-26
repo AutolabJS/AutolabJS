@@ -1,4 +1,4 @@
-#!bats
+#!node_modules/bats/libexec/bats
 
 @test "load index.html page from main_server" {
 	mkdir -p $BATS_TMPDIR/index-page
