@@ -51,7 +51,6 @@ cd ..
 
 # run the tests
 cd tests
-chmod +x submit.js
 npm install
 
 bash functional_tests/autolab.sh
