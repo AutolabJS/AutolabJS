@@ -1,10 +1,21 @@
 {
-  "name": "tests",
+  "name": "functional_tests",
   "version": "0.2.0",
-  "description": "tests for autolab evaluation software",
+  "description": "functional tests for complete autolab application software",
   "main": "test.js",
+  "dependencies": {
+    "bats": "^0.4.0",
+    "bats-support": "git+https://github.com/ztombol/bats-support.git",
+    "bats-file": "^0.2.0",
+    "cli-table": "^0.3.1",
+    "install": "^0.8.7",
+    "minimist": "^1.2.0",
+    "npm": "^4.4.4",
+    "socket.io-client": "^1.7.3",
+    "bats-assert": "^0.3.0"
+  },
   "scripts": {
-    "start": "node test.js"
+     "start": "node test.js"
   },
   "repository": {
     "type": "git",
@@ -12,24 +23,13 @@
   },
   "keywords": [
     "autolab",
-    "lab",
-    "evaluation"
+    "evaluation",
+    "testing"
   ],
   "author": "Prasad Talasila",
   "license": "GPL-2.0",
   "bugs": {
     "url": "https://github.com/prasadtalasila/JavaAutolab/issues"
   },
-  "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki",
-  "dependencies": {
-    "bats": "git+https://github.com/sstephenson/bats.git",
-    "bats-support": "git+https://github.com/ztombol/bats-support.git",
-    "bats-assert": "git+https://github.com/ztombol/bats-assert.git",
-    "bats-file": "git+https://github.com/ztombol/bats-file.git",
-    "cli-table": "^0.3.1",
-    "install": "^0.8.7",
-    "minimist": "^1.2.0",
-    "npm": "^4.4.4",
-    "socket.io-client": "^1.7.3"
-  }
+  "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki"
 }
