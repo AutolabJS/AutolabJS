@@ -17,7 +17,16 @@
 	echo -e "======given status file====="
 	od -c data/autolab-start/status.txt
 	cmp $BATS_TMPDIR/status/status.txt data/autolab-start/status.txt
+	result=$?
 	rm -rf $BATS_TMPDIR/status
-	[ $? -eq 0 ]
+	[ "$result" -eq 0 ]
 }
 
+@test "unit test evaluation" {
+	mkdir $BATS_TMPDIR/unit-tests-example
+	node submit.js -i 2015A7PS006G -l lab1 -la java -o $BATS_TMPDIR/unit-tests-example/java.txt
+	cmp $BATS_TMPDIR/unit-tests-example/java.txt data/unit-tests-example/java.txt
+	result=$?
+	rm -rf $BATS_TMPDIR/unit-tests-example
+	[ "$result" -eq 0 ]
+}

@@ -1,9 +1,8 @@
 var argv = require('minimist')(process.argv.slice(2));
 
-var submit = function(id_no, current_lab, commit_hash) {
-	var commit_hash = "";
+var submit = function(id_no, current_lab, commit_hash, language) {
 	var socket = require('socket.io-client')('localhost'+':'+'9000');
-	socket.emit('submission', [id_no, current_lab , commit_hash, 'java']);
+	socket.emit('submission', [id_no, current_lab, commit_hash, language]);
 	socket.on('invalid', function(data) {
 		console.log('Access Denied. Please try submitting again');
 		process.exit(0);
@@ -24,10 +23,10 @@ var submit = function(id_no, current_lab, commit_hash) {
 };
 if (argv.l && argv.i) {
 	if (argv.h) {
-		submit(argv.i, argv.l, argv.h);
+		submit(argv.i, argv.l, argv.h, arg.la)
 	}
 	else {
-		submit(argv.i, argv.l, '');
+		submit(argv.i, argv.l, '', arg.la);
 	}
 }
 else {
