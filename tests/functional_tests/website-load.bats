@@ -19,3 +19,7 @@
 	rm -rf $BATS_TMPDIR/status
 	[ "$result" -eq 0 ]
 }
+
+@test "load Autolab-specific client-side js files" {
+	skip "TODO"
+}

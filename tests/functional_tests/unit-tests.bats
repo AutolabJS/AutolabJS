@@ -6,7 +6,7 @@ setup() {
 	mkdir $BATS_TMPDIR/unit-tests-example
 }
 
-tearDown() {
+teardown() {
 	rm -rf $BATS_TMPDIR/unit-tests-example
 }
 
