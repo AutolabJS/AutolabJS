@@ -3,11 +3,11 @@
 # all the tests related to client socket on the webpage
 # setup and teardown functions
 setup() {
-
+	echo "empty setup"
 }
 
 teardown() {
-
+	echo "empty teardown"
 }
 
 # in all cases, check for equality of json objects received on socket.io-client. Using a modified submit.js would be appropriate
