@@ -1,9 +1,8 @@
 var argv = require('minimist')(process.argv.slice(2));
 var Table = require('cli-table');
 
-var submit = function(id_no, current_lab, commit_hash) {
-	var commit_hash = "";
-	var req = [id_no, current_lab , commit_hash, 'java'];
+var submit = function(id_no, current_lab, commit_hash, language) {
+	var req = [id_no, current_lab , commit_hash, language];
 	var socket = require('socket.io-client')('localhost'+':'+'9000');
 	console.log("\nRequest array: "+req);
 	socket.emit('submission', req);
@@ -60,12 +59,19 @@ var submit = function(id_no, current_lab, commit_hash) {
 	    process.exit(0);
 	});
 };
-if (argv.l && argv.i) {
+/*
+ commandline options are:
+	-l	lab name
+	-i	student id number
+	-h	commit hash of the student repository
+	--lang	programming language
+*/
+if (argv.l && argv.i && argv.lang) {
 	if (argv.h) {
-		submit(argv.i, argv.l, argv.h);
+		submit(argv.i, argv.l, argv.h, argv.lang);
 	}
 	else {
-		submit(argv.i, argv.l, '');
+		submit(argv.i, argv.l, '', argv.lang);
 	}
 }
 else {
