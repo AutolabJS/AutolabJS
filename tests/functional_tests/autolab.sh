@@ -20,7 +20,7 @@ alias bats="node_modules/bats/libexec/bats"
 # install node dependencies
 npm --quiet install 1>/dev/null
 
-#bats autolab.bats
+bats autolab.bats
 
 #node submit.js -i 2015A7PS006G -l lab1
 node submit.js -i 2015A7PS006G -l lab1 --lang=java
