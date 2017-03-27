@@ -5,6 +5,17 @@ language: node_js
 node_js:
   - "6"
 
+cache:
+  apt: true
+
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-6
+    - g++-6
+
 services:
  - mysql
 

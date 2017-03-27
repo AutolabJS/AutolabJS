@@ -3,7 +3,7 @@ var argv = require('minimist')(process.argv.slice(2));
 var submit = function(id_no, current_lab, commit_hash, language) {
 	var req = [id_no, current_lab , commit_hash, language];
 	var socket = require('socket.io-client')('localhost'+':'+'9000');
-	console.log("\nRequest array: "+req);
+	//console.log("\nRequest array: "+req);
 	socket.emit('submission', req);
 	socket.on('invalid', function(data) {
 		console.log('Access Denied. Please try submitting again');

@@ -24,7 +24,7 @@
 
 @test "unit test evaluation" {
 	mkdir $BATS_TMPDIR/unit-tests-example
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java -o $BATS_TMPDIR/unit-tests-example/java.txt
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java > $BATS_TMPDIR/unit-tests-example/java.txt
 	cmp $BATS_TMPDIR/unit-tests-example/java.txt data/unit-tests-example/java.txt
 	result=$?
 	rm -rf $BATS_TMPDIR/unit-tests-example
