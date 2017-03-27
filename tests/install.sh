@@ -9,13 +9,6 @@
 
 npm install --quiet -g jshint 1>/dev/null
 npm install --quiet -g eslint 1>/dev/null
-npm install --quiet -g minimist 1>/dev/null
-npm install --quiet -g cli-table 1>/dev/null
-
-#software required for execution node
-# git, java and python are already available on travis containers -- no need to install these
-#sudo apt-get update -qq
-#sudo apt-get install -y gcc-6 g++-6
 
 #initialize the DB
 mysql -e 'CREATE DATABASE Autolab;'
