@@ -3,8 +3,10 @@ var Table = require('cli-table');
 
 var submit = function(id_no, current_lab, commit_hash) {
 	var commit_hash = "";
+	var req = [id_no, current_lab , commit_hash, 'java'];
 	var socket = require('socket.io-client')('localhost'+':'+'9000');
-	socket.emit('submission', [id_no, current_lab , commit_hash, 'java']);
+	console.log("\nRequest array: "+req);
+	socket.emit('submission', req);
 	socket.on('invalid', function(data) {
 		console.log('Access Denied. Please try submitting again');
 		process.exit(0);
