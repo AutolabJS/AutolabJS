@@ -21,5 +21,21 @@
 }
 
 @test "load Autolab-specific client-side js files" {
+	# check for userLogic.js
+	skip "TODO"
+}
+
+@test "load third-party js libraries" {
+	# check for jquery.min.js, socket.io.js, materialize.min.js, Filesaver.js
+	skip "TODO"
+}
+
+@test "load third-party css files" {
+	# check for css/*.css files
+	skip "TODO"
+}
+
+@test "check all hyperlinks" {
+	# check for live status of all http(s) href URLs on the page.
 	skip "TODO"
 }
