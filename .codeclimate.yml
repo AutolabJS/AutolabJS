@@ -49,3 +49,4 @@ exclude_paths:
 - main_server/public/css/materialize.min.css
 - misc/submission_script/socket.io/
 - misc/reval/socket.io/
+- misc/bootstrap/
