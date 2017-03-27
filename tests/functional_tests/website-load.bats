@@ -20,6 +20,9 @@
 	[ "$result" -eq 0 ]
 }
 
+# for the following tests, you need to extract the links from index.html
+# see http://stackoverflow.com/questions/9561020/how-do-i-use-the-python-scrapy-module-to-list-all-the-urls-from-my-website
+
 @test "load Autolab-specific client-side js files" {
 	# check for userLogic.js
 	skip "TODO"

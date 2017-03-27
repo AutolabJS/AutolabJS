@@ -21,7 +21,11 @@ echo -e "\n\n=========test cases===========\n"
 echo -e "\n=========webiste load tests========="
 bats website-load.bats
 echo -e "\n=========unit tests========="
-bats unit-tests.bats || echo -e "unit tests failed\n"
+bats unit-tests.bats
+echo -e "\n=========scoreboard tests========="
+bats scoreboard.bats
+echo -e "\n=========socket events tests========="
+bats socket-events.bats
 
 
 # sample code to check evaluation results manually
