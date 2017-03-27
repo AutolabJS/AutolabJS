@@ -14,7 +14,8 @@ npm install --quiet -g cli-table 1>/dev/null
 
 #software required for execution node
 # git, java and python are already available on travis containers -- no need to install these
-sudo apt-get apt-get install -y software-properties-common
+sudo apt-get update
+sudo apt-get install -y software-properties-common
 sudo apt-get install -y gcc-6 g++-6
 
 #initialize the DB
