@@ -19,46 +19,46 @@ set -e # Exit with nonzero exit code if anything fails
 
 #change the config file paths in all the relevant js files
 sed -i 's/\/etc\/execution_node/\.\.\/deploy\/configs\/execution_nodes/' execution_nodes/execute_node.js
-grep -e 'deploy/configs' execution_nodes/execute_node.js
-
 grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
 
+# replace gitlab dependency with a file system repository
 cp -f tests/extract_run_test.sh execution_nodes/extract_run.sh
+
+# create a temporary log directory
+mkdir /tmp/log
 
 # run the execution node server
 cd execution_nodes
-chmod +x execute_node.js
-npm install
-node execute_node.js&
-sleep 20
+npm --quiet install 1>/dev/null
+node execute_node.js >>/tmp/log/execute_node.log 2>&1 &
+sleep 5
 cd ..
 
 # run the load balancer server
 cd load_balancer
-chmod +x load_balancer.js
-npm install
-node load_balancer.js&
-sleep 20
+npm --quiet install 1>/dev/null
+node load_balancer.js >>/tmp/log/load_balancer.log 2>&1 &
+sleep 5
 cd ..
 
 # run the main server
 cd main_server
-chmod +x main_server.js
-npm install
-node main_server.js&
-sleep 20
+npm --quiet install 1>/dev/null
+node main_server.js >>/tmp/log/main_server.log 2>&1 &
+sleep 5
 cd ..
 
-# check the live website by fetching the home page
-curl --ipv4 -k https://127.0.0.1:9000
-curl --ipv4 -k https://127.0.0.1:9000/status
+# run the functional tests for autolab
+cd tests/functional_tests
+bash autolab.sh
+sleep 2
 
-# run the tests
-cd tests
-chmod +x submit.js
+# show the logs of all the Autolab components for verification
+echo -e "\n\n=====Main Server Log====="
+cat /tmp/log/main_server.log
+echo -e "\n\n=====Load Balancer Log====="
+cat /tmp/log/load_balancer.log
+echo -e "\n\n=====Execution Node Log====="
+cat /tmp/log/execute_node.log
 
-npm install minimist
-npm install cli-table
-npm install socket.io-client
-node submit.js -i 2015A7PS006G -l lab1&
-sleep 20
+# TODO: stop the autolab services and remove the logs
