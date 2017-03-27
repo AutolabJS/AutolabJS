@@ -1,19 +1,16 @@
 var argv = require('minimist')(process.argv.slice(2));
 var io = require('socket.io-client');
 
-var submit = function(id_no, current_lab, commit_hash, language) {
+var submit = function(host, id_no, current_lab, commit_hash, language) {
 	var req = [id_no, current_lab , commit_hash, language];
-	//var socket = require('socket.io-client')('localhost'+':'+'9000');
-	var socket = io.connect('localhost'+':'+'9000');
+	var socket = io.connect(host);
 	socket.emit('submission', req);
 	socket.on('invalid', function(data) {
 		console.log('Access Denied. Please try submitting again');
-		process.exit(0);
 	});
 
 	socket.on('submission_pending',function(data) {
 		console.log('You have a pending submission. Please try after some time.');
-		process.exit(0);
 	});
 
 	socket.on('scores', function(data) {
@@ -21,7 +18,6 @@ var submit = function(id_no, current_lab, commit_hash, language) {
 		console.log('\nSubmission successful. Retreiving results');
 		delete data.socket;
 		console.log("\nResults object: %j", data);
-	    	process.exit(0);
 	});
 };
 /*
@@ -30,13 +26,14 @@ var submit = function(id_no, current_lab, commit_hash, language) {
 	-i	student id number
 	-h	commit hash of the student repository
 	--lang	programming language
+	--host	server url, ex: localhost:9000
 */
-if (argv.l && argv.i && argv.lang) {
+if (argv.host && argv.l && argv.i && argv.lang) {
 	if (argv.h) {
-		submit(argv.i, argv.l, argv.h, argv.lang);
+		submit(argv.host, argv.i, argv.l, argv.h, argv.lang);
 	}
 	else {
-		submit(argv.i, argv.l, '', argv.lang);
+		submit(argv.host, argv.i, argv.l, '', argv.lang);
 	}
 }
 else {

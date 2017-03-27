@@ -24,7 +24,7 @@
 
 @test "run java unit tests" {
 	mkdir $BATS_TMPDIR/unit-tests-example
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java > $BATS_TMPDIR/unit-tests-example/java.txt
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > $BATS_TMPDIR/unit-tests-example/java.txt
 	od -c $BATS_TMPDIR/unit-tests-example/java.txt
 	od -c data/unit-tests-example/java.txt
 	skip "test fails for now"
