@@ -54,11 +54,11 @@ bash autolab.sh
 sleep 2
 
 # show the logs of all the Autolab components for verification
-echo "\n\n=====Main Server Log====="
+echo -e "\n\n=====Main Server Log====="
 cat /tmp/log/main_server.log
-echo "\n\n=====Load Balancer Log====="
+echo -e "\n\n=====Load Balancer Log====="
 cat /tmp/log/load_balancer.log
-echo "\n\n=====Execution Node Log====="
+echo -e "\n\n=====Execution Node Log====="
 cat /tmp/log/execute_node.log
 
 # TODO: stop the autolab services and remove the logs
