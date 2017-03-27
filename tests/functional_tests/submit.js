@@ -3,10 +3,8 @@ var io = require('socket.io-client');
 
 var submit = function(host, id_no, current_lab, commit_hash, language) {
 	var req = [id_no, current_lab , commit_hash, language];
-	console.log(host);
 	var socket = io.connect(host);
 
-	//console.log(host);
 	socket.emit('submission', req);
 	socket.on('invalid', function(data) {
 		console.log('Access Denied. Please try submitting again');
@@ -31,7 +29,6 @@ var submit = function(host, id_no, current_lab, commit_hash, language) {
 	--lang	programming language
 	--host	server url, ex: localhost:9000
 */
-console.log(argv);
 if (argv.host && argv.l && argv.i && argv.lang) {
 	if (argv.h) {
 		submit(argv.host, argv.i, argv.l, argv.h, argv.lang);
