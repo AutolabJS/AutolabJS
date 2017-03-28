@@ -17,11 +17,9 @@ engines:
       - php
   eslint:
     enabled: true
+    config:
+      config: tests/.eslintrc
   fixme:
-    enabled: true
-  radon:
-    enabled: true
-  rubocop:
     enabled: true
 ratings:
   paths:
@@ -31,9 +29,6 @@ ratings:
   - "**.js"
   - "**.jsx"
   - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
   - "**.sh"
 exclude_paths:
 - main_server/reval/node_modules/
