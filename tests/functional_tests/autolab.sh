@@ -22,11 +22,14 @@ echo -e "\n=========webiste load tests========="
 bats website-load.bats
 echo -e "\n=========unit tests========="
 bats unit-tests.bats
+echo -e "\n=========HackerRank compatible IO tests========="
+bats io-tests.bats
 echo -e "\n=========scoreboard tests========="
 bats scoreboard.bats
 echo -e "\n=========socket events tests========="
 bats socket-events.bats
-
+echo -e "\n=========headless browser-based tests========="
+node test.js
 
 # sample code to check evaluation results manually
 #node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000'
