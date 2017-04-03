@@ -33,7 +33,23 @@ openssl req -new -passout pass:$password -x509 -days 365 -key rootca.key -out ro
 
 #Putting Root Authority Certificates and key into a folder
 #and making Directors for storing keys.
-sh ./config.sh
+mkdir RootCA
+mkdir RootCA/certs
+mv rootca.key RootCA/rootca.key
+mv rootca.crt RootCA/rootca.crt
+touch RootCA/certindex.txt
+rm randRootCA
+echo 1000 > RootCA/serial
+
+#Making Directories for storing keys
+mkdir ../main_server/ssl
+mkdir ../load_balancer/ssl
+mkdir ../execution_nodes/ssl
+mkdir keys
+mkdir keys/gitlab
+mkdir keys/gitlab/main_server
+mkdir keys/gitlab/load_balancer
+mkdir keys/gitlab/execution_nodes/
 
 function createCert(){
 #Now we use this root certificate to sign the other certficates we create.
@@ -72,11 +88,15 @@ function createCert(){
  openssl ca -name CA_RootCA -in $domain.csr -out $domain.crt -config openssl.cnf 
 }
 
-createCert ../main_server/ssl/main_server ms.autolab.bits-goa.ac.in
-createCert ../load_balancer/ssl/load_balancer lb.autolab.bits-goa.ac.in
-createCert ../execution_nodes/ssl/execution_node_1 en1.autolab.bits-goa.ac.in
-createCert ../execution_nodes/ssl/execution_node_2 en2.autolab.bits-goa.ac.in
-createCert ../execution_nodes/ssl/execution_node_3 en3.autolab.bits-goa.ac.in
-createCert ../execution_nodes/ssl/execution_node_4 en4.autolab.bits-goa.ac.in
-createCert ../execution_nodes/ssl/execution_node_5 en5.autolab.bits-goa.ac.in
+createCert ../main_server/ssl/main_server "ms.$organization"
+createCert ../load_balancer/ssl/load_balancer "lb.$organization"
+createCert ../execution_nodes/ssl/execution_node_1 "en1.$organization"
+createCert ../execution_nodes/ssl/execution_node_2 "en2.$organization"
+createCert ../execution_nodes/ssl/execution_node_3 "en3.$organization"
+createCert ../execution_nodes/ssl/execution_node_4 "en4.$organization"
+createCert ../execution_nodes/ssl/execution_node_5 "en5.$organization"
 
+#Copying the certificates to another directory
+cp ../main_server/ssl/* keys/gitlab/main_server
+cp ../load_balancer/ssl/* keys/gitlab/load_balancer
+cp ../execution_nodes/ssl/* keys/gitlab/execution_nodes
