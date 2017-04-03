@@ -60,32 +60,32 @@ function createCert(){
  echo "Generating key request for $domain"
      
  #Generate a key
- openssl genrsa -aes256 -passout pass:$password -out $domain.key 2048 -noout
+ openssl genrsa -aes256 -passout pass:$password -out "$domain.key" 2048 -noout
    
  #Remove passphrase from the key. Comment the line out to keep the passphrase
  echo "Removing passphrase from key"
- openssl rsa -in $domain.key -passin pass:$password -out $domain.key
+ openssl rsa -in "$domain.key" -passin pass:$password -out "$domain.key"
    
  #Create the request
  echo "Creating CSR"
- openssl req -new -key $domain.key -out $domain.csr -passin pass:$password -config openssl.cnf \
+ openssl req -new -key "$domain.key" -out "$domain.csr" -passin pass:$password -config openssl.cnf \
 -subj "/C=$country/ST=$state/L=$locality/O=$organization/OU=$organizationalunit/CN=$commonname/emailAddress=$email"
   
  echo "---------------------------"
  echo "-----Below is your CSR-----"
  echo "---------------------------"
  echo
- cat $domain.csr
+ cat "$domain.csr"
    
  echo
  echo "---------------------------"
  echo "-----Below is your Key-----"
  echo "---------------------------"
  echo
- cat $domain.key
+ cat "$domain.key"
 
  #Signing the certificate with our root certificate
- openssl ca -name CA_RootCA -in $domain.csr -out $domain.crt -config openssl.cnf 
+ openssl ca -name CA_RootCA -in "$domain.csr" -out "$domain.crt" -config openssl.cnf 
 }
 
 createCert ../main_server/ssl/main_server "ms.$organization"
