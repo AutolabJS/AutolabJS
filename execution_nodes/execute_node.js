@@ -2,6 +2,11 @@
 var fs = require("fs");
 var express = require("express");
 var app = express();
+var exec = require("child_process").exec;
+var bodyParser = require("body-parser");
+var path = require("path");
+var conf = require("/etc/execution_node/conf.json");
+var scores = require("/etc/execution_node/scores.json");
 var https_config = {
   key : fs.readFileSync("./ssl/key.pem"),
   cert: fs.readFileSync("./ssl/cert.pem"),
@@ -9,11 +14,6 @@ var https_config = {
 };
 var https = require("https");
 var server = https.createServer(https_config,app);
-var exec = require("child_process").exec;
-var bodyParser = require("body-parser");
-var path = require("path");
-var conf = require("/etc/execution_node/conf.json");
-var scores = require("/etc/execution_node/scores.json");
 
 var load_balancer_hostname = conf.load_balancer.hostname;
 var load_balancer_port = conf.load_balancer.port;
@@ -37,7 +37,6 @@ var https_addnode_options = {
   rejectUnauthorized:false
 };
 
-app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 app.get("/connectionCheck", function (req,res) {
