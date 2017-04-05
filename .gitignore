@@ -1,3 +1,7 @@
 /execution_nodes/node_modules
 /load_balancer/node_modules
 /main_server/node_modules
+main_server/lab_backups/
+main_server/test/npm-debug.log
+main_server/test/node_modules/
+tests/functional_tests/node_modules/

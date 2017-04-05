@@ -1,0 +1,135 @@
+<html>
+
+  <head>
+    <script type="text/javascript" src="js/jquery.min.js"></script>
+    <meta charset="utf-8">
+   <title>Config</title>
+    <link href="css/icon.css" rel="stylesheet">
+    <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
+    <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  </head>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="js/materialize.min.js"></script>
+  <script type="text/javascript" src="js/FileSaver.js"></script>
+  <script type="text/javascript" src = "js/configLogic.js"></script>
+
+  <body>
+      <nav class="light-blue darken-3" role="navigation" style="position: fixed; z-index: 1000">
+      <div class="nav-wrapper container"><a id="logo_container" href="/admin" class="brand-logo">Admin Portal</a>
+        <ul class="right hide-on-med-and-down">
+
+           <li id = "login-navbar"><a class="dropdown-button" href="#" data-activates="dropdown2" data-beloworigin="true" id = "login_dropdown">Login</a></li>
+           <li id = "logout-navbar"><a href="#" id = "logout">Logout</a></li>
+           <li><a target="_blank" href="https://autolab.bits-goa.ac.in">GitLab</a></li>
+           <li><a class="dropdown-button" href="" data-activates="dropdown1">Guides<i class="material-icons right">arrow_drop_down</i></a></li>
+        </ul>
+      </div>
+    </nav>
+
+
+    <ul class="right hide-on-med-and-down" >
+          <ul id="dropdown1" class="dropdown-content">
+            <li><a target="_blank" href="https://github.com/prasadtalasila/JavaAutolab/wiki/Making-a-Submission">Submission</a></li>
+            <li class="divider"></li>
+            <li><a target="_blank" href="https://github.com/prasadtalasila/JavaAutolab/wiki/Post-lab-self-evaluation">Post Lab</a></li>
+          </ul>
+
+    </ul>
+      <ul id="dropdown2" class="dropdown-content collection" >
+              <li class = "collection-item avatar">
+                <div class="container" style="text-align: left">
+                    <input type="password" name = "APIKey" id = "APIKey" style="text-align:left">
+                    <label for = "APIKey">Key</label>
+                    <br/>
+                    <button type = "submit" class="waves-effect blue btn"  style="z-index: =2" id = "submit">Submit</button>
+                </div>
+
+              </li>
+
+
+    </ul>
+    <main>
+      <div class = "container">
+
+
+
+
+    <div class="row">
+     <br><br><br><br><br>
+    <h4> Course details</h4>
+	    <form class="col s12" id="course">
+	      <div class="row">
+	        <div class="input-field col s6">
+	          <input id="name" type="text" class="validate">
+	          <label for="name">Course name</label>
+	        </div>
+	        <div class="input-field col s6">
+	          <input id="number" type="text" class="validate">
+	          <label for="number">Course number</label>
+	        </div>
+	      </div>
+
+	      <div class="row">
+	        <div class="input-field col s12">
+	          <input id="ic" type="text" class="validate">
+	          <label for="ic">Instructor in-charge</label>
+	        </div>
+	      </div>
+
+
+	      <a class="waves-effect blue btn"  id = "add_instructor">Add instructors</a>
+	    </form>
+  	</div>
+
+     <br/> <br/>
+
+  	<div class="row">
+
+    <h4> Labs </h4>
+     <ul class="collapsible popout" data-collapsible="expandale">
+     <a class="waves-effect blue btn"  id = "add_lab">Add Labs </a>
+     </ul>
+
+  	</div>
+
+
+    <a class= "waves-effect blue btn" id="save">Save</a>
+    </div>
+    </main>
+
+    <footer class="page-footer light-blue darken-3">
+      <div class="container">
+        <div class="row">
+          <div class="col l6 s12">
+            <h5 class="white-text">About</h5>
+            <p class="grey-text text-lighten-4">This is an autograder service.<br>
+              Please report any bugs to the instruction team. <br>
+              Interested in contributing? Find the source code <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/prasadtalasila/JavaAutolab"><b>here</b></a>.
+            </p>
+          </div>
+          <div class="col l4 offset-l2 s12">
+            <h5 class="white-text">Instructors</h5>
+            <ul id = "instructors">
+
+
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="footer-copyright">
+        <div class="container">
+          <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/prasadtalasila/JavaAutolab/wiki"><b>Contributors</b></a>
+        </div>
+      </div>
+    </footer>
+
+  </body>
+
+  <script type="text/javascript">
+
+
+  </script>
+
+</html>

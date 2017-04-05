@@ -3,13 +3,24 @@ dist: trusty
 
 language: node_js
 node_js:
-  - 10
+  - "6"
 
-before_install: ./test.sh 
+cache:
+  apt: true
 
-install: true
+addons:
+  apt:
+    sources:
+    - ubuntu-toolchain-r-test
+    packages:
+    - gcc-6
+    - g++-6
+
+services:
+ - mysql
+
+before_script:
+ - bash tests/install.sh
  
-
-branches:
-  only:
-  - overlay
+script:
+ - bash tests/test.sh

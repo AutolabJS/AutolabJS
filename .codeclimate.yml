@@ -1,5 +1,7 @@
 ---
 engines:
+  shellcheck:
+    enabled: true
   checkstyle:
     enabled: true
     channel: "beta"
@@ -15,11 +17,9 @@ engines:
       - php
   eslint:
     enabled: true
+    config:
+      config: tests/.eslintrc
   fixme:
-    enabled: true
-  radon:
-    enabled: true
-  rubocop:
     enabled: true
 ratings:
   paths:
@@ -29,8 +29,19 @@ ratings:
   - "**.js"
   - "**.jsx"
   - "**.module"
-  - "**.php"
-  - "**.py"
-  - "**.rb"
+  - "**.sh"
 exclude_paths:
-- test/
+- main_server/reval/node_modules/
+- main_server/test/node_modules/
+- main_server/public/js/jquery.min.js
+- main_server/public/js/materialize.js
+- main_server/public/js/materialize.min.js
+- main_server/public/fonts/
+- main_server/public/font/
+- main_server/public/css/2fcrYFNaTjcS6g4U3t-Y5ZjZjT5FdEJ140U2DJYC3mY.woff2
+- main_server/public/css/icon.css
+- main_server/public/css/materialize.css
+- main_server/public/css/materialize.min.css
+- misc/submission_script/socket.io/
+- misc/reval/socket.io/
+- misc/bootstrap/
