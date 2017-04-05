@@ -6,3 +6,5 @@ main_server/test/npm-debug.log
 main_server/test/node_modules/
 tests/functional_tests/node_modules/
 .vagrant
+docker-images/
+ubuntu-xenial-16.04-cloudimg-console.log

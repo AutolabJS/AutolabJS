@@ -16,5 +16,14 @@ npm install npm@latest -g
 # run setup.sh to install the Autolab prerequisite packages
 source /home/vagrant/autolab/deploy/setup.sh
 
+# if available, load docker images
+if [ -d /home/vagrant/autolab/docker-images ]
+then
+  cd /home/vagrant/autolab/docker-images
+  bash load.sh
+fi
+
 # run Ansible playbook
-ansible-playbook playbook.yml -i inventory.ini --user=vagrant --extra-vars "ansible_ssh_port=2222 ansible_become_pass=vagrant"
+cd /home/vagrant/autolab/deploy
+sudo ansible-playbook playbook.yml -i inventory
+#sudo ansible-playbook playbook.yml -i inventory --user=vagrant --extra-vars "ansible_ssh_port=2222 ansible_become_pass=vagrant"
