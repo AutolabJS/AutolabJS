@@ -11,6 +11,10 @@
 apt-get update
 apt-get install -y git
 
+# setup SSH port forwarding on the host machine
+username=$(whoami | tr -d '\n')
+source ssh_local_forward.sh "$username"
+
 # install virtualbox and its dependencies
 apt-get install -y libpython2.7 libqt5core5a libqt5gui5 libqt5opengl5 libqt5printsupport5 libqt5widgets5 libqt5x11extras5 libvpx3
 apt-get -f -y install
@@ -38,5 +42,3 @@ else
     wget https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
 fi
 dpkg -i packages/vagrant_1.9.3_x86_64.deb
-
-
