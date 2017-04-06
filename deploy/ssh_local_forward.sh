@@ -7,9 +7,10 @@
 # Authors: Prasad Talasila
 # Date: 03-April-2017
 # Invocation: Invoke the script without any commandline parameters
-#               bash ssh_local_forward.sh
+#               bash ssh_local_forward.sh <username>
 # Prerequisites:
 #              Setup an SSH server on the localhost to run at port 222
+#              If SSH server is not already available, this script sets up a fresh instance of openssh-server
 ##############
 
 #set -e      # bail out on failure
@@ -23,6 +24,6 @@ then
 fi
 
 # all the privileged port mappings
-sudo ssh -p 222 systemlab03@localhost -fN -L 22:localhost:9001
-sudo ssh -p 222 systemlab03@localhost -fN -L 80:localhost:9002
-sudo ssh -p 222 systemlab03@localhost -fN -L 443:localhost:9003
+sudo ssh -p 222 "$1@localhost" -fN -L 22:localhost:9001
+sudo ssh -p 222 "$1@localhost" -fN -L 80:localhost:9002
+sudo ssh -p 222 "$1@localhost" -fN -L 443:localhost:9003
