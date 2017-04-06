@@ -10,6 +10,8 @@ chmod +x env_setup.sh
 sudo ./env_setup.sh
 ```
 
+If you have the cached docker images of Autolab components, place them in ```JavaAutolab/docker-images``` directory.    
+
 If you want to setup and test Autolab software, execute the Vagrant environment. Please note that the vagrant machine requires 4GB of RAM. You are advised to run the vagrant command only on a computer with at least 4 core CPU, 6GB of RAM and 20GB hard disk space.     
 ```shell
 cd ../..    #do to the top-level directory of Autolab code base
