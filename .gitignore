@@ -8,3 +8,4 @@ tests/functional_tests/node_modules/
 .vagrant
 docker-images/
 ubuntu-xenial-16.04-cloudimg-console.log
+deploy/dev_setup/packages/
