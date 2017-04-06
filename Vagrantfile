@@ -30,5 +30,5 @@ Vagrant.configure("2") do |config|
   end
 
   # install autolab
-  config.vm.provision :shell, privileged: true, path: "deploy/vagrant.sh"
+  config.vm.provision :shell, privileged: true, path: "deploy/dev_setup/vagrant.sh"
 end
