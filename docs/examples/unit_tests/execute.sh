@@ -12,9 +12,9 @@
 #		the language can be any of the following: java, c, python2, python3, cpp, cpp14
 #
 # Arguments: The first(and only) argument provides the language chosen by the student.
-#            This will be appended to the the language specific compilation and 
+#            This will be appended to the the language specific compilation and
 #            execution files.
-# 
+#
 # Dependencies: proper setup of test_cases/checks, test_cases/setup and test_cases/tests
 #		see README.txt for more details
 #
@@ -28,10 +28,10 @@
 #	log		temporary log file that collects compile and run-time logs from all tests
 #	marks		array containing marks from all the tests
 #	comments	"Wrong Answer", "Compilation Error", "Timeout", "Accepted"
-#	comments to be added in future: "Runtime Error", "Partial Answer", "Exception", "Files Not Available", 
+#	comments to be added in future: "Runtime Error", "Partial Answer", "Exception", "Files Not Available",
 #					"Unsupported Language"
 #
-#	testDir		directory containing all the relevant tests for each language supported for an assignment; 
+#	testDir		directory containing all the relevant tests for each language supported for an assignment;
 #			At the top-level of testDir, there would be language-specific folders. The contents of each folder are
 #					setup/		contains input and file copying shell script for each test
 #					tests/		contains the language-specific testing code
@@ -107,7 +107,7 @@ else
 fi
 
 #check if the chosen language is supported by the instructor
-if [ -d test_cases/$language ] && [ -f ${driver[$language]} ]
+if [ -d "test_cases/$language" ] && [ -f ${driver[$language]} ]
 then
 	#echo "supported language"
 	:	#no operation
@@ -144,13 +144,14 @@ do
 	#obtain information from $line which is a line of test_info.txt
 	testName=$(echo "$line" | awk '{print $1}')
 	timeLimit=$(echo "$line" | awk '{print $2}')
+	export timeLimit
 
 	#Test strategy
 	#copy necessary files
 	#shell script in next line copies student files, library files and needed files from author_solution/
 	# essentially determines the test strategy (unit/integration/load/library supported etc)
 	# the script file would also have redirection to copy the compile and execute scripts
-	source $testDir/$1/$testSetup/${testName}.sh
+	source "$testDir/$1/$testSetup/${testName}.sh"
 	cd working_dir
 
 	#language specific compile and run of each test case
@@ -200,7 +201,7 @@ do
 	#echo ${marks[@]}, ${comments[@]}
 
 	#clean the working directory and go back to base for next test
-	rm -rf *
+	rm -rf ./*
 	cd ..
 
 done < $testInfo
@@ -220,7 +221,7 @@ then
 fi
 
 #rename the log file to accepted name called log.txt
-mv $log log.txt
+mv "$log" log.txt
 
 #store marks and comments in respective files
 for each in "${marks[@]}"

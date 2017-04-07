@@ -6,7 +6,7 @@
 #
 # Authors: Prasad Talasila
 # Date: 03-April-2017
-# Invocation: Invoke the script without any commandline parameters
+# Invocation: Invoke the script with username of currently logged in user as commandline parameter
 #               bash ssh_local_forward.sh <username>
 # Prerequisites:
 #              Setup an SSH server on the localhost to run at port 222

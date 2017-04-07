@@ -1,16 +1,15 @@
 Autolab
 -------
 
-[![Code Climate](https://codeclimate.com/github/prasadtalasila/JavaAutolab/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/JavaAutolab) [![Build Status](https://travis-ci.org/prasadtalasila/JavaAutolab.svg?branch=dev)](https://travis-ci.org/prasadtalasila/JavaAutolab)    
+[![Code Climate](https://codeclimate.com/github/prasadtalasila/JavaAutolab/badges/gpa.svg)](https://codeclimate.com/github/prasadtalasila/JavaAutolab) [![Build Status](https://travis-ci.org/prasadtalasila/JavaAutolab.svg?branch=dev)](https://travis-ci.org/prasadtalasila/JavaAutolab) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/856/badge)](https://bestpractices.coreinfrastructure.org/projects/856)    
 
-Autolab is an auto evaluation software for programming labs. The software currently supports Java programming language. Autolab uses Gitlab as a component to provide the version control system. All the student code submissions reside in Gitlab, thus benefiting from powerful *git* system. The software is modular with separate microservice instances for web application, load balancer, gitlab, database and execution nodes.
+Autolab is an auto evaluation software for programming labs. The software currently supports automatic evaluation in Java, Python2, Python3, C++ and C programming languages. Autolab uses [Gitlab](https://gitlab.com/gitlab-org) as a component to provide the version control system. All the student code submissions reside in Gitlab, thus benefiting from powerful *git* system. The software is modular with separate microservice instances for all the application components.
 
-See 
+### Please see ###
+[Features](https://github.com/prasadtalasila/JavaAutolab/wiki/Product-Features) &nbsp;&nbsp;&nbsp;&nbsp;   [Releases](https://github.com/prasadtalasila/JavaAutolab/releases) &nbsp;&nbsp;&nbsp;&nbsp;
+[Documentation](https://github.com/prasadtalasila/JavaAutolab/wiki) &nbsp;&nbsp;&nbsp;&nbsp;    
 
-* [Features](https://github.com/prasadtalasila/JavaAutolab/wiki/Product-Features) 
-* Documentation for 
-    * [Master branch](https://github.com/prasadtalasila/JavaAutolab/wiki/v0.1)   
-    * [Development branch](https://github.com/prasadtalasila/JavaAutolab/wiki/v0.2-beta)
-* [wiki](https://github.com/prasadtalasila/JavaAutolab/wiki)
-
-If you are considering an installation of Autolab, please use master branch.
+### Contribute by ###
+[Creating Issues](https://github.com/prasadtalasila/JavaAutolab/issues) &nbsp;&nbsp;&nbsp;&nbsp;
+[Writing Documentation](https://github.com/prasadtalasila/JavaAutolab/wiki) &nbsp;&nbsp;&nbsp;&nbsp;
+[Making a PR](https://github.com/prasadtalasila/JavaAutolab/pulls) that follows [coding standards](https://github.com/prasadtalasila/JavaAutolab/wiki/Coding-Standards) &nbsp;&nbsp;&nbsp;&nbsp;    
