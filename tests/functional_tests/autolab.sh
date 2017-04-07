@@ -11,23 +11,22 @@
 
 set -e	#exit on error
 
-TMPDIR="../../tmp"
-alias bats="node_modules/bats/libexec/bats"
+bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
 npm --quiet install 1>/dev/null
 
 echo -e "\n\n=========test cases===========\n"
 echo -e "\n=========webiste load tests========="
-bats website-load.bats
+$bats website-load.bats
 echo -e "\n=========unit tests========="
-bats unit-tests.bats
+$bats unit-tests.bats
 echo -e "\n=========HackerRank compatible IO tests========="
-bats io-tests.bats
+$bats io-tests.bats
 echo -e "\n=========scoreboard tests========="
-bats scoreboard.bats
+$bats scoreboard.bats
 echo -e "\n=========socket events tests========="
-bats socket-events.bats
+$bats socket-events.bats
 echo -e "\n=========headless browser-based tests========="
 node test.js
 
