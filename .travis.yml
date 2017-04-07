@@ -21,6 +21,6 @@ services:
 
 before_script:
  - bash tests/install.sh
- 
+
 script:
  - bash tests/test.sh

@@ -18,25 +18,30 @@ set -e # Exit with nonzero exit code if anything fails
 #eslint execution_nodes/execute_node.js || echo "=======eslint failure on executionnode========="
 
 # create backups of code files that are being changed for testing
-mkdir tests/backup
+mkdir -p tests/backup
 mkdir -p tests/backup/execution_nodes
 cp -f execution_nodes/extract_run.sh tests/backup/execution_nodes/
 cp -f execution_nodes/execute_node.js tests/backup/execution_nodes/
-mkdir tests/backup/load_balancer
+mkdir -p tests/backup/load_balancer
 cp -f load_balancer/load_balancer.js tests/backup/load_balancer/
-mkdir tests/backup/main_server
+mkdir -p tests/backup/main_server
 cp -f main_server/main_server.js tests/backup/main_server/
 
 
 # change the config file paths in all the relevant js files
 sed -i 's/\/etc\/execution_node/\.\.\/deploy\/configs\/execution_nodes/' execution_nodes/execute_node.js
-grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
+sed -i 's/\/etc\/load_balancer/\.\.\/deploy\/configs\/load_balancer/' load_balancer/load_balancer.js
+sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/main_server.js
+sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/admin.js
+sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/database.js
+sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/reval/reval.js
+#grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
 
 # replace gitlab dependency with a file system repository
 cp -f tests/extract_run_test.sh execution_nodes/extract_run.sh
 
 # create a temporary log directory
-mkdir /tmp/log
+mkdir -p /tmp/log
 
 # run the execution node server
 cd execution_nodes
