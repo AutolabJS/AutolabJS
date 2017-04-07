@@ -18,7 +18,7 @@ engines:
   eslint:
     enabled: true
     config:
-      config: tests/.eslintrc
+      config: .eslintrc
   fixme:
     enabled: true
 ratings:

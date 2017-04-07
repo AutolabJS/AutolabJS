@@ -14,4 +14,5 @@ npm install --quiet -g npm-check 1>/dev/null
 #initialize the DB
 mysql -e 'CREATE DATABASE Autolab;'
 mysql -e 'USE Autolab;'
-echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | mysql -u root
+echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | \
+    mysql -u root
