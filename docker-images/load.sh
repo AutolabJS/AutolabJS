@@ -1,5 +1,6 @@
 #!/bin/bash
-# above ignore message is necessary to avoid opening the file as sudo user
+
+# disable shellcheck SC2024 is necessary to avoid opening the file as sudo user
 
 #load docker images on machine-1
 # shellcheck disable=SC2024

@@ -14,5 +14,5 @@ testName="Test1.c"
 
 #copy the driver, compilation and testing codes
 cp Driver.c working_dir/
-cp $testDir/c/$testSetup/compile.sh working_dir/		#source path defaults to "test_cases/setup"
-cp $testDir/c/$testSetup/executeTest.sh working_dir/		#source path defaults to "test_cases/setup"
+cp "$testDir/c/$testSetup/compile.sh" working_dir/		#source path defaults to "test_cases/setup"
+cp "$testDir/c/$testSetup/executeTest.sh" working_dir/		#source path defaults to "test_cases/setup"

@@ -13,19 +13,20 @@
 unset compilationStatus
 
 #language specific compile and run of each test case
-g++-6  -std=c++11 *.cpp -o Driver 2>&1 | tee $testLog > /dev/null
+g++-6  -std=c++11 ./*.cpp -o Driver 2>&1 | tee "$testLog" > /dev/null
 compilationStatus=${PIPESTATUS[0]}
+export compilationStatus
 
 #collect the log of this compilation to overall log.txt
-cat $testLog >> $log
+cat "$testLog" >> "$log"
 
 #empty log file
 #truncate -s 0 $testLog		#this line gives problem on MAC machines
-rm $testLog
-touch $testLog
+rm "$testLog"
+touch "$testLog"
 
 #exclude any warnings, type cast messages etc and check for compilation errors
-noOfErrors=$(grep -v "^Note:" $testLog | wc -l | awk '{print $1}')
+noOfErrors=$(grep -v "^Note:" "$testLog" | wc -l | awk '{print $1}')
 
 
 
