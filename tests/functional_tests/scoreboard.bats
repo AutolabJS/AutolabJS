@@ -25,7 +25,7 @@ teardown() {
 }
 
 @test "empty scoreboard of an inactive lab" {
-	#node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null
+	node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/inactive
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab3 -o $BATS_TMPDIR/scoreboard/inactive/empty.json
 	cmp data/scoreboard/empty.json $BATS_TMPDIR/scoreboard/inactive/empty.json
