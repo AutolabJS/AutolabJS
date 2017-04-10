@@ -3,6 +3,9 @@
 # all the tests related to scoreboard
 # setup and teardown functions
 jq="node_modules/node-jq/bin/jq"
+cp -f ../../deploy/configs/main_server/labs.json ../backup/labs.json
+cp -f ./data/scoreboard/labs.json ../../deploy/configs/main_server/labs.json
+bash restart_main_server.sh
 setup() {
 	mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
 }
@@ -23,7 +26,7 @@ teardown() {
 }
 
 @test "empty scoreboard of an inactive lab" {
-	node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/inactive
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab3 -o $BATS_TMPDIR/scoreboard/inactive/empty.json
 	cmp data/scoreboard/empty.json $BATS_TMPDIR/scoreboard/inactive/empty.json
@@ -34,7 +37,7 @@ teardown() {
 
 @test "scoreboard after one evaluation" {
 	#gnome-terminal -x sh -c "bash restart_main_server.sh; bash" &
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/first
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/first/first_eval.json
 	cat $BATS_TMPDIR/scoreboard/first/first_eval.json
@@ -45,8 +48,8 @@ teardown() {
 }
 
 @test "scoreboard after two evaluations" {
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
-	node submit.js -i 2015A7PS066G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
+	node submit.js -i 2015A7PS066G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/second
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/second/second_eval.json
 	cmp data/scoreboard/second_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/second/second_eval.json)
@@ -56,9 +59,9 @@ teardown() {
 }
 
 @test "no change on scoreboard for worse score" {
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	bash worse_score1.sh
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	bash worse_score2.sh
 	mkdir -p $BATS_TMPDIR/scoreboard/worse_score
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/worse_score/worse_score.json
@@ -70,7 +73,7 @@ teardown() {
 
 @test "update scoreboard on better score" {
 
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/better_score
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/better_score/better_score.json
 	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/better_score/better_score.json)
@@ -80,8 +83,9 @@ teardown() {
 }
 
 @test "scoreboards two concurrent, active labs" {
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
-	node submit.js -i 2015A7PS006G -l lab2 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
+	node submit.js -i 2015A7PS006G -l lab2 --lang=java --host='localhost:9000' >/dev/null
+	mkdir -p $BATS_TMPDIR/scoreboard/concurrent
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/concurrent/lab1.json
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab2 -o $BATS_TMPDIR/scoreboard/concurrent/lab2.json
 	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/concurrent/lab1.json)
@@ -92,8 +96,8 @@ teardown() {
 }
 
 @test "scoreboards two concurrent, inactive labs" {
-	node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
-	node submit.js -i 2015A7PS006G -l lab4 --lang=java --host='localhost:9000' >/dev/null 2>/dev/null
+	node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null
+	node submit.js -i 2015A7PS006G -l lab4 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/concurrent
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab3 -o $BATS_TMPDIR/scoreboard/concurrent/lab3.json
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab4 -o $BATS_TMPDIR/scoreboard/concurrent/lab4.json
