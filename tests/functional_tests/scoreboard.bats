@@ -25,7 +25,7 @@ teardown() {
 }
 
 @test "empty scoreboard of an inactive lab" {
-	node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null
+	#node submit.js -i 2015A7PS006G -l lab3 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/inactive
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab3 -o $BATS_TMPDIR/scoreboard/inactive/empty.json
 	cmp data/scoreboard/empty.json $BATS_TMPDIR/scoreboard/inactive/empty.json
@@ -36,7 +36,7 @@ teardown() {
 
 @test "scoreboard after one evaluation" {
 	#gnome-terminal -x sh -c "bash restart_main_server.sh; bash" &
-	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
+	#node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/first
 	#curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/first/first_eval.json
 	#cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/first/first_eval.json)
