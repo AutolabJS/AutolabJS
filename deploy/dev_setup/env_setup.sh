@@ -29,7 +29,6 @@ fi
 dpkg -i packages/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
 
 
-pip install setuptools
 apt-get install -y python-dev
 
 # install vagrant and its dependencies
