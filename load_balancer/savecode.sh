@@ -1,3 +1,4 @@
+#!/bin/bash
 mkdir -p submissions
 cd submissions
 mkdir -p $2
