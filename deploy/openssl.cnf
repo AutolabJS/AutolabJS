@@ -6,69 +6,74 @@
 #########################
 
 # Establish working directory.
- 
-dir = .
- 
+
+dir = "."
+
 [ ca ]
-default_ca				= CA_RootCA
- 
+default_ca			= CA_RootCA
+
 [ CA_RootCA ]
 serial					= $dir/RootCA/serial
 database				= $dir/RootCA/certindex.txt
-new_certs_dir			= $dir/RootCA/certs
-certificate				= $dir/RootCA/rootca.crt
-private_key				= $dir/RootCA/rootca.key
-default_days			= 365
-default_md				= sha256
+new_certs_dir		= $dir/RootCA/certs
+certificate			= $dir/RootCA/rootca.crt
+private_key			= $dir/RootCA/rootca.key
+default_days		= 365
+default_md			= sha256
 preserve				= no
-email_in_dn				= no
+email_in_dn			= no
 nameopt					= default_ca
 certopt					= default_ca
 policy					= policy_match
- 
+
 [ policy_match ]
-countryName				= match
-stateOrProvinceName		= match
-organizationName		= match
+countryName			        = match
+stateOrProvinceName	    = match
+organizationName		    = match
 organizationalUnitName	= optional
-commonName				= supplied
-emailAddress			= optional
- 
+commonName				      = supplied
+emailAddress			      = optional
+
 [ req ]
-default_bits			= 2048			# Size of keys
-default_keyfile			= key.pem		# name of generated keys
-default_md				= sha256		# message digest algorithm
-string_mask				= utf8only		# permitted characters
-distinguished_name		= req_distinguished_name
+default_bits			  = 2048			              # Size of keys
+default_keyfile			= key.pem		              # name of generated keys
+default_md			   	= sha256		              # message digest algorithm
+string_mask				  = utf8only		            # permitted characters
+distinguished_name  = req_distinguished_name
 req_extensions			= v3_req
- 
+
 [ req_distinguished_name ]
-# Variable name				Prompt string
+# Variable name			          	Prompt string
 #-------------------------	  ----------------------------------
-0.countryName				= Country Name (2 letter code)
-countryName_min				= 2
-countryName_max				= 2
+0.countryName				    = Country Name (2 letter code)
+countryName_min				  = 2
+countryName_max				  = 2
 stateOrProvinceName			= State or Province Name (full name)
-localityName				= Locality Name (city, district)
-organizationName			= Organization Name (company)
-organizationalUnitName		= Organizational Unit Name (department, division)
-emailAddress				= Email Address
-commonName					= Common Name (hostname, IP, or your name)
-commonName_max				= 64
- 
+localityName				    = Locality Name (city, district)
+organizationName			  = Organization Name (company)
+organizationalUnitName	= Organizational Unit Name (department, division)
+emailAddress				    = Email Address
+commonName					    = Common Name (hostname, IP, or your name)
+commonName_max				  = 64
+
 # Default values for the above, for consistency and less typing.
-# Variable name				Value
+# Variable name				       Value
 #------------------------	  ------------------------------
 0.organizationName_default	= My Company
-localityName_default		= My Town
+localityName_default		    = My Town
 stateOrProvinceName_default	= State or Providence
-countryName_default			= US
- 
+countryName_default			    = US
+
 [ v3_ca ]
-basicConstraints			= CA:TRUE
+basicConstraints			  = CA:TRUE
 subjectKeyIdentifier		= hash
-authorityKeyIdentifier		= keyid:always,issuer:always
- 
+authorityKeyIdentifier  = keyid:always,issuer:always
+
 [ v3_req ]
 basicConstraints			= CA:FALSE
-subjectKeyIdentifier		= hash
+subjectKeyIdentifier	= hash
+
+
+# References
+# http://web.mit.edu/crypto/openssl.cnf
+# https://www.phildev.net/ssl/opensslconf.html
