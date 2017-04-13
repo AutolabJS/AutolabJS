@@ -25,6 +25,7 @@ bats unit-tests.bats
 echo -e "\n=========HackerRank compatible IO tests========="
 bats io-tests.bats
 echo -e "\n=========scoreboard tests========="
+bash restart_main_server.sh
 bats scoreboard.bats
 echo -e "\n=========socket events tests========="
 bats socket-events.bats
