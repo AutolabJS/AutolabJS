@@ -16,7 +16,6 @@ alias bats="node_modules/bats/libexec/bats"
 
 # install node dependencies
 npm --quiet install 1>/dev/null
-
 echo -e "\n\n=========test cases===========\n"
 echo -e "\n=========webiste load tests========="
 bats website-load.bats
@@ -24,8 +23,12 @@ echo -e "\n=========unit tests========="
 bats unit-tests.bats
 echo -e "\n=========HackerRank compatible IO tests========="
 bats io-tests.bats
+
 echo -e "\n=========scoreboard tests========="
+bash ../helper_scripts/scoreboard/restart_main_server.sh
 bats scoreboard.bats
+bash ../helper_scripts/scoreboard/cleanup.sh
+
 echo -e "\n=========socket events tests========="
 bats socket-events.bats
 echo -e "\n=========headless browser-based tests========="

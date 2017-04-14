@@ -13,7 +13,8 @@
 unset compilationStatus
 
 #language specific compile and run of each test case
-g++ -std=c++14 *.cpp 2>&1 | tee $testLog > /dev/null
+g++-6 -std=c++14 *.cpp 2>&1 | tee $testLog > /dev/null
+
 compilationStatus=${PIPESTATUS[0]}
 
 #collect the log of this compilation to overall log.txt
