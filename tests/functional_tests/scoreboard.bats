@@ -2,7 +2,7 @@
 
 # all the tests related to scoreboard
 # setup and teardown functions
-jq="node_modules/node-jq/bin/jq"
+alias jq="node_modules/node-jq/bin/jq"
 
 setup() {
 	mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
@@ -37,7 +37,7 @@ teardown() {
 	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/first
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/first/first_eval.json
-	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/first/first_eval.json)
+	cmp data/scoreboard/first_eval.json <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/first/first_eval.json)
 	result=$?
 	rm -rf $BATS_TMPDIR/scoreboard
 	[ "$result" -eq 0 ]
@@ -48,7 +48,7 @@ teardown() {
 	node submit.js -i 2015A7PS066G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/second
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/second/second_eval.json
-	cmp data/scoreboard/second_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/second/second_eval.json)
+	cmp data/scoreboard/second_eval.json <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/second/second_eval.json)
 	result=$?
 	rm -rf $BATS_TMPDIR/scoreboard
 	[ "$result" -eq 0 ]
@@ -61,7 +61,7 @@ teardown() {
 	bash worse_score2.sh
 	mkdir -p $BATS_TMPDIR/scoreboard/worse_score
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/worse_score/worse_score.json
-	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/worse_score/worse_score.json)
+	cmp data/scoreboard/first_eval.json <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/worse_score/worse_score.json)
 	result=$?
 	rm -rf $BATS_TMPDIR/scoreboard
 	[ "$result" -eq 0 ]
@@ -72,7 +72,7 @@ teardown() {
 	node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
 	mkdir -p $BATS_TMPDIR/scoreboard/better_score
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/better_score/better_score.json
-	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/better_score/better_score.json)
+	cmp data/scoreboard/first_eval.json <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/better_score/better_score.json)
 	result=$?
 	rm -rf $BATS_TMPDIR/scoreboard
 	[ "$result" -eq 0 ]
@@ -84,8 +84,8 @@ teardown() {
 	mkdir -p $BATS_TMPDIR/scoreboard/concurrent
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/concurrent/lab1.json
 	curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab2 -o $BATS_TMPDIR/scoreboard/concurrent/lab2.json
-	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/concurrent/lab1.json)
-	cmp data/scoreboard/first_eval.json <($jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/concurrent/lab2.json)
+	cmp data/scoreboard/first_eval.json <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/concurrent/lab1.json)
+	cmp data/scoreboard/first_eval.json <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/concurrent/lab2.json)
 	result=$?
 	rm -rf $BATS_TMPDIR/scoreboard
 	[ "$result" -eq 0 ]

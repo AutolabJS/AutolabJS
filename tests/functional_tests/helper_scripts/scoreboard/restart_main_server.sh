@@ -3,8 +3,8 @@ cp -f ../../deploy/configs/main_server/labs.json ../backup/labs.json
 cp -f ./data/scoreboard/labs.json ../../deploy/configs/main_server/labs.json
 cp -f ../../load_balancer/savecode.sh ../backup/savecode.sh
 cp -f ./data/scoreboard/savecode.sh ../../load_balancer/savecode.sh
-a=$(lsof -i tcp:9000 -t)
-for i in $a
+Pid=$(lsof -i tcp:9000 -t)
+for i in "$Pid"
 do
 	kill "$i"
 done 
