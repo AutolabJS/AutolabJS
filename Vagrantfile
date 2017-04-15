@@ -23,7 +23,6 @@ Vagrant.configure("2") do |config|
     v.memory = 4096
     v.cpus = 2
     v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "#ENV['VAGRANT_CWD']", "--automount"]
-    #v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "/root/JavaAutolab-dev-tests", "--automount"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
