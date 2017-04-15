@@ -3,16 +3,11 @@
 
 Vagrant.configure("2") do |config|
   # Specify the base box
-  #config.vm.box = "ubuntu/trusty64"   # Ubuntu 14.04 LTS 64-bit
   config.vm.box = "ubuntu/xenial64"   # ubuntu 16.04 LTS 64-bit
-  # Setup synced folder
-  config.vm.synced_folder ".", "/home/vagrant/autolab"
 
-  # change the default port of SSH server
-  config.vm.provision "shell", inline: <<-SHELL
-  sudo sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
-  sudo sudo service ssh restart
-  SHELL
+  # Setup synced folder, a neat technique, but unused at present
+  # can possibly be used in the future
+  #config.vm.synced_folder ".", "/home/vagrant/autolab", type: "rsync"
 
   # port forwarding. must run ssh_local_forward.sh to get Autolab to work properly
   config.vm.network "forwarded_port", guest: 22, host: 9001, id: "git"
@@ -27,7 +22,26 @@ Vagrant.configure("2") do |config|
     v.name = "Autolab-Vagrant"
     v.memory = 4096
     v.cpus = 2
+    v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "#ENV['VAGRANT_CWD']", "--automount"]
+    #v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "/root/JavaAutolab-dev-tests", "--automount"]
   end
+
+  config.vm.provision "shell", inline: <<-SHELL
+  # copy autolab folder into vagrant machine
+  if [ ! -f /home/vagrant/autolab ]
+  then
+      mkdir -p /home/vagrant/autolab
+  fi
+
+  # change the default port of SSH server
+  sudo sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
+  sudo sudo service ssh restart
+  sudo usermod -a -G vboxsf ubuntu
+  echo "sudo mount -t vboxsf autolab /home/vagrant/autolab" >> /home/ubuntu/.bashrc
+  echo "sudo mount --bind /vagrant /home/vagrant/autolab" >> /home/ubuntu/.bashrc
+  echo "mount --bind /vagrant /home/vagrant/autolab" >> /root/.bashrc
+  echo "cd /home/vagrant/autolab" >>  /home/ubuntu/.bashrc
+  SHELL
 
   # install autolab
   config.vm.provision :shell, privileged: true, path: "deploy/dev_setup/vagrant.sh"
