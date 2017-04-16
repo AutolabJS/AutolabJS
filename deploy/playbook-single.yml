@@ -80,7 +80,7 @@
     - name: Waiting for Unicorn on GitLab server to be up
       shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
 
-    - pause: seconds=20
+    - pause: seconds=60
 
     - name: Get Private Token
       uri:

@@ -7,7 +7,7 @@ Vagrant.configure("2") do |config|
 
   # Setup synced folder, a neat technique, but unused at present
   # can possibly be used in the future
-  #config.vm.synced_folder ".", "/home/vagrant/autolab", type: "rsync"
+  config.vm.synced_folder ".", "/home/vagrant/autolab", type: "rsync"
 
   # port forwarding. must run ssh_local_forward.sh to get Autolab to work properly
   config.vm.network "forwarded_port", guest: 22, host: 9001, id: "git"
@@ -22,7 +22,8 @@ Vagrant.configure("2") do |config|
     v.name = "Autolab-Vagrant"
     v.memory = 4096
     v.cpus = 2
-    v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "#ENV['VAGRANT_CWD']", "--automount"]
+    # next line does not work reliably across all virtualbox versions
+    #v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "#ENV['VAGRANT_CWD']", "--automount"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
@@ -36,9 +37,9 @@ Vagrant.configure("2") do |config|
   sudo sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
   sudo sudo service ssh restart
   sudo usermod -a -G vboxsf ubuntu
-  echo "sudo mount -t vboxsf autolab /home/vagrant/autolab" >> /home/ubuntu/.bashrc
-  echo "sudo mount --bind /vagrant /home/vagrant/autolab" >> /home/ubuntu/.bashrc
-  echo "mount --bind /vagrant /home/vagrant/autolab" >> /root/.bashrc
+  #echo "sudo mount -t vboxsf autolab /home/vagrant/autolab" >> /home/ubuntu/.bashrc
+  #echo "sudo mount --bind /vagrant /home/vagrant/autolab" >> /home/ubuntu/.bashrc
+  #echo "mount --bind /vagrant /home/vagrant/autolab" >> /root/.bashrc
   echo "cd /home/vagrant/autolab" >>  /home/ubuntu/.bashrc
   SHELL
 

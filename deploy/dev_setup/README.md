@@ -1,6 +1,7 @@
 ### Create Development Environment ###
 
-*NOTE:* These scripts have been tested on **Ubuntu 16.04 AMD64 Desktop** setup. They should work on all variants of Ubuntu 16.04 distributions.    
+*NOTE:* These scripts have been tested on **Ubuntu 16.04 AMD64 Desktop** setup. They should work on all variants of Ubuntu 16.04 distributions. Please also note that the installation is bandwidth intensive and requires approximately 1.7GB of downloads from the network. However, with repeat installations, you are likely to have cached images of Ubuntu 16.04 vagrant box and all the required docker images. In that case, the download requirement goes down to approximately 300MB per install.
+
 Please read the special instructions given below for installation on other platforms.
 
 #### Installation of Dependencies ####
@@ -58,6 +59,7 @@ cd ../..    #do to the top-level directory of Autolab code base
 vagrant up  #wait for SSH connection error message, and press ctl + c
 vagrant ssh -- -p 2222
 sudo su
+sudo bash docker-images/docker_pull.sh  #download all the required docker images
 source deploy/dev_setup/host_install.sh
 ```
 
