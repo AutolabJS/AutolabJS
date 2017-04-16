@@ -18,7 +18,7 @@ apt-get install -y gcc make linux-headers-4.4.0-59-generic linux-headers-generic
 
 if [ ! -f packages/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb ]
 then
-    wget http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
+    wget -P packages/ http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
 fi
 dpkg -i packages/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
 
@@ -31,6 +31,6 @@ apt-get install -y ruby
 
 if [ ! -f packages/vagrant_1.9.3_x86_64.deb ]
 then
-    wget https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
+    wget  -P packages/  https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
 fi
 dpkg -i packages/vagrant_1.9.3_x86_64.deb

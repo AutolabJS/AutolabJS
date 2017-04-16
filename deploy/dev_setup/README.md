@@ -1,18 +1,19 @@
 ### Create Development Environment ###
 
-*NOTE:* These scripts have been tested on **Ubuntu 16.04 AMD64 Desktop** setup. They should work on all variants of Ubuntu 16.04 and Debian 8.x distributions.    
+*NOTE:* These scripts have been tested on **Ubuntu 16.04 AMD64 Desktop** setup. They should work on all variants of Ubuntu 16.04 distributions.    
 Please read the special instructions given below for installation on other platforms.
 
 #### Installation of Dependencies ####
 The scripts and software in this directory help create the development environment for Autolab software. You can install the necessary software by executing _env_setup.sh_ bash shell script. If you have copies of packages like vagrant / virtualbox, please place them in _packages/_ sub-directory.
 
 ```shell
+sudo su
 cd deploy/dev_setup
 # place all the necessary deb files in "packages/" subdirectory
-chmod +x env_setup.sh
+chmod +x env_setup_ubuntu.sh
 sudo ./env_setup.sh
 ```
-The `env_setup.sh` script installs the git, vagrant and virtualbox packages into the host operating system. Please see the compatibility matrix for different operating systems.     
+The `env_setup_ubuntu.sh` script installs the git, vagrant and virtualbox packages into the host operating system. Please see the compatibility matrix for different operating systems.     
 
 | **Operating System**            | **Git** | **Vagrant** | **Virtualbox** |
 |---------------------------------|---------|-------------|----------------|
@@ -60,7 +61,7 @@ sudo su
 source deploy/dev_setup/host_install.sh
 ```
 
-** Application URLs **
+**Application URLs**    
 After the installation, Autolab would be available on the _IP-Address / hostname_ of the guest machine at the following URLs.    
 
 | **Service**    | **URL**                        |

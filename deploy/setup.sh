@@ -3,8 +3,8 @@
 sudo true
 
 #install docker dependecy for AUFS file system
-sudo apt-get install lxc wget bsdtar curl
-sudo apt-get install "linux-image-extra-$(uname -r)"
+sudo apt-get install -y lxc wget bsdtar curl
+sudo apt-get install -y "linux-image-extra-$(uname -r)"
 sudo modprobe aufs
 wget -qO- https://get.docker.com/ | sh
 
