@@ -5,8 +5,7 @@ Vagrant.configure("2") do |config|
   # Specify the base box
   config.vm.box = "ubuntu/xenial64"   # ubuntu 16.04 LTS 64-bit
 
-  # Setup synced folder, a neat technique, but unused at present
-  # can possibly be used in the future
+  # copy current directory to vagrant machine
   config.vm.synced_folder ".", "/home/vagrant/autolab", type: "rsync"
 
   # port forwarding. must run ssh_local_forward.sh to get Autolab to work properly
@@ -22,24 +21,12 @@ Vagrant.configure("2") do |config|
     v.name = "Autolab-Vagrant"
     v.memory = 4096
     v.cpus = 2
-    # next line does not work reliably across vagrant machine reboots due to vagrant ssh bug
-    #v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "#ENV['VAGRANT_CWD']", "--automount"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
-  # copy autolab folder into vagrant machine
-  #if [ ! -f /home/vagrant/autolab ]
-  #then
-  #    mkdir -p /home/vagrant/autolab
-  #fi
-
   # change the default port of SSH server
   sudo sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
   sudo sudo service ssh restart
-  #sudo usermod -a -G vboxsf ubuntu
-  #echo "sudo mount -t vboxsf autolab /home/vagrant/autolab" >> /home/ubuntu/.bashrc
-  #echo "sudo mount --bind /vagrant /home/vagrant/autolab" >> /home/ubuntu/.bashrc
-  #echo "mount --bind /vagrant /home/vagrant/autolab" >> /root/.bashrc
   echo "cd /home/vagrant/autolab" >>  /home/ubuntu/.bashrc
   SHELL
 

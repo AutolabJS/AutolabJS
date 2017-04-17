@@ -23,10 +23,13 @@ npm install npm@latest -g
 sudo bash /home/vagrant/autolab/deploy/setup.sh
 
 # if available, load docker images
-if [ -d /home/vagrant/autolab/docker-images ]
+cd /home/vagrant/autolab/docker-images
+ls "./*.tar" >/dev/null 2>&1	#do docker images exist?
+if [ $? ]
 then
-  cd /home/vagrant/autolab/docker-images
   bash load-vagrant.sh
+else
+  bash docker-pull.sh 
 fi
 
 # run Ansible playbook
