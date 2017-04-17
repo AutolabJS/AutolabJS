@@ -22,21 +22,21 @@ Vagrant.configure("2") do |config|
     v.name = "Autolab-Vagrant"
     v.memory = 4096
     v.cpus = 2
-    # next line does not work reliably across all virtualbox versions
+    # next line does not work reliably across vagrant machine reboots due to vagrant ssh bug
     #v.customize ["sharedfolder", "add", :id, "--name", "autolab", "--hostpath", "#ENV['VAGRANT_CWD']", "--automount"]
   end
 
   config.vm.provision "shell", inline: <<-SHELL
   # copy autolab folder into vagrant machine
-  if [ ! -f /home/vagrant/autolab ]
-  then
-      mkdir -p /home/vagrant/autolab
-  fi
+  #if [ ! -f /home/vagrant/autolab ]
+  #then
+  #    mkdir -p /home/vagrant/autolab
+  #fi
 
   # change the default port of SSH server
   sudo sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
   sudo sudo service ssh restart
-  sudo usermod -a -G vboxsf ubuntu
+  #sudo usermod -a -G vboxsf ubuntu
   #echo "sudo mount -t vboxsf autolab /home/vagrant/autolab" >> /home/ubuntu/.bashrc
   #echo "sudo mount --bind /vagrant /home/vagrant/autolab" >> /home/ubuntu/.bashrc
   #echo "mount --bind /vagrant /home/vagrant/autolab" >> /root/.bashrc

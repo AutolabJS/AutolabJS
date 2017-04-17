@@ -26,7 +26,7 @@ sudo bash /home/vagrant/autolab/deploy/setup.sh
 if [ -d /home/vagrant/autolab/docker-images ]
 then
   cd /home/vagrant/autolab/docker-images
-  bash load.sh
+  bash load-vagrant.sh
 fi
 
 # run Ansible playbook
