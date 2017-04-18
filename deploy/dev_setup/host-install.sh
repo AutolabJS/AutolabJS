@@ -25,7 +25,7 @@ sudo bash /home/vagrant/autolab/deploy/setup.sh
 # if available, load docker images
 cd /home/vagrant/autolab/docker-images
 ls "./*.tar" >/dev/null 2>&1	#do docker images exist?
-if [ $? ]
+if [ "$?" -eq "0" ]
 then
   bash load-vagrant.sh
 else
