@@ -11,20 +11,14 @@
 apt-get update
 apt-get install -y git
 
-# setup SSH port forwarding on the host machine
-username=$(whoami | tr -d '\n')
-source ssh_local_forward.sh "$username"
-
 # install virtualbox and its dependencies
 apt-get install -y libpython2.7 libqt5core5a libqt5gui5 libqt5opengl5 libqt5printsupport5 libqt5widgets5 libqt5x11extras5 libvpx3
 apt-get -f -y install
-apt-get install -y gcc make linux-headers-4.4.0-59-generic linux-headers-generic
+apt-get install -y gcc make linux-headers-4.4.0-59-generic linux-headers-generic libsdl1.2debian
 
-if [ -f packages/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb ]
+if [ ! -f packages/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb ]
 then
-    :
-else
-    wget http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
+    wget -P packages/ http://download.virtualbox.org/virtualbox/5.1.18/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
 fi
 dpkg -i packages/virtualbox-5.1_5.1.18-114002~Ubuntu~xenial_amd64.deb
 
@@ -35,10 +29,8 @@ apt-get install -y python-dev
 # install vagrant and its dependencies
 apt-get install -y ruby
 
-if [ -f packages/vagrant_1.9.3_x86_64.deb ]
+if [ ! -f packages/vagrant_1.9.3_x86_64.deb ]
 then
-    :
-else
-    wget https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
+    wget  -P packages/  https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
 fi
 dpkg -i packages/vagrant_1.9.3_x86_64.deb

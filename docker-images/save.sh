@@ -8,4 +8,3 @@ docker save 'gitlab/gitlab-ce' > gitlab.tar
 docker save mysql > mysql.tar
 docker save execution_node > execution_node.tar
 docker save ubuntu > ubuntu-16.04.tar
-

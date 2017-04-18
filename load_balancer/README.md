@@ -1,0 +1,3 @@
+### Load Balancer ###
+
+This Autolab component is responsible for collecting evaluation requests from main server and having these evaluation requests completed on the execution nodes. The load balancer component uses the configuration files available in `deploy/configs/load_balancer` directory to distribute the incoming evaluation requests to execution nodes. Upon completion of an evaluation request, the load balancer component stores the result in MySQL DB if the score is higher than the existing score in the database table. Also the code commit corresponding to the highest score of each participant gets cached in the load balancer.
