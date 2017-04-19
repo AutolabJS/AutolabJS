@@ -215,18 +215,6 @@
 - hosts: executionnodes
   become: yes
   tasks:
-    - name: Get Docker installation script
-      get_url:
-        url: https://get.docker.com
-        dest: "{{ ansible_env.HOME}}/docker.sh"
-        mode: 0775
-
-    - name: Install Docker
-      shell: "{{ ansible_env.HOME}}/docker.sh"
-
-    - name: Start docker
-      service: name=docker state=started
-
     - name: mkdir for ssh keys
       shell: "mkdir -p {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}"
 

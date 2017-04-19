@@ -13,3 +13,7 @@ Autolab is an auto evaluation software for programming labs. The software curren
 [Creating Issues](https://github.com/prasadtalasila/JavaAutolab/issues) &nbsp;&nbsp;&nbsp;&nbsp;
 [Writing Documentation](https://github.com/prasadtalasila/JavaAutolab/wiki) &nbsp;&nbsp;&nbsp;&nbsp;
 [Making a PR](https://github.com/prasadtalasila/JavaAutolab/pulls) that follows [coding standards](https://github.com/prasadtalasila/JavaAutolab/wiki/Coding-Standards) &nbsp;&nbsp;&nbsp;&nbsp;    
+
+***
+
+Respect others. Follow [Code of Conduct](http://contributor-covenant.org/version/1/2/0/) &nbsp;&nbsp;&nbsp;&nbsp;    
