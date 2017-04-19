@@ -10,22 +10,26 @@
 
 
 #clear compileErrors flag
-unset compilationStatus
+unset COMPILATION_STATUS
 
 #language specific compile and run of each test case
+# shellcheck disable=SC2154
 python2 -m py_compile *.py 2>&1 | tee $testLog > /dev/null
-compilationStatus=${PIPESTATUS[0]}
+# shellcheck disable=SC2034
+COMPILATION_STATUS="${PIPESTATUS[0]}"
 
 #collect the log of this compilation to overall log.txt
-cat $testLog >> $log
+# shellcheck disable=SC2154
+cat "$testLog" >> "$log"
 
 #empty log file
 #truncate -s 0 $testLog		#this line gives problem on MAC machines
-rm $testLog
-touch $testLog
+rm "$testLog"
+touch "$testLog"
 
 #exclude any warnings, type cast messages etc and check for compilation errors
-noOfErrors=$(grep -v "^Note:" $testLog | wc -l | awk '{print $1}')
+# shellcheck disable=SC2034
+NO_OF_ERRORS="$(grep -vc "^Note:" "$testLog" | awk "{print $1}")"
 
 
 
