@@ -1,1 +1,0 @@
-This directory contains unit and functional tests for stand alone **load balancer** component of Autolab. The other components, namely Gitlab, main server and execution nodes get replaced with test doubles.
