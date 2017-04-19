@@ -23,18 +23,24 @@ npm install npm@latest -g
 sudo bash /home/vagrant/autolab/deploy/setup.sh
 
 # if available, load docker images
-cd /home/vagrant/autolab/docker-images
-ls "./*.tar" >/dev/null 2>&1	#do docker images exist?
-if [ "$?" -eq "0" ]
+if [ -d /home/vagrant/autolab/docker-images ]
 then
-  bash load-vagrant.sh
-else
-  bash docker-pull.sh 
+  cd /home/vagrant/autolab/docker-images
+  ls "./*.tar" >/dev/null 2>&1	#do docker images exist?
+  if [ "$?" -eq "0" ]
+  then
+    bash load-vagrant.sh
+  else
+    bash docker-pull.sh
+  fi
 fi
 
 # run Ansible playbook
-cd /home/vagrant/autolab/deploy
-sudo ansible-playbook playbook-single.yml -i inventory
+if [ -d /home/vagrant/autolab/deploy ]
+then
+  cd /home/vagrant/autolab/deploy
+  sudo ansible-playbook playbook-single.yml -i inventory
+fi
 
 # some autolab components don't restart properly on reboot. Restart them in correct order
 echo "sudo /home/vagrant/autolab/deploy/dev_setup/restart.sh" >> /home/ubuntu/.bashrc

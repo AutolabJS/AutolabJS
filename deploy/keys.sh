@@ -10,7 +10,8 @@
 CONFIG_FILE=./keys.conf
 if [[ -f $CONFIG_FILE ]]
 then
-    . $CONFIG_FILE
+  # shellcheck disable=SC1090
+  . "$CONFIG_FILE"
 fi
 
 #Create a random noise of 8192 byes

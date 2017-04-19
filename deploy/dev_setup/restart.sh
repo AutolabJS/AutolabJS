@@ -8,7 +8,7 @@
 #
 ################
 
-result=$(docker ps -f "status=exited" | grep -v "^CONTAINER" | wc -l)
+result=$(docker ps -f "status=exited" | grep -c -v "^CONTAINER")
 
 # restart if any container are in exit status
 if [ "$result" -ne "0" ]

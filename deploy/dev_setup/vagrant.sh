@@ -1,6 +1,4 @@
 #!/bin/bash
-# shellcheck disable=SC1091     #skip the file existence check of shellcheck linter
-                                # this is necessary since the /home/vagrant directory only exists inside Vagrantbox
 ################
 # Purpose: install the Autolab software inside the guest VM
 # Author: Prasad Talasila
