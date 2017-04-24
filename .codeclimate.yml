@@ -40,6 +40,5 @@ exclude_paths:
 - main_server/public/css/icon.css
 - main_server/public/css/materialize.css
 - main_server/public/css/materialize.min.css
-- misc/bootstrap/
 - deploy/wait-for-it.sh
 - tests/functional_tests/data/
