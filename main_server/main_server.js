@@ -274,9 +274,12 @@ io.on('connection', function(socket) {
     language=data[3];
     if(data.length == 5) admin_key = data[4];
     else admin_key=null;
-    if((admin_key==null || APIKeys.indexOf(admin_key)==-1 ) && submission_pending.indexOf(id_number)!=-1)       // Check if there is a pending submission
-    {   
-      console.log("Pending Submission request" + ' ' + admin_key)                                                // with the same Non-Admin ID number 
+    // next if part of condition disabled to allow blocked students to
+    // submit evaluation requests again
+    // TODO: old evaluation request jsons remain in submission_pending - MEMORY LEAK PROBLEM.
+    if(false && (admin_key==null || APIKeys.indexOf(admin_key)==-1 ) && submission_pending.indexOf(id_number)!=-1)       // Check if there is a pending submission
+    {
+      console.log("Pending Submission request" + ' ' + admin_key)                                                // with the same Non-Admin ID number
       io.to(socket.id).emit('submission_pending',{});
        return false;
     }
@@ -308,10 +311,13 @@ io.on('connection', function(socket) {
         {
           flag=0;
         }
+        // uncomment the next if condition to place restriction on the length of username
+        /*
         if(id_number.length!=12)
         {
           flag=0;
         }
+        */
         if(flag==1) {
           var status = 0;
           if(current_time-start > 0)
