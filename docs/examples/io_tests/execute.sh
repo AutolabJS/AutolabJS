@@ -157,7 +157,7 @@ do
 	source compile.sh
 
 	#check for compilation errors
-	if [ "$compilationStatus" == "0" ]
+	if [ "$COMPILATION_STATUS" == "0" ]
 	then
 		#if there are no errors, run the test
 		#echo "compilation success"
