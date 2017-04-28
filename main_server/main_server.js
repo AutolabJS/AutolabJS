@@ -176,7 +176,7 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
   }
   if(flag == 1)
   {
-    connection.query('SELECT id_no,score,TIME(time) AS time FROM l'+lab+' ORDER BY score DESC, time' ,function(err, rows, fields) {
+    connection.query('SELECT id_no,score,DATE_FORMAT(CONVERT_TZ(time,"GMT","Asia/Kolkata"),"%d-%b-%Y %T") AS time FROM l'+lab+' ORDER BY score DESC, time' ,function(err, rows, fields) {
       res.send(rows);
     });
   }
