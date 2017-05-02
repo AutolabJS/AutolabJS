@@ -2,8 +2,8 @@
 ######################################################
 #
 # Author: TSRK Prasad
-# Date: 06-Dec-2016
-# Previous Versions: Sep-2016
+# Date: 02-May-2017
+# Previous Versions: 26-April-2017, 06-Dec-2016, Sep-2016
 #
 # Purpose: script invoked by execution nodes with one command-line arguement
 #	   this script accomplishes one evaluation
@@ -158,7 +158,7 @@ do
 	source compile.sh
 
 	#check for compilation errors
-	if [ "$compilationStatus" == "0" ]
+	if [ "$COMPILATION_STATUS" == "0" ]
 	then
 		#if there are no errors, run the test
 		#echo "compilation success"
@@ -185,7 +185,11 @@ do
 		    else
 		        testStatus='Accepted'
 		    fi
-		fi
+			else 	#runtime error
+					testMarks=0
+					testStatus='Exception'
+			fi
+			#echo "timedOut=$timedOut,marks=$testMarks,status=$testStatus"
 
 	else	#compilation errors case
 		#echo "compilation error"
@@ -222,6 +226,16 @@ fi
 
 #rename the log file to accepted name called log.txt
 mv "$log" log.txt
+
+# truncate a really long log to 50 lines
+logLength=$(wc -l log.txt | awk '{print $1}')
+if [ "$logLength" -gt 50 ]
+then
+    head -n 50 log.txt > temp.txt
+    echo -e "\n=====LOG TRUNCATED====\n" >> temp.txt
+    mv temp.txt log.txt
+fi
+unset logLength
 
 #store marks and comments in respective files
 for each in "${marks[@]}"

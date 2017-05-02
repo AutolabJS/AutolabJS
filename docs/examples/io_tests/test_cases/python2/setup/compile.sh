@@ -14,7 +14,7 @@ unset COMPILATION_STATUS
 
 #language specific compile and run of each test case
 # shellcheck disable=SC2154
-python2 -m py_compile *.py 2>&1 | tee $testLog > /dev/null
+python2 -m py_compile ./*.py 2>&1 | tee "$testLog" > /dev/null
 # shellcheck disable=SC2034
 COMPILATION_STATUS="${PIPESTATUS[0]}"
 
