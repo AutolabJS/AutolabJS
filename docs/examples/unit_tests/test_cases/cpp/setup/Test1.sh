@@ -18,5 +18,5 @@ mv working_dir/Test1.cpp working_dir/Test.cpp
 
 #copy the driver, compilation and testing codes
 cp Driver.cpp working_dir/
-cp $testDir/cpp/$testSetup/compile.sh working_dir/		#source path defaults to "test_cases/setup"
-cp $testDir/cpp/$testSetup/executeTest.sh working_dir/		#source path defaults to "test_cases/setup"
+cp "$testDir/cpp/$testSetup/compile.sh" working_dir/		#source path defaults to "test_cases/setup"
+cp "$testDir/cpp/$testSetup/executeTest.sh" working_dir/		#source path defaults to "test_cases/setup"
