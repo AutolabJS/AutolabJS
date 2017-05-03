@@ -14,5 +14,5 @@ mv working_dir/Test2.py working_dir/Test.py
 
 #copy the driver, compilation and testing codes
 cp Driver.py working_dir/
-cp $testDir/python2/$testSetup/compile.sh working_dir/		#source path defaults to "test_cases/setup"
-cp $testDir/python2/$testSetup/executeTest.sh working_dir/		#source path defaults to "test_cases/setup"
+cp "$testDir/python2/$testSetup/compile.sh" working_dir/		#source path defaults to "test_cases/setup"
+cp "$testDir/python2/$testSetup/executeTest.sh" working_dir/		#source path defaults to "test_cases/setup"

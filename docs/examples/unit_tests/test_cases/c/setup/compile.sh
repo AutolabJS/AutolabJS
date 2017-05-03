@@ -10,12 +10,12 @@
 
 
 #clear compileErrors flag
-unset compilationStatus
+unset COMPILATION_STATUS
 
 #language specific compile and run of each test case
 g++ Driver.c "$testname" -o Driver 2>&1 | tee "$testLog" > /dev/null
-compilationStatus=${PIPESTATUS[0]}
-export compilationStatus
+# shellcheck disable=SC2034
+COMPILATION_STATUS=${PIPESTATUS[0]}
 
 #collect the log of this compilation to overall log.txt
 cat "$testLog" >> "$log"
@@ -26,8 +26,8 @@ rm "$testLog"
 touch "$testLog"
 
 #exclude any warnings, type cast messages etc and check for compilation errors
-noOfErrors=$(grep -v "^Note:" "$testLog" | wc -l | awk '{print $1}')
-export noOfErrors
+# shellcheck disable=SC2034
+noOfErrors=$(grep -vc "^Note:" "$testLog" | awk '{print $1}')
 
 
 #references

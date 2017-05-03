@@ -21,12 +21,12 @@ timeout -k 0.5 "$timeLimit" ./Driver 2>&1 | tee "$testLog" > /dev/null
 #comment above line and uncomment below line for MAC systems
 #gtimeout -k 0.5 $timeLimit java -cp $CLASSPATH:. Driver 2>&1 | tee $testLog > /dev/null
 
+# shellcheck disable=SC2034
 timedOut="${PIPESTATUS[0]}"
-export timedOut
 
 #test score is in the last line of log file as a number
+# shellcheck disable=SC2034
 testMarks=$(tail -n 1 "$testLog")
-export testMarks
 
 #remove score from the run-time log and
 # collect the run-time log of this test to overall log.txt
