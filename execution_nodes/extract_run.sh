@@ -12,4 +12,5 @@ git checkout "$4"
 cd ..
 mv "$2" student_solution
 echo "$5"
+cp -f ../../../execute.sh .
 bash execute.sh "$5" 

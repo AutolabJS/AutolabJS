@@ -23,7 +23,8 @@ echo -e "\n=========unit tests========="
 bats unit-tests.bats
 echo -e "\n=========HackerRank compatible IO tests========="
 bats io-tests.bats
-
+echo -e "\n=========execution_nodes tests========="
+bats execution_nodes.bats
 echo -e "\n=========scoreboard tests========="
 bash ./helper_scripts/scoreboard/scoreboard_test_setup.sh
 bats scoreboard.bats
@@ -42,3 +43,4 @@ node test.js
 #node submit.js -i 2015A7PS006G -l lab1 --lang=cpp14 --host='localhost:9000'
 #node submit.js -i 2015A7PS006G -l lab1 --lang=c --host='localhost:9000'
 sleep 10
+
