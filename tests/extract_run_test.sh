@@ -24,4 +24,5 @@ cd "$lab"
 
 # copy sample unit tests and execute
 cp -rf ../../../../docs/examples/unit_tests/* .
+cp -f ../../../execute.sh .
 bash execute.sh "$language"

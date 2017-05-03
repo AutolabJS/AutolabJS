@@ -51,7 +51,7 @@ teardown() {
 
 @test "run C IO test" {
 	node submit.js -i 2015A7PS006G -l lab1 --lang=c --host='localhost:9000' > "$BATS_TMPDIR/io-tests-example/c.txt"
-	cmp "$BATS_TMPDIR/io-tests-example/c.txt" data/io-tests-example/test-result.txt
+	cmp "$BATS_TMPDIR/io-tests-example/c.txt" data/io-tests-example/c-unsupported.txt
 	result="$?"
 	[ "$result" -eq 0 ]
 }

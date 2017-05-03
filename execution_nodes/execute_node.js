@@ -49,16 +49,32 @@ app.post('/requestRun', function(req, res){
   process.env.LANGUAGE = language;
   console.log(exec_command)
   exec(exec_command,function (error, stdout, stderr) {
-    
-    var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/scores.txt')).toString().split("\n");
-    var comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/comment.txt')).toString().split("\n");
-    var log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString();
+  var log;
+  var array = [0,0,0,0];
+  var comment = [" "];
+
+  try {
+
+    array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/scores.txt')).toString().split("\n");
+    comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/comment.txt')).toString().split("\n");
+    log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString();
+  
+  } catch (err) {
+      if (err.code === 'ENOENT') {
+        console.log(err);
+        log = err;
+
+      } else {
+        throw err;
+      }
+  }
     if(!log.length)
     {
         log = "NO LOGS FOR THIS EVALUATION";
     }
     var log_b64 = new Buffer(log).toString('base64');
     exec('bash cleanup.sh '.concat(submission_id+" "+lab));
+  
     array.pop(); //remove last space
     comment.pop();
     var body=scores;
@@ -144,3 +160,4 @@ request.end(body);
 
 server.listen(conf.host_port.port);
 console.log("Listening at "+conf.host_port.port);
+
