@@ -135,6 +135,11 @@ fi
 # 	rm -rf student_solution
 # fi
 
+#redirect shell's core dump messages to log file
+cd results
+exec 2> shellOut.txt
+cd ..
+
 #main test loop
 #read one test information each line of "test file" pointed to by testInfo and run a test
 while read -r line || [[ -n "$line" ]]
@@ -227,15 +232,24 @@ fi
 #rename the log file to accepted name called log.txt
 mv "$log" log.txt
 
+#copy core dump messages to log file
+cp shellOut.txt temp.txt
+
 # truncate a really long log to 50 lines
 logLength=$(wc -l log.txt | awk '{print $1}')
 if [ "$logLength" -gt 50 ]
 then
-    head -n 50 log.txt > temp.txt
+    head -n 50 log.txt >> temp.txt
     echo -e "\n=====LOG TRUNCATED====\n" >> temp.txt
     mv temp.txt log.txt
+else
+    cat log.txt >> temp.txt
+    mv temp.txt log.txt
 fi
+rm shellOut.txt
+
 unset logLength
+
 
 #store marks and comments in respective files
 for each in "${marks[@]}"
