@@ -11,7 +11,7 @@ cp test_cases/checks/output07.txt working_dir/
 #UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE
 
 #copy the driver, compilation and testing codes
-cp $testDir/c/$testSetup/compile.sh working_dir/				#source path defaults to "test_cases/c/setup"
+cp "$testDir/c/$testSetup/compile.sh" working_dir/				#source path defaults to "test_cases/c/setup"
 
 ####change the next line as per test case
-cp $testDir/c/$testSetup/executeTest8.sh working_dir/executeTest.sh		#source path defaults to "test_cases/c/setup"
+cp "$testDir/c/$testSetup/executeTest8.sh" working_dir/executeTest.sh		#source path defaults to "test_cases/c/setup"

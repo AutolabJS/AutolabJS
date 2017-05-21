@@ -14,7 +14,7 @@ cp test_cases/checks/output08.txt working_dir/
 #UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE
 
 #copy the driver, compilation and testing codes
-cp $testDir/python3/$testSetup/compile.sh working_dir/				#source path defaults to "test_cases/python3/setup"
+cp "$testDir/python3/$testSetup/compile.sh" working_dir/				#source path defaults to "test_cases/python3/setup"
 
 ####change the next line as per test case
-cp $testDir/python3/$testSetup/executeTest9.sh working_dir/executeTest.sh	#source path defaults to "test_cases/python3/setup"
+cp "$testDir/python3/$testSetup/executeTest9.sh" working_dir/executeTest.sh	#source path defaults to "test_cases/python3/setup"
