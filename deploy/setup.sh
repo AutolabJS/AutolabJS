@@ -17,6 +17,10 @@ sudo pip install ansible
 sudo service docker restart
 cat << EOF
 Done installing base packages
+
+echo "Creating SSL certificates"
+bash keys.sh
+
 You may now edit the configuration files in configs directory and execute
 'sudo ansible-playbook -i inventory playbook.yml -u <username> --ask-sudo-pass'
 to install JavaAutoLab
