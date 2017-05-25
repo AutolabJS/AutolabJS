@@ -24,5 +24,5 @@ Done installing base packages
 
 You may now edit the configuration files in configs directory and execute
 'sudo ansible-playbook -i inventory playbook.yml -u <username> --ask-sudo-pass'
-to install JavaAutoLab
+to install AutoLabJS
 EOF

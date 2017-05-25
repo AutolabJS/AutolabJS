@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/prasadtalasila/JavaAutolab.git"
+    "url": "git+https://github.com/AutolabJS/AutolabJS.git"
   },
   "keywords": [
     "autolab",
@@ -21,9 +21,9 @@
   ],
   "license": "GPL-2.0",
   "bugs": {
-    "url": "https://github.com/prasadtalasila/JavaAutolab/issues"
+    "url": "https://github.com/AutolabJS/AutolabJS/issues"
   },
-  "homepage": "https://github.com/prasadtalasila/JavaAutolab/wiki",
+  "homepage": "https://github.com/AutolabJS/AutolabJS/wiki",
   "dependencies": {
     "body-parser": "1.8",
     "chai": "^3.5.0",
