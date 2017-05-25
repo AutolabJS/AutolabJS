@@ -64,33 +64,21 @@ function createCert(){
  echo "Generating key request for $domain"
 
  #Generate a key
- openssl genrsa -aes256 -passout pass:"$PASSWORD" -out "${domain}_key.pem" 2048 -noout
+ openssl genrsa -aes256 -passout pass:"$PASSWORD" -out "${domain}_key.pem" 2048 -noout > /dev/null
 
  #Remove passphrase from the key. Comment the line out to keep the passphrase
  echo "Removing passphrase from key"
- openssl rsa -in "${domain}_key.pem" -passin pass:"$PASSWORD" -out "${domain}_key.pem"
+ openssl rsa -in "${domain}_key.pem" -passin pass:"$PASSWORD" -out "${domain}_key.pem"  > /dev/null
 
  #Create the request
  echo "Creating CSR"
  openssl req -new -sha512 -key "${domain}_key.pem" -out "${domain}_csr.pem" -passin pass:"$PASSWORD" -config openssl.cnf \
--subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITY/O=$ORGANIZATION/OU=$ORGANIZATIONAL_UNIT/CN=$common_name/emailAddress=$EMAIL"
+-subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITY/O=$ORGANIZATION/OU=$ORGANIZATIONAL_UNIT/CN=$common_name/emailAddress=$EMAIL"  > /dev/null
 
- echo "---------------------------"
- echo "-----Below is your CSR-----"
- echo "---------------------------"
- echo
- cat "${domain}_key.csr"
-
- echo
- echo "---------------------------"
- echo "-----Below is your Key-----"
- echo "---------------------------"
- echo
- cat "${domain}_key.pem"
 
  #Signing the certificate with our root certificate
 # openssl ca -batch -md sha512 -name CA_RootCA -keyfile RootCA/rootca_key.pem -cert RootCA/rootca_cert.pem -in "${domain}_csr.pem" -out "${domain}_cert.pem" -config openssl.cnf
- openssl ca -batch -name CA_RootCA -in "${domain}_csr.pem" -out "${domain}_cert.pem" -config openssl.cnf
+ openssl ca -batch -name CA_RootCA -in "${domain}_csr.pem" -out "${domain}_cert.pem" -config openssl.cnf > /dev/null
 }
 
 createCert ../main_server/ssl/main_server "$ORGANIZATION"
