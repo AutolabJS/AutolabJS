@@ -63,13 +63,12 @@
           - "/srv/gitlab/logs:/var/log/gitlab"
           - "/srv/gitlab/data:/var/opt/gitlab"
 
-    ## TODO: Add support for generating keys on the fly
     - name: Copy the certificate
       shell: "{{ item }}"
       with_items:
         - "docker exec gitlab mkdir -p /etc/gitlab/ssl"
-        - "docker cp ../gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
-        - "docker cp ../gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
+        - "docker cp keys/gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
+        - "docker cp keys/gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
 
     #- name: Transfer wait-for-it to host
       #copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
@@ -106,12 +105,8 @@
 - hosts: loadbalancer
   become: yes
   tasks:
-
-    - name: Generate SSH Key for GitLab
-      shell: "ssh-keygen -t rsa -C 'admin@javaautolab.com' -f keys/load_balancer/id_rsa -N ''"
-
     - name: Register public key
-      shell: cat ./keys/load_balancer/id_rsa.pub
+      shell: cat ./keys/gitlab/load_balancer/id_rsa.pub
       register: ssh_key
 
     - name: Get Private Token
@@ -135,7 +130,7 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "rootkey"
+          title: "loadbalancer"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
@@ -163,39 +158,6 @@
 - hosts: mainserver
   become: yes
   tasks:
-    - name: Generate SSH Key for GitLab
-      shell: "ssh-keygen -t rsa -C 'admin@javaautolab.com' -f keys/main_server/id_rsa -N ''"
-
-    - name: Register public key
-      shell: cat ./keys/main_server/id_rsa.pub
-      register: ssh_key
-
-    - name: Get Private Token
-      uri:
-        url: https://{{ gitlab_hostname }}/api/v3/session
-        status_code: 201
-        method: POST
-        body: "login=root&password={{ gitlab_password }}"
-        validate_certs: no
-        return_content: yes
-      register: session_json
-
-    - set_fact:
-        session: "{{ session_json.content | from_json }}"
-
-    - name: Add key to gitlab
-      uri:
-        url: https://{{ inventory_hostname }}/api/v3/user/keys
-        status_code: 201
-        method: POST
-        body_format: json
-        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
-        body:
-          title: "rootkey"
-          key: "{{ ssh_key.stdout }}"
-        validate_certs: no
-        return_content: yes
-
     - name: Build mainserver
       docker_image:
         name: main_server
@@ -218,8 +180,8 @@
     - name: mkdir for ssh keys
       shell: "mkdir -p {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}"
 
-    - name: Generate SSH Key for GitLab
-      shell: "ssh-keygen -t rsa -C 'admin@javaautolab.com' -f {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa -N ''"
+    - name: Copy SSH Key for GitLab
+      shell: "cp ./keys/gitlab/execution_nodes/execution_node_1/id_rsa* {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/"
 
     - name: Register public key
       shell: "cat {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa.pub"
@@ -245,7 +207,7 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "rootkey"
+          title: "execution-node-{{ inventory_hostname }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
