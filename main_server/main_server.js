@@ -259,7 +259,7 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('/etc/main_server/courses.json'));
+  socket.emit('course details',require('/etc/main_server/course.json'));
 
   //emit lab status
   socket.emit('labs_status', labs_status);
@@ -375,7 +375,7 @@ io.on('connection', function(socket) {
 
   socket.emit('lab_data',
   {
-    course:fs.readFileSync('/etc/main_server/courses.json').toString('utf-8'),
+    course:fs.readFileSync('/etc/main_server/course.json').toString('utf-8'),
     lab:fs.readFileSync('/etc/main_server/labs.json').toString('utf-8')
   });
 
@@ -396,7 +396,7 @@ io.on('connection', function(socket) {
         }
     }
     fs.writeFile('/etc/main_server/labs.json',JSON.stringify(lab,null,4));
-    fs.writeFile('/etc/main_server/courses.json',JSON.stringify(data.course,null,4));
+    fs.writeFile('/etc/main_server/course.json',JSON.stringify(data.course,null,4));
 
     socket.emit("saved");
   });
