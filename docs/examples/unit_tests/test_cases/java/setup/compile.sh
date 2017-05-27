@@ -12,6 +12,9 @@
 #clear compileErrors flag
 unset COMPILATION_STATUS
 
+unset JAVA_TOOL_OPTIONS
+CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
+
 #language specific compile and run of each test case
 javac -nowarn -cp "$CLASSPATH:." ./*.java 2>&1 | tee "$testLog" > /dev/null
 # shellcheck disable=SC2034

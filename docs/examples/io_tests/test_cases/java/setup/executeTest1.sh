@@ -23,9 +23,10 @@ do
     echo "$name"
 done
 
+unset JAVA_TOOL_OPTIONS
+CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
 
 #syntax: timeout -k soft-limit hard-limit <cmd>
-
 timeout -k 0.5 "$timeLimit" java -cp "$CLASSPATH:." "$name" <input.txt >output.txt | tee "$testLog" > /dev/null
 #comment above line and uncomment below line for MAC systems
 #gtimeout -k 0.5 $timeLimit java -cp $CLASSPATH:. Driver 2>&1 | tee $testLog > /dev/null

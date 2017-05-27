@@ -59,9 +59,6 @@ then
 fi
 
 
-unset JAVA_TOOL_OPTIONS
-export CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
-
 #generate a random string and store in variable suffix
 suffix=$(awk 'BEGIN{srand(); printf "%d\n",rand()*10000000000}')
 testLog="testLog$suffix"
