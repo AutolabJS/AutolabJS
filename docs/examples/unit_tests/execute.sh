@@ -156,7 +156,7 @@ do
 	#shell script in next line copies student files, library files and needed files from author_solution/
 	# essentially determines the test strategy (unit/integration/load/library supported etc)
 	# the script file would also have redirection to copy the compile and execute scripts
-	source "$testDir/$1/$testSetup/${testName}.sh"
+	source "$testDir/$1/$testSetup/Test.sh"
 	cd working_dir
 
 	#language specific compile and run of each test case

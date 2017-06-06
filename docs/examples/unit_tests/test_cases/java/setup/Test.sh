@@ -2,11 +2,11 @@
 #copy all source files first
 
 cp -f student_solution/java/Seller.java working_dir/
-
+cp -f student_solution/java/Buyer.java working_dir/
 
 
 #copy the test file
-cp test_cases/java/tests/Test2.java working_dir/
+cp test_cases/java/tests/${testName}.java working_dir/
 
 #	DANGER ZONE
 #UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE

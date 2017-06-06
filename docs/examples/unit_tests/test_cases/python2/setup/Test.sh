@@ -6,8 +6,8 @@ cp -f student_solution/python2/*.py working_dir/
 
 
 #copy the test file
-cp test_cases/python2/tests/Test4.py working_dir/
-mv working_dir/Test4.py working_dir/Test.py
+cp test_cases/python2/tests/${testName}.py working_dir/Test.py
+#mv working_dir/Test4.py working_dir/Test.py
 
 #	DANGER ZONE
 #UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE
