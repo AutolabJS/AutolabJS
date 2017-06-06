@@ -3,14 +3,16 @@
 
 cp -f student_solution/cpp/Seller.hpp working_dir/
 cp -f student_solution/cpp/Seller.cpp working_dir/
+cp -f student_solution/cpp/Buyer.hpp working_dir/
+cp -f student_solution/cpp/Buyer.cpp working_dir/
 
 
 
 #copy the test files
-cp test_cases/cpp/tests/Test2.hpp working_dir/
-cp test_cases/cpp/tests/Test2.cpp working_dir/
-mv working_dir/Test2.hpp working_dir/Test.hpp
-mv working_dir/Test2.cpp working_dir/Test.cpp
+cp test_cases/cpp/tests/${testName}.hpp working_dir/Test.hpp
+cp test_cases/cpp/tests/${testName}.cpp working_dir/Test.cpp
+#mv working_dir/Test4.hpp working_dir/Test.hpp
+#mv working_dir/Test4.cpp working_dir/Test.cpp
 
 
 #	DANGER ZONE
