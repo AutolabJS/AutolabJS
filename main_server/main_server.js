@@ -126,8 +126,9 @@ var submission_pending = [];  // Holds the pending submissions of the users
 
 
 app.get('/admin', function (req,res) {
-
-  res.sendFile(path.join(__dirname+ '/public/admin.html'));
+  var stream = fs.createReadStream(__dirname + '/public/admin.html');
+  stream.pipe(res);
+  //res.sendFile(path.join(__dirname+ '/public/admin.html'));
 
 });
 
@@ -137,7 +138,11 @@ app.get('/config',function(req,res)
   console.log("Request Session")
   console.log(req.session)
     if(!req.session.key) res.redirect('/admin')
-    else res.sendFile(path.join(__dirname+ '/public/config.html'));
+    //else res.sendFile(path.join(__dirname+ '/public/config.html'));
+    else {
+      var stream = fs.createReadStream(__dirname + '/public/config.html');
+      stream.pipe(res);
+    }
 });
 
 
