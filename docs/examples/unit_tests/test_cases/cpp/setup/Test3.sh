@@ -13,12 +13,3 @@ cp test_cases/cpp/tests/Test3.hpp working_dir/
 cp test_cases/cpp/tests/Test3.cpp working_dir/
 mv working_dir/Test3.hpp working_dir/Test.hpp
 mv working_dir/Test3.cpp working_dir/Test.cpp
-
-
-#	DANGER ZONE
-#UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE
-
-#copy the driver, compilation and testing codes
-cp Driver.cpp working_dir/
-cp "$testDir/cpp/$testSetup/compile.sh" working_dir/		#source path defaults to "test_cases/setup"
-cp "$testDir/cpp/$testSetup/executeTest.sh" working_dir/		#source path defaults to "test_cases/setup"
