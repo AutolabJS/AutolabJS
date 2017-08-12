@@ -154,6 +154,7 @@ do
 	# essentially determines the test strategy (unit/integration/load/library supported etc)
 	# the script file would also have redirection to copy the compile and execute scripts
 	source "$testDir/$1/$testSetup/${testName}.sh"
+	source "$testDir/support_files.sh"
 	cd working_dir
 
 	#language specific compile and run of each test case

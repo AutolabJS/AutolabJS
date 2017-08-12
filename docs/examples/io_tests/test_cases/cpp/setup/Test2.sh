@@ -3,17 +3,6 @@
 
 cp -f student_solution/cpp/*.cpp working_dir/
 
-
-
 #copy the test files
-cp test_cases/checks/input01.txt working_dir/input.txt
-cp test_cases/checks/output01.txt working_dir/
-
-
-#	DANGER ZONE
-#UNLESS YOU KNOW WHAT YOU ARE DOING, DO NOT MODIFY ANYTHING BELOW THIS LINE
-
-#copy the driver, compilation and testing codes
-cp "$testDir/cpp/$testSetup/compile.sh" working_dir/
-#source path defaults to "test_cases/setup"
-cp "$testDir/cpp/$testSetup/executeTest2.sh" working_dir/executeTest.sh	#source path defaults to "test_cases/setup"
+cp test_cases/checks/input2.txt working_dir/input.txt
+cp test_cases/checks/output2.txt working_dir/

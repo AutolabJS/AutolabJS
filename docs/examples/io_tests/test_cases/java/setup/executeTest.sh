@@ -20,7 +20,7 @@
 for file in `ls *.java`
 do
     name=${file%.*}
-    echo "$name"
+    #echo "$name"
 done
 
 unset JAVA_TOOL_OPTIONS
@@ -39,7 +39,7 @@ timedOut=${PIPESTATUS[0]}
 
 #give marks based on the output matching
 # shellcheck disable=SC2034
-testMarks=$(dsa_verify output01.txt output.txt)
+testMarks=$(dsa_verify output${testName:4}.txt output.txt)
 
 
 #remove score from the run-time log and

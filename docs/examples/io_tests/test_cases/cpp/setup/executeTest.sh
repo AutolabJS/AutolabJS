@@ -1,7 +1,7 @@
 
 ############
 # Author: TSRK Prasad
-# Date: 18-Sep-2016
+# Date: 06-March-2017
 #
 # script fragment used by ../../execute.sh to perform run-time tests. This script is not invoked directly
 #
@@ -17,16 +17,19 @@
 #compilation is successful, now run the test
 
 #syntax: timeout -k soft-limit hard-limit <cmd>
-timeout -k 0.5 "$timeLimit" ./Driver 2>&1 | tee "$testLog" > /dev/null
+timeout -k 0.5 "$timeLimit" ./a.out <input.txt >output.txt | tee "$testLog" > /dev/null
 #comment above line and uncomment below line for MAC systems
-#gtimeout -k 0.5 $timeLimit java -cp $CLASSPATH:. Driver 2>&1 | tee $testLog > /dev/null
+#gtimeout -k 0.5 $timeLimit ./a.out <input.txt >output.txt | tee $testLog > /dev/null
 
 # shellcheck disable=SC2034
 timedOut=${PIPESTATUS[0]}
 
-#test score is in the last line of log file as a number
+#import 'dsa_verify' bash function
+. ../test_cases/dsa.sh
+
+#give marks based on the output matching
 # shellcheck disable=SC2034
-testMarks=$(tail -n 1 "$testLog")
+testMarks=$(dsa_verify output${testName:4}.txt output.txt)
 
 #remove score from the run-time log and
 # collect the run-time log of this test to overall log.txt
