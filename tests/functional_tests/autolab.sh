@@ -34,6 +34,9 @@ bats socket-events.bats
 echo -e "\n=========headless browser-based tests========="
 node test.js
 
+echo -e "\n=========missing files tests========="
+bats missing_files.bats
+
 # sample code to check evaluation results manually
 #node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000'
 #node submit.js -i 2015A7PS006G -l lab1 --lang=python2 --host='localhost:9000'

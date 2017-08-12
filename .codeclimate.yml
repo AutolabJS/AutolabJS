@@ -42,3 +42,4 @@ exclude_paths:
 - main_server/public/css/materialize.min.css
 - deploy/wait-for-it.sh
 - tests/functional_tests/data/
+- docs/examples/unit_tests/author_solution/java/lib/

@@ -1,0 +1,2 @@
+Submission successful. Retreiving results
+Results object: {"marks":[0],"comment":[""],"id_no":"2015A7PS006G","Lab_No":"lab1","commit":"","log":"RVZBTFVBVElPTiBSRVNVTFQgRklMRVMgTk9UIEZPVU5E"}

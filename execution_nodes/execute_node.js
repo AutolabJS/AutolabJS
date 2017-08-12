@@ -49,10 +49,24 @@ app.post('/requestRun', function(req, res){
   process.env.LANGUAGE = language;
   console.log(exec_command)
   exec(exec_command,function (error, stdout, stderr) {
-    
-    var array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/scores.txt')).toString().split("\n");
-    var comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/comment.txt')).toString().split("\n");
-    var log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString();
+    var array = [0,0],
+      log,
+      comment = ["",""];
+    try {
+      array = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/scores.txt')).toString().split("\n");
+      comment = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/comment.txt')).toString().split("\n");
+      log = fs.readFileSync(path.join(__dirname + '/submissions/'+submission_id+'/'+lab+'/results/log.txt')).toString();
+    } catch (err) {
+      if (err.code === "ENOENT") {
+        console.log('Evaluation result files not found');
+        console.log(err);
+        log = "EVALUATION RESULT FILES NOT FOUND";
+      } else {
+        console.log(err);
+        throw err;
+      }
+    }
+
     if(!log.length)
     {
         log = "NO LOGS FOR THIS EVALUATION";
