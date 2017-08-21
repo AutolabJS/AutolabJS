@@ -4,5 +4,5 @@
 cp -f student_solution/java/*.java working_dir/
 
 #copy the test files
-cp test_cases/checks/input1.txt working_dir/input.txt
-cp test_cases/checks/output1.txt working_dir/
+cp -f test_cases/checks/input1.txt working_dir/input.txt
+cp -f test_cases/checks/output1.txt working_dir/expected_output.txt

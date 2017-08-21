@@ -29,7 +29,7 @@ timedOut=${PIPESTATUS[0]}
 
 #give marks based on the output matching
 # shellcheck disable=SC2034
-testMarks=$(dsa_verify output${testName:4}.txt output.txt)
+testMarks=$(dsa_verify expected_output.txt output.txt)
 
 #remove score from the run-time log and
 # collect the run-time log of this test to overall log.txt

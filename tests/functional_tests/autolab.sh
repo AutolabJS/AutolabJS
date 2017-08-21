@@ -17,7 +17,7 @@ alias bats="node_modules/bats/libexec/bats"
 # install node dependencies
 npm --quiet install 1>/dev/null
 echo -e "\n\n=========test cases===========\n"
-echo -e "\n=========webiste load tests========="
+echo -e "\n=========website load tests========="
 bats website-load.bats
 echo -e "\n=========unit tests========="
 bats unit-tests.bats
@@ -29,13 +29,13 @@ bash ./helper_scripts/scoreboard/scoreboard_test_setup.sh
 bats scoreboard.bats
 bash ./helper_scripts/scoreboard/scoreboard_test_teardown.sh
 
+echo -e "\n=========missing files tests========="
+bats missing_files.bats
+
 echo -e "\n=========socket events tests========="
 bats socket-events.bats
 echo -e "\n=========headless browser-based tests========="
 node test.js
-
-echo -e "\n=========missing files tests========="
-bats missing_files.bats
 
 # sample code to check evaluation results manually
 #node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000'
