@@ -1,7 +1,7 @@
 
 ############
 # Author: TSRK Prasad
-# Date: 06-March-2017
+# Date: 18-Sep-2016
 #
 # script fragment used by ../../execute.sh to perform run-time tests. This script is not invoked directly
 #
@@ -16,10 +16,20 @@
 
 #compilation is successful, now run the test
 
+#get the filename of java class
+for file in `ls *.java`
+do
+    name=${file%.*}
+    #echo "$name"
+done
+
+unset JAVA_TOOL_OPTIONS
+CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
+
 #syntax: timeout -k soft-limit hard-limit <cmd>
-timeout -k 0.5 "$timeLimit" ./a.out <input.txt >output.txt | tee "$testLog" > /dev/null
+timeout -k 0.5 "$timeLimit" java -cp "$CLASSPATH:." "$name" <input.txt >output.txt | tee "$testLog" > /dev/null
 #comment above line and uncomment below line for MAC systems
-#gtimeout -k 0.5 $timeLimit ./a.out <input.txt >output.txt | tee $testLog > /dev/null
+#gtimeout -k 0.5 $timeLimit java -cp $CLASSPATH:. Driver 2>&1 | tee $testLog > /dev/null
 
 # shellcheck disable=SC2034
 timedOut=${PIPESTATUS[0]}
@@ -30,6 +40,7 @@ timedOut=${PIPESTATUS[0]}
 #give marks based on the output matching
 # shellcheck disable=SC2034
 testMarks=$(dsa_verify expected_output.txt output.txt)
+
 
 #remove score from the run-time log and
 # collect the run-time log of this test to overall log.txt
