@@ -4,5 +4,5 @@
 cp -f student_solution/c/*.c working_dir/
 
 #copy input and output files
-cp -f test_cases/checks/input4.txt working_dir/input.txt
-cp -f test_cases/checks/output4.txt working_dir/expected_output.txt
+cp -f test_cases/checks/input${testName:4}.txt working_dir/input.txt
+cp -f test_cases/checks/output${testName:4}.txt working_dir/expected_output.txt
