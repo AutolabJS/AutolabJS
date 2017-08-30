@@ -53,9 +53,9 @@
 
 if [ "$#" -ne 1 ]
 then
-	echo "Proper Invocation: $./execute.sh language"
-	echo "The language can be any of the following: java, c, python2, python3, cpp, cpp14"
-	exit
+  echo "Proper Invocation: $./execute.sh language"
+  echo "The language can be any of the following: java, c, python2, python3, cpp, cpp14"
+  exit
 fi
 
 
@@ -98,39 +98,34 @@ unset testMarks
 #clean wipe before each run
 if [ -d results ]
 then
-	rm -rf results/*
+  rm -rf results/*
 else
-	mkdir results
+  mkdir results
 fi
 
 #check if the chosen language is supported by the instructor
 if [ -d "test_cases/$language" ] && [ -f ${driver[$language]} ]
 then
-	#echo "supported language"
-	:	#no operation
+  #echo "supported language"
+  :	#no operation
 else
-	touch results/scores.txt
-	touch results/comment.txt
-	echo "UNSUPPORTED LANGUAGE CHOSEN" > results/log.txt
-	echo "Your instructor does not wish to evaluate code submissions in $1 language" >> results/log.txt
-	cp -f results/scores.txt scores.txt
-	cp -f results/comment.txt comment.txt
-	exit
+  touch results/scores.txt
+  touch results/comment.txt
+  echo "UNSUPPORTED LANGUAGE CHOSEN" > results/log.txt
+  echo "Your instructor does not wish to evaluate code submissions in $1 language" >> results/log.txt
+  cp -f results/scores.txt scores.txt
+  cp -f results/comment.txt comment.txt
+  exit
 fi
 
 #create temporary working directory for running test cases
 #if directory exists, clean wipe it.
 if [ -d working_dir ]
 then
-	rm -rf working_dir/*
+  rm -rf working_dir/*
 else
-	mkdir working_dir
+  mkdir working_dir
 fi
-#
-# if [ -d student_solution ]
-# then
-# 	rm -rf student_solution
-# fi
 
 #redirect shell's core dump messages to log file
 cd results
@@ -141,75 +136,75 @@ cd ..
 #read one test information each line of "test file" pointed to by testInfo and run a test
 while read -r line || [[ -n "$line" ]]
 do
-	#echo $line | awk '{print "\t"$1"\n\t-----"}'
+  #echo $line | awk '{print "\t"$1"\n\t-----"}'
 
-	#obtain information from $line which is a line of test_info.txt
-	testName=$(echo "$line" | awk '{print $1}')
-	timeLimit=$(echo "$line" | awk '{print $2}')
-	export timeLimit
+  #obtain information from $line which is a line of test_info.txt
+  testName=$(echo "$line" | awk '{print $1}')
+  timeLimit=$(echo "$line" | awk '{print $2}')
+  export timeLimit
 
-	#Test strategy
-	#copy necessary files
-	#shell script in next line copies student files, library files and needed files from author_solution/
-	# essentially determines the test strategy (unit/integration/load/library supported etc)
-	# the script file would also have redirection to copy the compile and execute scripts
-	source "$testDir/$1/$testSetup/${testName}.sh"
+  #Test strategy
+  #copy necessary files
+  #shell script in next line copies student files, library files and needed files from author_solution/
+  # essentially determines the test strategy (unit/integration/load/library supported etc)
+  # the script file would also have redirection to copy the compile and execute scripts
+  source "$testDir/$1/$testSetup/${testName}.sh"
   source "$testDir/support_files.sh"
-	cd working_dir
+  cd working_dir
 
-	#language specific compile and run of each test case
-	source compile.sh
+  #language specific compile and run of each test case
+  source compile.sh
 
-	#check for compilation errors
-	if [ "$COMPILATION_STATUS" == "0" ]
-	then
-		#if there are no errors, run the test
-		#echo "compilation success"
-		#code for successful test / failed test / timeout
-		source executeTest.sh
+  #check for compilation errors
+  if [ "$COMPILATION_STATUS" == "0" ]
+  then
+  #if there are no errors, run the test
+  #echo "compilation success"
+  #code for successful test / failed test / timeout
+  source executeTest.sh
 
-		#interpret the timeout / successful test
-		#return status stored in timedOut variable has the following meaning
-		#	124 - timeout, 0 - in-time completion of execution
-		if [ "$timedOut" == "124" ]	#timeout
-		then
-		    testStatus='Timeout'
-		    testMarks=0
-		elif [ "$timedOut" == "0" ]      #not timed out
-		then
-		    #if test score is zero, then it's obviously wrong answer
-		    if [ "$testMarks" == "0" ]
-		    then
-		        testStatus='WrongAnswer'
-				elif [ "$testMarks" == "125" ]
-				then
-					testStatus='Exception'
-					testMarks=0
-		    else
-		        testStatus='Accepted'
-		    fi
-			else 	#runtime error
-					testMarks=0
-					testStatus='Exception'
-			fi
-			#echo "timedOut=$timedOut,marks=$testMarks,status=$testStatus"
+  #interpret the timeout / successful test
+  #return status stored in timedOut variable has the following meaning
+  #	124 - timeout, 0 - in-time completion of execution
+  if [ "$timedOut" == "124" ]	#timeout
+  then
+      testStatus='Timeout'
+      testMarks=0
+  elif [ "$timedOut" == "0" ]      #not timed out
+  then
+      #if test score is zero, then it's obviously wrong answer
+      if [ "$testMarks" == "0" ]
+      then
+          testStatus='WrongAnswer'
+  elif [ "$testMarks" == "125" ]
+  then
+  testStatus='Exception'
+  testMarks=0
+      else
+          testStatus='Accepted'
+      fi
+  else 	#runtime error
+  testMarks=0
+  testStatus='Exception'
+  fi
+  #echo "timedOut=$timedOut,marks=$testMarks,status=$testStatus"
 
-	else	#compilation errors case
-		#echo "compilation error"
-		testMarks=0						#no marks for compilation failure
-		testStatus='CompilationError'				#"compilation Error"
-	fi
+  else	#compilation errors case
+  #echo "compilation error"
+  testMarks=0						#no marks for compilation failure
+  testStatus='CompilationError'				#"compilation Error"
+  fi
 
-	#update marks and comments arrays
-	marks+=($testMarks)
-	comments+=($testStatus)
+  #update marks and comments arrays
+  marks+=($testMarks)
+  comments+=($testStatus)
 
-	#echo "testMarks = $testMarks, testStatus = $testStatus, codedStatus = $codedStatus"
-	#echo ${marks[@]}, ${comments[@]}
+  #echo "testMarks = $testMarks, testStatus = $testStatus, codedStatus = $codedStatus"
+  #echo ${marks[@]}, ${comments[@]}
 
-	#clean the working directory and go back to base for next test
-	rm -rf ./*
-	cd ..
+  #clean the working directory and go back to base for next test
+  rm -rf ./*
+  cd ..
 
 done < $testInfo
 
@@ -220,11 +215,11 @@ cd results
 #remove any pre-existing files
 if [ -e scores.txt ]
 then
-	rm scores.txt
+  rm scores.txt
 fi
 if [ -e comment.txt ]
 then
-	rm comment.txt
+  rm comment.txt
 fi
 
 #rename the log file to accepted name called log.txt
@@ -252,11 +247,11 @@ unset logLength
 #store marks and comments in respective files
 for each in "${marks[@]}"
 do
-	echo "$each" >> scores.txt
+  echo "$each" >> scores.txt
 done
 for each in "${comments[@]}"
 do
-	echo "$each" >> comment.txt
+  echo "$each" >> comment.txt
 done
 
 cd ..
