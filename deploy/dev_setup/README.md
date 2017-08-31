@@ -23,7 +23,7 @@ The `env_setup_ubuntu.sh` script installs the git, vagrant and virtualbox packag
 
 For all other operating systems, please check the instructions for installing git, vagrant and virtualbox dependencies with versions numbers greater than or equal to the ones given in the above table.
 
-If you have the saved docker images of Autolab components, place them in ```JavaAutolab/docker-images``` directory.    
+If you have the saved docker images of Autolab components, place them in ```AutolabJS/docker-images``` directory.    
 
 #### Vagrant Commands ####
 All the commands in this section are to be executed from the top-level directory in which `Vagrantfile` exists.    
@@ -76,7 +76,7 @@ If you wish to make the Gitlab available at the standard ports of 80, 443 please
 
 
 #### Uninstall ####
-To completely delete / uninstall the Autolab vagrant host machine, execute the following commands from JavaAutolab top-level directory in the host machine.
+To completely delete / uninstall the Autolab vagrant host machine, execute the following commands from AutolabJS top-level directory in the host machine.
 ```
 vagrant destroy -f	#delete the host machine completely
 #remove the SSL certificates. If these are not removed, the reinstallation will fail.

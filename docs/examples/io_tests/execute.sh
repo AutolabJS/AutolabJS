@@ -59,9 +59,6 @@ then
 fi
 
 
-unset JAVA_TOOL_OPTIONS
-export CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
-
 #generate a random string and store in variable suffix
 suffix=$(awk 'BEGIN{srand(); printf "%d\n",rand()*10000000000}')
 testLog="testLog$suffix"
@@ -156,7 +153,8 @@ do
 	#shell script in next line copies student files, library files and needed files from author_solution/
 	# essentially determines the test strategy (unit/integration/load/library supported etc)
 	# the script file would also have redirection to copy the compile and execute scripts
-	source "$testDir/$1/$testSetup/${testName}.sh"
+	source "$testDir/$1/$testSetup/Test.sh"
+	source "$testDir/support_files.sh"
 	cd working_dir
 
 	#language specific compile and run of each test case

@@ -126,8 +126,9 @@ var submission_pending = [];  // Holds the pending submissions of the users
 
 
 app.get('/admin', function (req,res) {
-
-  res.sendFile(path.join(__dirname+ '/public/admin.html'));
+  var stream = fs.createReadStream(__dirname + '/public/admin.html');
+  stream.pipe(res);
+  //res.sendFile(path.join(__dirname+ '/public/admin.html'));
 
 });
 
@@ -137,7 +138,11 @@ app.get('/config',function(req,res)
   console.log("Request Session")
   console.log(req.session)
     if(!req.session.key) res.redirect('/admin')
-    else res.sendFile(path.join(__dirname+ '/public/config.html'));
+    //else res.sendFile(path.join(__dirname+ '/public/config.html'));
+    else {
+      var stream = fs.createReadStream(__dirname + '/public/config.html');
+      stream.pipe(res);
+    }
 });
 
 
@@ -259,7 +264,7 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('/etc/main_server/courses.json'));
+  socket.emit('course details',require('/etc/main_server/course.json'));
 
   //emit lab status
   socket.emit('labs_status', labs_status);
@@ -375,7 +380,7 @@ io.on('connection', function(socket) {
 
   socket.emit('lab_data',
   {
-    course:fs.readFileSync('/etc/main_server/courses.json').toString('utf-8'),
+    course:fs.readFileSync('/etc/main_server/course.json').toString('utf-8'),
     lab:fs.readFileSync('/etc/main_server/labs.json').toString('utf-8')
   });
 
@@ -396,7 +401,7 @@ io.on('connection', function(socket) {
         }
     }
     fs.writeFile('/etc/main_server/labs.json',JSON.stringify(lab,null,4));
-    fs.writeFile('/etc/main_server/courses.json',JSON.stringify(data.course,null,4));
+    fs.writeFile('/etc/main_server/course.json',JSON.stringify(data.course,null,4));
 
     socket.emit("saved");
   });

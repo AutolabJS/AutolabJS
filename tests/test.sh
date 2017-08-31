@@ -8,6 +8,11 @@
 
 set -e # Exit with nonzero exit code if anything fails
 
+#create SSL certificates
+cd deploy/
+bash keys.sh
+cd ..
+
 #jshint main_server/main_server.js || echo "=======jslint failure on mainserver========="
 #eslint main_server/main_server.js || echo "=======eslint failure on mainserver========="
 
