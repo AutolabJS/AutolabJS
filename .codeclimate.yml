@@ -31,6 +31,11 @@ ratings:
   - "**.module"
   - "**.sh"
 exclude_paths:
+- "**.md"
+- "**.txt"
+- "**.json"
+- docs/examples/unit_tests/author_solution/java/lib/
+- deploy/wait-for-it.sh
 - main_server/public/js/jquery.min.js
 - main_server/public/js/materialize.js
 - main_server/public/js/materialize.min.js
@@ -40,6 +45,4 @@ exclude_paths:
 - main_server/public/css/icon.css
 - main_server/public/css/materialize.css
 - main_server/public/css/materialize.min.css
-- deploy/wait-for-it.sh
 - tests/functional_tests/data/
-- docs/examples/unit_tests/author_solution/java/lib/
