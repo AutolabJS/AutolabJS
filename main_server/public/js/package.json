@@ -1,0 +1,32 @@
+{
+  "name": "userlogic.js",
+  "version": "0.1.0",
+  "description": "User logic for dealing with the frontend of AutolabJS",
+  "main": "userlogic.js",
+  "scripts": {
+    "start": "node userlogic.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutolabJS/AutolabJS.git"
+  },
+  "keywords": [
+    "autolab",
+    "lab",
+    "evaluation"
+  ],
+  "author": "Ankshit Jain",
+  "contributors": [
+    "Prasad Talasila"
+  ],
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/AutolabJS/AutolabJS/issues"
+  },
+  "homepage": "https://github.com/AutolabJS/AutolabJS/wiki",
+  "dependencies": {
+    "jquery": "^2.0.3",
+    "file-saver": "^1.3.2",
+    "materialize-css": "^0.97.6"
+  }
+}

@@ -70,6 +70,9 @@ cd main_server
 npm --quiet install 1>/dev/null
 node main_server.js >>/tmp/log/main_server.log 2>&1 &
 sleep 5
+
+npm --quiet install --prefix public/js 1>/dev/null
+
 cd ..
 
 # run the functional tests for autolab

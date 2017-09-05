@@ -39,20 +39,20 @@ teardown() {
   # check for jquery.min.js, socket.io.js, materialize.min.js, Filesaver.js
 
   # check for jquery.min.js
-  curl -s --ipv4 -k https://127.0.0.1:9000/js/jquery.min.js -o "$BATS_TMPDIR/website-load-tests/jquery.min.js"
+  curl -s --ipv4 -k https://127.0.0.1:9000/js/node_modules/jquery/dist/jquery.min.js -o "$BATS_TMPDIR/website-load-tests/jquery.min.js"
   cmp "$BATS_TMPDIR/website-load-tests/jquery.min.js" data/autolab-start/js/jquery.min.js
   result=$?
   [ "$result" -eq 0 ]
 
   #check for materialize.min.js
-  curl -s --ipv4 -k https://127.0.0.1:9000/js/materialize.min.js -o "$BATS_TMPDIR/website-load-tests/materialize.min.js"
+  curl -s --ipv4 -k https://127.0.0.1:9000/js/node_modules/materialize-css/dist/js/materialize.min.js -o "$BATS_TMPDIR/website-load-tests/materialize.min.js"
   cmp "$BATS_TMPDIR/website-load-tests/materialize.min.js" data/autolab-start/js/materialize.min.js
   result=$?
   [ "$result" -eq 0 ]
 
   #check for FileSaver.js
-  curl -s --ipv4 -k https://127.0.0.1:9000/js/FileSaver.js -o "$BATS_TMPDIR/website-load-tests/FileSaver.js"
-  cmp "$BATS_TMPDIR/website-load-tests/FileSaver.js" data/autolab-start/js/FileSaver.js
+  curl -s --ipv4 -k https://127.0.0.1:9000/js/node_modules/file-saver/FileSaver.min.js -o "$BATS_TMPDIR/website-load-tests/FileSaver.min.js"
+  cmp "$BATS_TMPDIR/website-load-tests/FileSaver.min.js" data/autolab-start/js/FileSaver.min.js
   result=$?
   [ "$result" -eq 0 ]
 
@@ -73,7 +73,7 @@ teardown() {
   [ "$result" -eq 0 ]
 
   # check for materialize.min.css
-  curl -s --ipv4 -k https://127.0.0.1:9000/css/materialize.min.css -o "$BATS_TMPDIR/website-load-tests/materialize.min.css"
+  curl -s --ipv4 -k https://127.0.0.1:9000/js/node_modules/materialize-css/dist/css/materialize.min.css -o "$BATS_TMPDIR/website-load-tests/materialize.min.css"
   cmp "$BATS_TMPDIR/website-load-tests/materialize.min.css" data/autolab-start/css/materialize.min.css
   result=$?
   [ "$result" -eq 0 ]

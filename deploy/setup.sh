@@ -14,6 +14,7 @@ sudo pip install --upgrade pip
 sudo pip install cryptography
 sudo pip install setuptools
 sudo pip install ansible
+npm install --prefix ../main_server/public/js
 sudo service docker restart
 
 echo "Creating SSL certificates"
