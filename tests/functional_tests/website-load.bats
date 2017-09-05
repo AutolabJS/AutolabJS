@@ -57,7 +57,8 @@ teardown() {
   [ "$result" -eq 0 ]
 
   #check for socket.io.js
-  curl -fsSk --head --request GET https://127.0.0.1:9000/socket.io/socket.io.js
+  curl -s --ipv4 -k https://127.0.0.1:9000/socket.io/socket.io.js -o "$BATS_TMPDIR/website-load-tests/socket.io.js"
+  cmp "$BATS_TMPDIR/website-load-tests/socket.io.js" data/autolab-start/js/socket.io.js
   result=$?
   [ "$result" -eq 0 ]
 }
