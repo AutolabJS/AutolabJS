@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# disable shellcheck SC2024 is necessary to avoid opening the file as sudo user
-
 #load docker images on machine-1
 # shellcheck disable=SC2024
 sudo docker load < main_server.tar
