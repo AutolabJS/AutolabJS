@@ -126,11 +126,6 @@ then
 else
 	mkdir working_dir
 fi
-#
-# if [ -d student_solution ]
-# then
-# 	rm -rf student_solution
-# fi
 
 #redirect shell's core dump messages to log file
 cd results
@@ -228,7 +223,10 @@ then
 fi
 
 #rename the log file to accepted name called log.txt
-mv "$log" log.txt
+if [ -f "$log" ]
+then
+	mv "$log" log.txt
+fi
 
 #copy core dump messages to log file
 cp shellOut.txt temp.txt
