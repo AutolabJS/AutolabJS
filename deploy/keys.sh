@@ -14,7 +14,7 @@ then
   . "$CONFIG_FILE"
 fi
 
-#Create a random noise of 8192 byes
+#Create a random noise of 8192 bytes
 openssl rand -out private/.randRootCA 8192
 
 #Generate a private RSA key
@@ -27,7 +27,7 @@ openssl req -new -passout pass:"$PASSWORD" -x509 -days 365 -key rootca_key.pem -
 -subj "/C=$COUNTRY/ST=$STATE/L=$LOCALITY/O=$ORGANIZATION/OU=$ORGANIZATIONAL_UNIT/CN=$APP_NAME/emailAddress=$EMAIL"
 
 #Putting Root Authority Certificates and key into a folder
-#and making Directors for storing keys.
+#and making Directories for storing keys.
 mkdir RootCA
 mkdir RootCA/certs
 mv rootca_key.pem RootCA/rootca_key.pem
@@ -39,11 +39,19 @@ echo 1000 > RootCA/serial
 #Making Directories for storing keys
 mkdir ../main_server/ssl
 mkdir ../load_balancer/ssl
-mkdir ../execution_nodes/ssl
+mkdir -p ../execution_nodes/execution_node_1/ssl
+mkdir -p ../execution_nodes/execution_node_2/ssl
+mkdir -p ../execution_nodes/execution_node_3/ssl
+mkdir -p ../execution_nodes/execution_node_4/ssl
+mkdir -p ../execution_nodes/execution_node_5/ssl
 mkdir keys
 mkdir keys/main_server
 mkdir keys/load_balancer
-mkdir keys/execution_nodes
+mkdir -p keys/execution_nodes/execution_node_1
+mkdir -p keys/execution_nodes/execution_node_2
+mkdir -p keys/execution_nodes/execution_node_3
+mkdir -p keys/execution_nodes/execution_node_4
+mkdir -p keys/execution_nodes/execution_node_5
 mkdir keys/gitlab
 mkdir keys/gitlab/ssl
 mkdir keys/gitlab/load_balancer
@@ -83,14 +91,14 @@ function createCert(){
 
 createCert ../main_server/ssl/main_server "$ORGANIZATION"
 createCert ../load_balancer/ssl/load_balancer "lb.$ORGANIZATION"
-createCert ../execution_nodes/ssl/execution_node_1 "en1.$ORGANIZATION"
-createCert ../execution_nodes/ssl/execution_node_2 "en2.$ORGANIZATION"
-createCert ../execution_nodes/ssl/execution_node_3 "en3.$ORGANIZATION"
-createCert ../execution_nodes/ssl/execution_node_4 "en4.$ORGANIZATION"
-createCert ../execution_nodes/ssl/execution_node_5 "en5.$ORGANIZATION"
+createCert ../execution_nodes/execution_node_1 "en1.$ORGANIZATION"
+createCert ../execution_nodes/execution_node_2 "en2.$ORGANIZATION"
+createCert ../execution_nodes/execution_node_3 "en3.$ORGANIZATION"
+createCert ../execution_nodes/execution_node_4 "en4.$ORGANIZATION"
+createCert ../execution_nodes/execution_node_5 "en5.$ORGANIZATION"
 
 #Copying the certificates from autolab components to deploy/keys
-cd ../main_server/ssl
+cd ../main_server/ssl || exit
 mv main_server_cert.pem cert.pem
 mv main_server_key.pem key.pem
 cp ./* ../../deploy/keys/main_server
@@ -98,15 +106,31 @@ cp ./* ../../deploy/keys/main_server
 cp key.pem ../../deploy/keys/gitlab/ssl/localhost.key
 cp cert.pem ../../deploy/keys/gitlab/ssl/localhost.crt
 
-cd ../../load_balancer/ssl
+cd ../../load_balancer/ssl || exit
 mv load_balancer_cert.pem cert.pem
 mv load_balancer_key.pem key.pem
 cp ./* ../../deploy/keys/load_balancer
 
-cd ../../execution_nodes/ssl
-mv execution_node_1_cert.pem cert.pem
-mv execution_node_1_key.pem key.pem
-cp ./* ../../deploy/keys/execution_nodes
+cd ../../execution_nodes || exit
+mv execution_node_1_cert.pem execution_node_1/ssl/cert.pem
+mv execution_node_1_key.pem execution_node_1/ssl/key.pem
+cp ./execution_node_1/ssl/* ../deploy/keys/execution_nodes/execution_node_1
+
+mv execution_node_2_cert.pem execution_node_2/ssl/cert.pem
+mv execution_node_2_key.pem execution_node_2/ssl/key.pem
+cp ./execution_node_2/ssl/* ../deploy/keys/execution_nodes/execution_node_2
+
+mv execution_node_3_cert.pem execution_node_3/ssl/cert.pem
+mv execution_node_3_key.pem execution_node_3/ssl/key.pem
+cp ./execution_node_3/ssl/* ../deploy/keys/execution_nodes/execution_node_3
+
+mv execution_node_4_cert.pem execution_node_4/ssl/cert.pem
+mv execution_node_4_key.pem execution_node_4/ssl/key.pem
+cp ./execution_node_4/ssl/* ../deploy/keys/execution_nodes/execution_node_4
+
+mv execution_node_5_cert.pem execution_node_5/ssl/cert.pem
+mv execution_node_5_key.pem execution_node_5/ssl/key.pem
+cp ./execution_node_5/ssl/* ../deploy/keys/execution_nodes/execution_node_5
 
 
 #generate gitlab SSH login keys for load balancer and execution nodes
@@ -117,15 +141,15 @@ function sshKeyGen {
   ssh-keygen -t rsa -b 4096 -C "$comment" -f "$path/id_rsa" -N '' -q
 }
 # for load balancer
-cd ../../deploy/keys/gitlab
+cd ../deploy/keys/gitlab || exit
 sshKeyGen "load balancer key for lb@autlabjs" load_balancer
 
 # for each execution node
-cd execution_nodes
+cd execution_nodes || exit
 sshKeyGen "execution_node_1 key for en1@autlabjs" execution_node_1
 sshKeyGen "execution_node_2 key for en2@autlabjs" execution_node_2
 sshKeyGen "execution_node_3 key for en3@autlabjs" execution_node_3
 sshKeyGen "execution_node_4 key for en4@autlabjs" execution_node_4
 sshKeyGen "execution_node_5 key for en5@autlabjs" execution_node_5
 
-cd ../..  #go back to deploy/ directory at the end of the script
+cd ../.. || exit #go back to deploy/ directory at the end of the script

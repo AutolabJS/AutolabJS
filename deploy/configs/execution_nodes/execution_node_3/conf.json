@@ -1,0 +1,13 @@
+{ "load_balancer" :{
+  "hostname": "localhost",
+  "port": "8081"
+},
+"gitlab" :{
+  "hostname": "localhost",
+  "port": "80"
+},
+"host_port" :
+{
+  "port" : "8084"
+}
+}

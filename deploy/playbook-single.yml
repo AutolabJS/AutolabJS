@@ -34,12 +34,12 @@
       copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
     - name: Waiting for MySQL server to be up
-      shell: ./wait-for-it.sh -t 60 {{ inventory_hostname}}:3306
+      shell: ./wait-for-it.sh -t 60 {{ inventory_hostname }}:3306
 
     - pause: seconds=10
 
     - name: Create Autolab database
-      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass}} -e 'CREATE DATABASE Autolab'"
+      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE Autolab'"
 
 - hosts: gitlab
   become: yes
@@ -59,19 +59,10 @@
           - "443:443"
         restart_policy: always
         volumes:
-          - "/srv/gitlab/config:/etc/gitlab"
-          - "/srv/gitlab/logs:/var/log/gitlab"
-          - "/srv/gitlab/data:/var/opt/gitlab"
-
-    - name: Copy the certificate
-      shell: "{{ item }}"
-      with_items:
-        - "docker exec gitlab mkdir -p /etc/gitlab/ssl"
-        - "docker cp keys/gitlab/ssl/localhost.key gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
-        - "docker cp keys/gitlab/ssl/localhost.crt gitlab:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
-
-    #- name: Transfer wait-for-it to host
-      #copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
+          - "/opt/autolabjs/gitlab/config:/etc/gitlab"
+          - "/opt/autolabjs/gitlab/logs:/var/log/gitlab"
+          - "/opt/autolabjs/gitlab/data:/var/opt/gitlab"
+          - "./keys/gitlab/ssl:/etc/gitlab/ssl"
 
     - name: Copy wait-for-it to container
       shell: docker cp wait-for-it.sh gitlab:/wait-for-it.sh
@@ -148,10 +139,11 @@
         detach: yes
         restart_policy: always
         volumes:
+          - "../load_balancer:/load_balancer"
           - "{{ submissions_dir }}:/load_balancer/submissions"
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/load_balancer:/etc/load_balancer"
-          - "./keys/load_balancer:/root/.ssh/"
+          - "./keys/gitlab/load_balancer:/root/.ssh/"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
@@ -171,21 +163,18 @@
         detach: yes
         restart_policy: always
         volumes:
+          - "../main_server:/main_server"
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/main_server:/etc/main_server"
 
-- hosts: executionnodes
+- hosts: executionnodes1
   become: yes
   tasks:
-    - name: mkdir for ssh keys
-      shell: "mkdir -p {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}"
-
-    - name: Copy SSH Key for GitLab
-      shell: "cp ./keys/gitlab/execution_nodes/execution_node_1/id_rsa* {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/"
 
     - name: Register public key
-      shell: "cat {{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}/id_rsa.pub"
+      shell: "cat ./keys/gitlab/execution_nodes/execution_node_1/id_rsa.pub"
       register: ssh_key
+
     - name: Get Private Token
       uri:
         url: https://{{ gitlab_hostname }}/api/v3/session
@@ -207,38 +196,223 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ inventory_hostname }}-{{ port }}"
+          title: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
-    - name: Copy executionnode
-      copy: "src=../execution_nodes dest={{ ansible_env.HOME}}/.autolab"
-
-    - name: Change permission of docker-entrypoint
-      file: "path={{ ansible_env.HOME}}/.autolab/execution_nodes/docker-entrypoint.sh mode=0755"
-
-    - name: make config dir
-      shell: "mkdir -p {{ ansible_env.HOME}}/.autolab/configs"
-
-    - name: Copy configs
-      copy: "src=./configs/execution_nodes dest={{ ansible_env.HOME}}/.autolab/configs"
-
     - name: Build executionnode
       docker_image:
         name: execution_node
-        path: "{{ ansible_env.HOME}}/.autolab/execution_nodes"
+        path: "../execution_nodes/execution_node_1"
 
-    - name: Start execution_node container
+    - name: Start execution_node container 1
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port }}"
+        name: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
         image: execution_node
         network_mode: host
         detach: yes
         restart_policy: always
         volumes:
+          - "../execution_nodes/execution_node_1:/execution_nodes"
           - "/etc/localtime:/etc/localtime:ro"
-          - "{{ ansible_env.HOME}}/.autolab/configs/execution_nodes:/etc/execution_node"
-          - "{{ ansible_env.HOME}}/.autolab/keys/execution-node-{{ inventory_hostname }}-{{ port }}:/root/.ssh/"
+          - "./configs/execution_nodes/execution_node_1:/etc/execution_node"
+          - "./keys/gitlab/execution_nodes/execution_node_1:/root/.ssh/"
+        env:
+          GITLAB_IP: "{{ gitlab_hostname }}"
+
+- hosts: executionnodes2
+  become: yes
+  tasks:
+
+    - name: Register public key
+      shell: "cat ./keys/gitlab/execution_nodes/execution_node_2/id_rsa.pub"
+      register: ssh_key
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Add key to gitlab
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/user/keys
+        status_code: 201
+        method: POST
+        body_format: json
+        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
+        body:
+          title: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
+          key: "{{ ssh_key.stdout }}"
+        validate_certs: no
+        return_content: yes
+
+    - name: Start execution_node container 2
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
+        image: execution_node
+        network_mode: host
+        detach: yes
+        restart_policy: always
+        volumes:
+          - "../execution_nodes/execution_node_2:/execution_nodes"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "./configs/execution_nodes/execution_node_2:/etc/execution_node"
+          - "./keys/gitlab/execution_nodes/execution_node_2:/root/.ssh/"
+        env:
+          GITLAB_IP: "{{ gitlab_hostname }}"
+
+- hosts: executionnodes3
+  become: yes
+  tasks:
+
+    - name: Register public key
+      shell: "cat ./keys/gitlab/execution_nodes/execution_node_3/id_rsa.pub"
+      register: ssh_key
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Add key to gitlab
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/user/keys
+        status_code: 201
+        method: POST
+        body_format: json
+        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
+        body:
+          title: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
+          key: "{{ ssh_key.stdout }}"
+        validate_certs: no
+        return_content: yes
+
+    - name: Start execution_node container 3
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
+        image: execution_node
+        network_mode: host
+        detach: yes
+        restart_policy: always
+        volumes:
+          - "../execution_nodes/execution_node_3:/execution_nodes"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "./configs/execution_nodes/execution_node_3:/etc/execution_node"
+          - "./keys/gitlab/execution_nodes/execution_node_3:/root/.ssh/"
+        env:
+          GITLAB_IP: "{{ gitlab_hostname }}"
+
+- hosts: executionnodes4
+  become: yes
+  tasks:
+
+    - name: Register public key
+      shell: "cat ./keys/gitlab/execution_nodes/execution_node_4/id_rsa.pub"
+      register: ssh_key
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Add key to gitlab
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/user/keys
+        status_code: 201
+        method: POST
+        body_format: json
+        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
+        body:
+          title: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
+          key: "{{ ssh_key.stdout }}"
+        validate_certs: no
+        return_content: yes
+
+    - name: Start execution_node container 4
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
+        image: execution_node
+        network_mode: host
+        detach: yes
+        restart_policy: always
+        volumes:
+          - "../execution_nodes/execution_node_4:/execution_nodes"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "./configs/execution_nodes/execution_node_4:/etc/execution_node"
+          - "./keys/gitlab/execution_nodes/execution_node_4:/root/.ssh/"
+        env:
+          GITLAB_IP: "{{ gitlab_hostname }}"
+
+- hosts: executionnodes5
+  become: yes
+  tasks:
+
+    - name: Register public key
+      shell: "cat ./keys/gitlab/execution_nodes/execution_node_5/id_rsa.pub"
+      register: ssh_key
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Add key to gitlab
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/user/keys
+        status_code: 201
+        method: POST
+        body_format: json
+        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
+        body:
+          title: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
+          key: "{{ ssh_key.stdout }}"
+        validate_certs: no
+        return_content: yes
+
+    - name: Start execution_node container 5
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
+        image: execution_node
+        network_mode: host
+        detach: yes
+        restart_policy: always
+        volumes:
+          - "../execution_nodes/execution_node_5:/execution_nodes"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "./configs/execution_nodes/execution_node_5:/etc/execution_node"
+          - "./keys/gitlab/execution_nodes/execution_node_5:/root/.ssh/"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
