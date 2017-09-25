@@ -14,6 +14,16 @@ sudo pip install --upgrade pip
 sudo pip install cryptography
 sudo pip install setuptools
 sudo pip install ansible
+npm install --prefix ../main_server/public/js
+#copy only the necessary files to the required directories
+cd ../main_server/ || exit
+cp public/js/node_modules/jquery/dist/jquery.min.js public/js/
+cp public/js/node_modules/file-saver/FileSaver.min.js public/js/
+cp public/js/node_modules/materialize-css/dist/js/materialize.min.js public/js/
+cp public/js/node_modules/materialize-css/dist/css/materialize.min.css public/css/
+#remove the node_modules directory
+rm -rf public/js/node_modules
+cd ../deploy || exit
 sudo service docker restart
 
 echo "Creating SSL certificates"
