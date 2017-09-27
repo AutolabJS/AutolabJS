@@ -3,22 +3,6 @@
     {
       "hostname": "localhost",
       "port": "8082"
-    },
-    {
-      "hostname": "localhost",
-      "port": "8083"
-    },
-    {
-      "hostname": "localhost",
-      "port": "8084"
-    },
-    {
-      "hostname": "localhost",
-      "port": "8085"
-    },
-    {
-      "hostname": "localhost",
-      "port": "8086"
     }
   ],
   "server_info": {
