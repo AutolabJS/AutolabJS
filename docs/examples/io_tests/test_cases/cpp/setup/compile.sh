@@ -1,4 +1,4 @@
-
+#!/bin/bash
 ######################
 # Author: TSRK Prasad
 # Date: 08-Dec-2016
@@ -8,30 +8,26 @@
 #
 ######################
 
-
 #clear compileErrors flag
 unset COMPILATION_STATUS
 
 #language specific compile and run of each test case
-# shellcheck disable=SC2154
-g++-6 -std=c++11 ./*.cpp 2>&1 | tee "$testLog" > /dev/null
-# shellcheck disable=SC2034
+g++-6 -std=c++11 ./*.cpp 2>&1 | tee "$TESTLOG" > /dev/null
+
 COMPILATION_STATUS="${PIPESTATUS[0]}"
+export COMPILATION_STATUS
 
 #collect the log of this compilation to overall log.txt
-# shellcheck disable=SC2154
-cat "$testLog" >> "$log"
+cat "$TESTLOG" >> "$LOG"
 
 #empty log file
-#truncate -s 0 $testLog		#this line gives problem on MAC machines
-rm "$testLog"
-touch "$testLog"
+#truncate -s 0 $TESTLOG		#this line gives problem on MAC machines
+rm "$TESTLOG"
+touch "$TESTLOG"
 
 #exclude any warnings, type cast messages etc and check for compilation errors
-# shellcheck disable=SC2034
-NO_OF_ERRORS="$(grep -vc "^Note:" "$testLog" | awk "{print $1}")"
-
-
+NO_OF_ERRORS="$(grep -vc "^Note:" "$TESTLOG" | awk "{print $1}")"
+export NO_OF_ERRORS
 
 #references
 #	http://unix.stackexchange.com/questions/14270/get-exit-status-of-process-thats-piped-to-another/73180#73180

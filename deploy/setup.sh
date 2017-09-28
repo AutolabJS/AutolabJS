@@ -19,8 +19,10 @@ sudo service docker restart
 INSTALL_DIR="/opt/autolabjs"
 sudo mkdir -p "$INSTALL_DIR"
 USER=$(whoami)
-sudo chown -R $USER $INSTALL_DIR
-sudo usermod -aG docker $USER
+sudo chown -R "$USER" "$INSTALL_DIR"
+#The below command can be uncommented if docker privileges are to be
+#granted to the current user. This is generally not advisable.
+#sudo usermod -aG docker "$USER"
 
 mkdir -p $INSTALL_DIR/gitlab
 mkdir -p $INSTALL_DIR/gitlab/config

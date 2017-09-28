@@ -1,2 +1,5 @@
-cd submissions
-rm -rf "$1/$2"
+#!/bin/bash
+submission_id="$1"
+lab="$2"
+cd submissions || exit
+rm -rf "${submission_id:?}"/"${lab:?}"
