@@ -168,7 +168,7 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/main_server:/etc/main_server"
 
-- hosts: executionnodes1
+- hosts: executionnode1
   become: yes
   tasks:
     - name: Get Docker installation script
@@ -233,7 +233,7 @@
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
-- hosts: executionnodes2
+- hosts: executionnode2
   become: yes
   tasks:
 
@@ -294,7 +294,7 @@
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
-- hosts: executionnodes3
+- hosts: executionnode3
   become: yes
   tasks:
 
@@ -354,7 +354,7 @@
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
-- hosts: executionnodes4
+- hosts: executionnode4
   become: yes
   tasks:
 
@@ -415,7 +415,7 @@
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
-- hosts: executionnodes5
+- hosts: executionnode5
   become: yes
   tasks:
 
