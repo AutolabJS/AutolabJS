@@ -10,17 +10,17 @@ localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 s
 [mainserver]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
 
-[executionnodes1]
+[executionnode1]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_1=8082
 
-[executionnodes2]
+[executionnode2]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_2=8083
 
-[executionnodes3]
+[executionnode3]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_3=8084
 
-[executionnodes4]
+[executionnode4]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_4=8085
 
-[executionnodes5]
+[executionnode5]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_5=8086
