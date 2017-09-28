@@ -28,7 +28,9 @@ mkdir -p tests/backup/execution_nodes
 cp -f execution_nodes/extract_run.sh tests/backup/execution_nodes/
 cp -f execution_nodes/execute_node.js tests/backup/execution_nodes/
 mkdir -p tests/backup/load_balancer
+mkdir -p tests/backup/load_balancer/configs
 cp -f load_balancer/load_balancer.js tests/backup/load_balancer/
+cp -f deploy/configs/load_balancer/nodes_data_conf.json tests/backup/load_balancer/configs
 mkdir -p tests/backup/main_server
 cp -f main_server/main_server.js tests/backup/main_server/
 cp -f main_server/admin.js tests/backup/main_server/
@@ -37,7 +39,7 @@ cp -f main_server/reval/reval.js tests/backup/main_server/
 
 
 # change the config file paths in all the relevant js files
-sed -i 's/\/etc\/execution_node/\.\.\/deploy\/configs\/execution_nodes/' execution_nodes/execute_node.js
+sed -i 's/\/etc\/execution_node/\.\.\/deploy\/configs\/execution_nodes\/execution_node_1/' execution_nodes/execute_node.js
 sed -i 's/\/etc\/load_balancer/\.\.\/deploy\/configs\/load_balancer/' load_balancer/load_balancer.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/main_server.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/admin.js
@@ -48,11 +50,15 @@ sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/re
 # replace gitlab dependency with a file system repository
 cp -f tests/extract_run_test.sh execution_nodes/extract_run.sh
 
+#replace the node config file for loadbalancer for a single node setup
+cp -f tests/nodes_data_conf_single_node.json deploy/configs/load_balancer/nodes_data_conf.json
+
 # create a temporary log directory
 mkdir -p /tmp/log
 
 # run the execution node server
 cd execution_nodes
+mv execution_node_1/ssl/ ssl/
 npm --quiet install 1>/dev/null
 node execute_node.js >>/tmp/log/execute_node.log 2>&1 &
 sleep 5
