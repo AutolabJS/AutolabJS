@@ -1,4 +1,4 @@
-
+#!/bin/bash
 ############
 # Author: TSRK Prasad
 # Date: 18-Sep-2016
@@ -6,20 +6,21 @@
 # script fragment used by ../../execute.sh to perform run-time tests. This script is not invoked directly
 #
 # variables manipulated:
-#    testMarks		marks obtained in this test case
-#    timedOut		exit code of timeout utility (124 - timeout, 0 - completed within time)
+#    TESTMARKS		marks obtained in this test case
+#    TIMEDOUT		exit code of timeout utility (124 - timeout, 0 - completed within time)
 #
 # variabled used:
-#	testLog		name of log file that stores results of a test
-#	log		log file that stores results from all tests
+#	TESTLOG		name of log file that stores results of a test
+#	LOG		log file that stores results from all tests
 ###########
 
 #compilation is successful, now run the test
 
 #get the filename of java class
-for file in `ls *.java`
+for file in *.java
 do
-    name=${file%.*}
+    [[ -e $file ]] || break
+    name="${file%.*}"
     #echo "$name"
 done
 
@@ -27,32 +28,31 @@ unset JAVA_TOOL_OPTIONS
 CLASSPATH="lib/*:lib/:."		#helps incude jar files and user packages
 
 #syntax: timeout -k soft-limit hard-limit <cmd>
-timeout -k 0.5 "$timeLimit" java -cp "$CLASSPATH:." "$name" <input.txt >output.txt | tee "$testLog" > /dev/null
+timeout -k 0.5 "$TIMELIMIT" java -cp "$CLASSPATH:." "$name" <input.txt >output.txt | tee "$TESTLOG" > /dev/null
 #comment above line and uncomment below line for MAC systems
-#gtimeout -k 0.5 $timeLimit java -cp $CLASSPATH:. Driver 2>&1 | tee $testLog > /dev/null
+#gtimeout -k 0.5 $TIMELIMIT java -cp $CLASSPATH:. Driver 2>&1 | tee $TESTLOG > /dev/null
 
-# shellcheck disable=SC2034
-timedOut=${PIPESTATUS[0]}
+TIMEDOUT="${PIPESTATUS[0]}"
+export TIMEDOUT
 
 #import 'dsa_verify' bash function
+# shellcheck disable=SC1091
 . ../test_cases/dsa.sh
 
 #give marks based on the output matching
-# shellcheck disable=SC2034
-testMarks=$(dsa_verify expected_output.txt output.txt)
-
+TESTMARKS="$(dsa_verify expected_output.txt output.txt)"
+export TESTMARKS
 
 #remove score from the run-time log and
 # collect the run-time log of this test to overall log.txt
-sed '$ d' "$testLog" >> "$log"
+sed '$ d' "$TESTLOG" >> "$LOG"
 
 #empty log file
-#truncate -s 0 $testLog		#this line gives problem on MAC machines
-rm "$testLog"
-touch "$testLog"
+#truncate -s 0 $TESTLOG		#this line gives problem on MAC machines
+rm "$TESTLOG"
+touch "$TESTLOG"
 
-
-#echo "timeOut=$timedOut"
+#echo "timeOut=$TIMEDOUT"
 
 #references
 #	http://stackoverflow.com/questions/1221833/bash-pipe-output-and-capture-exit-status

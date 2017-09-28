@@ -1,0 +1,25 @@
+{
+  "Nodes": [
+    {
+      "hostname": "localhost",
+      "port": "8082"
+    }
+  ],
+  "server_info": {
+    "hostname": "localhost",
+    "port": "9000"
+  },
+  "database": {
+    "host": "localhost",
+    "user": "root",
+    "password": "root",
+    "database": "Autolab"
+  },
+  "gitlab": {
+    "hostname": "localhost",
+    "port": "80"
+  },
+  "host_port": {
+    "port": "8081"
+  }
+}

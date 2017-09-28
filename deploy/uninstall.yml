@@ -13,10 +13,6 @@
         state: absent
       ignore_errors: yes
 
-    - name: Remove Database Volume
-      file: "dest={{ sqldata }} state=absent"
-      ignore_errors: yes
-
 - hosts: gitlab
   become: yes
   tasks:
@@ -32,20 +28,9 @@
         state: absent
       ignore_errors: yes
 
-    - name: Remove gitlab directory
-      file: "dest=/srv/gitlab state=absent"
-      ignore_errors: yes
-
 - hosts: loadbalancer
   become: yes
   tasks:
-    - name: Remove SSH Key
-      file: dest=keys/load_balancer/{{ item }} state=absent
-      with_items:
-        - id_rsa.pub
-        - id_rsa
-        - known_hosts
-      ignore_errors: yes
 
     - name: Stop and Remove Loadbalancer container
       docker_container:
@@ -62,6 +47,7 @@
 - hosts: mainserver
   become: yes
   tasks:
+
     - name: Stop and remove mainserver container
       docker_container:
         name: mainserver
@@ -74,16 +60,48 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnodes
+- hosts: executionnodes1
   become: yes
   tasks:
-    - name: Remove autolab directory
-      file: "dest={{ ansible_env.HOME}}/.autolab state=absent"
+    - name: Stop and remove execution_node container 1
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
+        state: absent
       ignore_errors: yes
 
-    - name: Stop and remove execution_node container
+- hosts: executionnodes2
+  become: yes
+  tasks:
+    - name: Stop and remove execution_node container 2
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port }}"
+        name: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
+        state: absent
+      ignore_errors: yes
+
+- hosts: executionnodes3
+  become: yes
+  tasks:
+    - name: Stop and remove execution_node container 3
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
+        state: absent
+      ignore_errors: yes
+
+- hosts: executionnodes4
+  become: yes
+  tasks:
+    - name: Stop and remove execution_node container 4
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
+        state: absent
+      ignore_errors: yes
+
+- hosts: executionnodes5
+  become: yes
+  tasks:
+    - name: Stop and remove execution_node container 5
+      docker_container:
+        name: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
         state: absent
       ignore_errors: yes
 
@@ -91,4 +109,8 @@
       docker_image:
         name: execution_node
         state: absent
+      ignore_errors: yes
+
+    - name: Remove autolab directory completely
+      file: "dest=/opt/autolabjs state=absent"
       ignore_errors: yes

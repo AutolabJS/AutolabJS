@@ -1,5 +1,5 @@
 [mysql]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 sqldata=/opt/sqldata mysql_root_pass=root
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 sqldata=/opt/autolabjs/mysql mysql_root_pass=root
 
 [gitlab]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_password=12345678
@@ -10,5 +10,17 @@ localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 s
 [mainserver]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
 
-[executionnodes]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port=8082
+[executionnodes1]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_1=8082
+
+[executionnodes2]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_2=8083
+
+[executionnodes3]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_3=8084
+
+[executionnodes4]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_4=8085
+
+[executionnodes5]
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_5=8086

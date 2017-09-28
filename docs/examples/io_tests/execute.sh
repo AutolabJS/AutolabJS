@@ -24,31 +24,29 @@
 #
 #	Variable definitions
 #	--------------------
-#	testLog		temporary test log file that holds compile and run-time logs from each test
-#	log		temporary log file that collects compile and run-time logs from all tests
+#	TESTLOG		temporary test log file that holds compile and run-time logs from each test
+#	LOG		temporary log file that collects compile and run-time logs from all tests
 #	marks		array containing marks from all the tests
 #	comments	"Wrong Answer", "Compilation Error", "Timeout", "Accepted"
 #	comments to be added in future: "Runtime Error", "Partial Answer", "Exception", "Files Not Available",
 #					"Unsupported Language"
 #
-#	testDir		directory containing all the relevant tests for each language supported for an assignment;
-#			At the top-level of testDir, there would be language-specific folders. The contents of each folder are
+#	TESTDIR		directory containing all the relevant tests for each language supported for an assignment;
+#			At the top-level of TESTDIR, there would be language-specific folders. The contents of each folder are
 #					setup/		contains input and file copying shell script for each test
-#					tests/		contains the language-specific testing code
-#								(in the code represented by testSetup variable)
 #					apart from the above, there would also be language-agnostic, IO check files put in
-#					checks/		contains files for comparison of outputs
+#					checks/		contains files for inputs and comparison of outputs
 #	testInfo	file containing all the tests from the lab author
 #			this file is common for all languages and is programming language agnostic
 #				file needs to be formatted as tab-separated value file with three columns
 #				Test# <Tab> Timeout
 #			Ex:	Test1		1
 #
-#	testName	variable holding "Test#" string from "testInfo" file
-#	timeLimit	variable holding "Timeout" value from "testInfo" file
+#	TESTNAME	variable holding "Test#" string from "testInfo" file
+#	TIMELIMIT	variable holding "Timeout" value from "testInfo" file
 #
 #	testStatus	status comment of a test; used to look up code in "testStatusEncoder" associative array
-#	testMarks	marks obtained in one test case
+#	TESTMARKS	marks obtained in one test case
 ######################################################
 
 if [ "$#" -ne 1 ]
@@ -61,17 +59,17 @@ fi
 
 #generate a random string and store in variable suffix
 suffix=$(awk 'BEGIN{srand(); printf "%d\n",rand()*10000000000}')
-testLog="testLog$suffix"
-log="../results/log$suffix"
+TESTLOG="testLog$suffix"
+LOG="../results/log$suffix"
 
 #language option chosen
-language=$1
+LANGUAGE=$1
+
+TESTDIR="test_cases"
+TESTSETUP="setup"
 
 #make these filenames available in child scripts as well
-export testLog log
-
-testDir="test_cases"
-testSetup="setup"
+export TESTLOG LOG TESTSETUP TESTDIR LANGUAGE
 
 testInfo="test_info.txt"	#contains information on test case numbers, marks and time limt in tab separated file format
 
@@ -80,19 +78,10 @@ testInfo="test_info.txt"	#contains information on test case numbers, marks and t
 marks=()	#array for holding marks of all test cases
 comments=()	#array for holding comments of all test cases
 
-#associative array pointing to language-specific driver file
-declare -A driver
-#driver[c]="Driver.c"
-#driver[cpp]="Driver.cpp"
-#driver[cpp14]="Driver14.cpp"
-#driver[java]="Driver.java"
-#driver[python2]="Driver.py"
-#driver[python3]="Driver3.py"
-
 #reset all the three variables used to parse each line of "testInfo" file
-unset testName timeLimit
+unset TESTNAME TIMELIMIT
 unset testStatus
-unset testMarks
+unset TESTMARKS
 
 #results directory contains logs.txt, scores.txt and comments.txt
 #clean wipe before each run
@@ -104,7 +93,7 @@ else
 fi
 
 #check if the chosen language is supported by the instructor
-if [ -d test_cases/"$language" ]
+if [ -d test_cases/"$LANGUAGE" ]
 then
   #echo "supported language"
   :	#no operation
@@ -128,10 +117,15 @@ else
 fi
 
 #redirect shell's core dump messages to log file
-cd results
+cd results || exit
 exec 2> shellOut.txt
 cd ..
 
+if [ ! -f "$testInfo" ]
+then
+  echo -e "No test_info.txt found" > ./results/log.txt
+  exit
+fi
 #main test loop
 #read one test information each line of "test file" pointed to by testInfo and run a test
 while read -r line || [[ -n "$line" ]]
@@ -139,67 +133,71 @@ do
   #echo $line | awk '{print "\t"$1"\n\t-----"}'
 
   #obtain information from $line which is a line of test_info.txt
-  testName=$(echo "$line" | awk '{print $1}')
-  timeLimit=$(echo "$line" | awk '{print $2}')
-  export timeLimit
+  TESTNAME=$(echo "$line" | awk '{print $1}')
+  TIMELIMIT=$(echo "$line" | awk '{print $2}')
+  export TIMELIMIT TESTNAME
 
   #Test strategy
   #copy necessary files
   #shell script in next line copies student files, library files and needed files from author_solution/
   # essentially determines the test strategy (unit/integration/load/library supported etc)
   # the script file would also have redirection to copy the compile and execute scripts
-  source "$testDir/$1/$testSetup/Test.sh"
-  source "$testDir/support_files.sh"
-  cd working_dir
+  # shellcheck source=/dev/null
+  source "$TESTDIR/$LANGUAGE/$TESTSETUP/Test.sh"
+  # shellcheck source=/dev/null
+  source "$TESTDIR/support_files.sh"
+  cd working_dir || exit
 
   #language specific compile and run of each test case
+  # shellcheck source=/dev/null
   source compile.sh
 
   #check for compilation errors
   if [ "$COMPILATION_STATUS" == "0" ]
   then
-  #if there are no errors, run the test
-  #echo "compilation success"
-  #code for successful test / failed test / timeout
-  source executeTest.sh
+    #if there are no errors, run the test
+    #echo "compilation success"
+    #code for successful test / failed test / timeout
+    # shellcheck source=/dev/null
+    source executeTest.sh
 
-  #interpret the timeout / successful test
-  #return status stored in timedOut variable has the following meaning
-  #	124 - timeout, 0 - in-time completion of execution
-  if [ "$timedOut" == "124" ]	#timeout
-  then
+    #interpret the timeout / successful test
+    #return status stored in TIMEDOUT variable has the following meaning
+    #	124 - timeout, 0 - in-time completion of execution
+    if [ "$TIMEDOUT" == "124" ]	#timeout
+    then
       testStatus='Timeout'
-      testMarks=0
-  elif [ "$timedOut" == "0" ]      #not timed out
-  then
+      TESTMARKS=0
+    elif [ "$TIMEDOUT" == "0" ]      #not timed out
+    then
       #if test score is zero, then it's obviously wrong answer
-      if [ "$testMarks" == "0" ]
+      if [ "$TESTMARKS" == "0" ]
       then
-          testStatus='WrongAnswer'
-  elif [ "$testMarks" == "125" ]
-  then
-  testStatus='Exception'
-  testMarks=0
+        testStatus='WrongAnswer'
+      elif [ "$TESTMARKS" == "125" ]
+      then
+        testStatus='Exception'
+        TESTMARKS=0
       else
-          testStatus='Accepted'
+        testStatus='Accepted'
       fi
-  else 	#runtime error
-  testMarks=0
-  testStatus='Exception'
-  fi
-  #echo "timedOut=$timedOut,marks=$testMarks,status=$testStatus"
+    else 	#runtime error
+      TESTMARKS=0
+      testStatus='Exception'
+    fi
+    #echo "timedOut=$timedOut,marks=$TESTMARKS,status=$testStatus"
 
   else	#compilation errors case
-  #echo "compilation error"
-  testMarks=0						#no marks for compilation failure
-  testStatus='CompilationError'				#"compilation Error"
+    #echo "compilation error"
+    TESTMARKS=0						#no marks for compilation failure
+    testStatus='CompilationError'				#"compilation Error"
   fi
 
   #update marks and comments arrays
-  marks+=($testMarks)
+  marks+=($TESTMARKS)
   comments+=($testStatus)
 
-  #echo "testMarks = $testMarks, testStatus = $testStatus, codedStatus = $codedStatus"
+  #echo "TESTMARKS = $TESTMARKS, testStatus = $testStatus, codedStatus = $codedStatus"
   #echo ${marks[@]}, ${comments[@]}
 
   #clean the working directory and go back to base for next test
@@ -210,7 +208,7 @@ done < $testInfo
 
 
 #copy score and comments from arrays to files
-cd results
+cd results || exit
 
 #remove any pre-existing files
 if [ -e scores.txt ]
@@ -223,9 +221,9 @@ then
 fi
 
 #rename the log file to accepted name called log.txt
-if [ -f "$log" ]
+if [ -f "$LOG" ]
 then
-  mv "$log" log.txt
+  mv "$LOG" log.txt
 fi
 
 #copy core dump messages to log file
@@ -235,12 +233,12 @@ cp shellOut.txt temp.txt
 logLength=$(wc -l log.txt | awk '{print $1}')
 if [ "$logLength" -gt 50 ]
 then
-    head -n 50 log.txt >> temp.txt
-    echo -e "\n=====LOG TRUNCATED====\n" >> temp.txt
-    mv temp.txt log.txt
+  head -n 50 log.txt >> temp.txt
+  echo -e "\n=====LOG TRUNCATED====\n" >> temp.txt
+  mv temp.txt log.txt
 else
-    cat log.txt >> temp.txt
-    mv temp.txt log.txt
+  cat log.txt >> temp.txt
+  mv temp.txt log.txt
 fi
 rm shellOut.txt
 
@@ -256,11 +254,6 @@ for each in "${comments[@]}"
 do
   echo "$each" >> comment.txt
 done
-
-cd ..
-
-
-
 
 #references
 #	http://stackoverflow.com/questions/10929453/read-a-file-line-by-line-assigning-the-value-to-a-variable
