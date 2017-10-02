@@ -1,47 +1,48 @@
-
+#!/bin/bash
 ############
 # Author: TSRK Prasad
 # Date: 08-Dec-2016
 #
 # script fragment used by ../../execute.sh to perform run-time tests. This script is not invoked directly
 #
-# variables manipulated:
-#    testMarks		marks obtained in this test case
-#    timedOut		exit code of timeout utility (124 - timeout, 0 - completed within time)
-#
-# variabled used:
-#	testLog		name of log file that stores results of a test
-#	log		log file that stores results from all tests
+# All variables that are exported/imported are in upper case convention. They are:
+#   TIMELIMIT : time limit in which the execution of this test should finish
+#   TESTLOG : name of log file that stores results of a test
+#   TIMEDOUT : exit code of timeout utility (124 - timeout, 0 - completed within time)
+#   TESTMARKS : marks obtained in this test case
+#   LOG : log file that stores results from all tests
+# The environment variables are in upper case convention. They are:
+#   PIPESTATUS : an array variable which contains the exit status of each command in piped commands
 ###########
 
 #compilation is successful, now run the test
 
 #syntax: timeout -k soft-limit hard-limit <cmd>
-timeout -k 0.5 "$timeLimit" python2 ./*.py <input.txt >output.txt | tee "$testLog" > /dev/null
+timeout -k 0.5 "$TIMELIMIT" python2 ./*.py <input.txt >output.txt | tee "$TESTLOG" > /dev/null
 #comment above line and uncomment below line for MAC systems
-#gtimeout -k 0.5 $timeLimit python2 *.py <input.txt >output.txt | tee $testLog > /dev/null
+#gtimeout -k 0.5 $TIMELIMIT python2 *.py <input.txt >output.txt | tee $TESTLOG > /dev/null
 
-# shellcheck disable=SC2034
-timedOut=${PIPESTATUS[0]}
+TIMEDOUT="${PIPESTATUS[0]}"
+export TIMEDOUT
 
 #import 'dsa_verify' bash function
+# shellcheck disable=SC1091
 . ../test_cases/dsa.sh
 
 #give marks based on the output matching
-# shellcheck disable=SC2034
-testMarks=$(dsa_verify expected_output.txt output.txt)
+TESTMARKS="$(dsa_verify expected_output.txt output.txt)"
+export TESTMARKS
 
 #remove score from the run-time log and
 # collect the run-time log of this test to overall log.txt
-sed '$ d' "$testLog" >> "$log"
+sed '$ d' "$TESTLOG" >> "$LOG"
 
 #empty log file
-#truncate -s 0 $testLog		#this line gives problem on MAC machines
-rm "$testLog"
-touch "$testLog"
+#truncate -s 0 $TESTLOG		#this line gives problem on MAC machines
+rm "$TESTLOG"
+touch "$TESTLOG"
 
-
-#echo "timeOut=$timedOut"
+#echo "timeOut=$TIMEDOUT"
 
 #references
 #	http://stackoverflow.com/questions/1221833/bash-pipe-output-and-capture-exit-status

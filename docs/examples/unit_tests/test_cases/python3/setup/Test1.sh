@@ -1,10 +1,11 @@
+#!/bin/bash
+# All variables that are exported/imported are in upper case convention. They are:
+#   TESTDIR : name of the test directory
+#   LANGUAGE : language in which the student has submitted an evaluation request
 #copy all the files under test from "student_solution/" and support files from "author_solution/"
 #copy all source files first
 
 cp -f student_solution/python3/Seller.py working_dir/
 
-
-
 #copy the test file
-cp test_cases/python3/tests/Test1.py working_dir/
-mv working_dir/Test1.py working_dir/Test.py
+cp "$TESTDIR"/"$LANGUAGE"/tests/Test1.py working_dir/Test.py
