@@ -58,6 +58,7 @@ teardown() {
   cp -f $BATS_TMPDIR/website-load-tests/node_modules/jquery/dist/jquery.min.js $BATS_TMPDIR/website-load-tests/js/
   cp -f $BATS_TMPDIR/website-load-tests/node_modules/file-saver/FileSaver.min.js $BATS_TMPDIR/website-load-tests/js/
   cp -f $BATS_TMPDIR/website-load-tests/node_modules/materialize-css/dist/js/materialize.min.js $BATS_TMPDIR/website-load-tests/js/
+  cp -f $BATS_TMPDIR/website-load-tests/node_modules/socket.io-client/socket.io.js $BATS_TMPDIR/website-load-tests/js/
   rm -rf $BATS_TMPDIR/website-load-tests/node_modules
 
   # check for jquery.min.js
@@ -80,7 +81,7 @@ teardown() {
 
   #check for socket.io.js
   curl -s --ipv4 -k https://127.0.0.1:9000/socket.io/socket.io.js -o "$BATS_TMPDIR/website-load-tests/socket.io.js"
-  cmp "$BATS_TMPDIR/website-load-tests/socket.io.js" data/autolab-start/js/socket.io.js
+  cmp "$BATS_TMPDIR/website-load-tests/socket.io.js" $BATS_TMPDIR/website-load-tests/js/socket.io.js
   result=$?
   [ "$result" -eq 0 ]
 }

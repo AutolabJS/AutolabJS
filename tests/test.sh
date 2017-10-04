@@ -59,33 +59,20 @@ mkdir -p /tmp/log
 # run the execution node server
 cd execution_nodes
 mv execution_node_1/ssl/ ssl/
-npm --quiet install 1>/dev/null
 node execute_node.js >>/tmp/log/execute_node.log 2>&1 &
 sleep 5
 cd ..
 
 # run the load balancer server
 cd load_balancer
-npm --quiet install 1>/dev/null
 node load_balancer.js >>/tmp/log/load_balancer.log 2>&1 &
 sleep 5
 cd ..
 
 # run the main server
 cd main_server
-npm --quiet install 1>/dev/null
 node main_server.js >>/tmp/log/main_server.log 2>&1 &
 sleep 5
-
-npm --quiet install --prefix public/js 1>/dev/null
-#copy only the necessary files to the required directories
-
-cp public/js/node_modules/jquery/dist/jquery.min.js public/js/
-cp public/js/node_modules/file-saver/FileSaver.min.js public/js/
-cp public/js/node_modules/materialize-css/dist/js/materialize.min.js public/js/
-cp public/js/node_modules/materialize-css/dist/css/materialize.min.css public/css/
-#remove the node_modules directory
-rm -rf public/js/node_modules
 cd ..
 
 # run the functional tests for autolab
