@@ -60,7 +60,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnodes1
+- hosts: executionnode1
   become: yes
   tasks:
     - name: Stop and remove execution_node container 1
@@ -69,7 +69,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnodes2
+- hosts: executionnode2
   become: yes
   tasks:
     - name: Stop and remove execution_node container 2
@@ -78,7 +78,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnodes3
+- hosts: executionnode3
   become: yes
   tasks:
     - name: Stop and remove execution_node container 3
@@ -87,7 +87,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnodes4
+- hosts: executionnode4
   become: yes
   tasks:
     - name: Stop and remove execution_node container 4
@@ -96,7 +96,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnodes5
+- hosts: executionnode5
   become: yes
   tasks:
     - name: Stop and remove execution_node container 5
