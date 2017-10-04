@@ -1,10 +1,10 @@
-- hosts: mainserver,executionnodes
+- hosts: mainserver,executionnode1,executionnode2,executionnode3,executionnode4,executionnode5
   become: yes
   tasks:
     - raw: which python || apt-get update
     - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
 
-- hosts: mainserver,executionnodes
+- hosts: mainserver,executionnode1,executionnode2,executionnode3,executionnode4,executionnode5
   become: yes
   tasks:
     - name: Install pip
