@@ -7,6 +7,8 @@
 #
 # Date : created on - 31-August-2017
 ###########
+#All constant variables are in upper case convention. They are:
+#  TMPDIR : Temporary working directory for all bats tests
 set -e	#exit on error
 
 TMPDIR="../../tmp"
