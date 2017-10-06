@@ -27,6 +27,7 @@
   "dependencies": {
     "jquery": "^2.0.3",
     "file-saver": "^1.3.2",
-    "materialize-css": "0.97.6"
+    "materialize-css": "0.97.6",
+    "socket.io": "~1.3.6"
   }
 }
