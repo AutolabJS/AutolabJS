@@ -1,5 +1,9 @@
 #!/bin/bash
-
+#All constant variables are in upper case convention. They are:
+#  INSTALL_DIR : path to the installation directory
+#  MAIN_SERVER_PUBLIC : path to the main_server/public directory inside the installation directory
+#All non constant variables are in lower case convention. They are:
+#  user : user running the script
 sudo true
 
 #install docker dependecy for AUFS file system
@@ -18,9 +22,11 @@ sudo service docker restart
 
 INSTALL_DIR="/opt/autolabjs"
 sudo mkdir -p "$INSTALL_DIR"
-USER="$(whoami)"
-sudo chown -R "$USER" "$INSTALL_DIR"
-sudo usermod -aG docker "$USER"
+user="$(whoami)"
+sudo chown -R "$user" "$INSTALL_DIR"
+#The below command can be uncommented if docker privileges are to be
+#granted to the current user. This is generally not advisable.
+#sudo usermod -aG docker "$user"
 
 mkdir -p "$INSTALL_DIR"/gitlab
 mkdir -p "$INSTALL_DIR"/gitlab/config
@@ -76,9 +82,6 @@ cd "$INSTALL_DIR"/deploy || exit
 bash keys.sh
 
 cat << EOF
-Done installing base packages
-
-You may now edit the configuration files in configs directory and execute
-'sudo ansible-playbook -i inventory playbook.yml -u <username> --ask-sudo-pass'
-to install AutoLabJS
+Done installing base packages.
+Follow the remaining procedure to finish installing AutolabJS. 
 EOF

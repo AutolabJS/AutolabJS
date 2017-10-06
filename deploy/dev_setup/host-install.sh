@@ -25,7 +25,7 @@ sudo bash /home/vagrant/autolab/deploy/setup.sh
 # if available, load docker images
 if [ -d /home/vagrant/autolab/docker-images ]
 then
-  cd /home/vagrant/autolab/docker-images
+  cd /home/vagrant/autolab/docker-images || exit
   ls "./*.tar" >/dev/null 2>&1	#do docker images exist?
   if [ "$?" -eq "0" ]
   then
@@ -38,7 +38,7 @@ fi
 # run Ansible playbook
 if [ -d /home/vagrant/autolab/deploy ]
 then
-  cd /home/vagrant/autolab/deploy
+  cd /home/vagrant/autolab/deploy || exit
   sudo ansible-playbook playbook-single.yml -i inventory
 fi
 
