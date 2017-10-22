@@ -25,60 +25,96 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
 
+function checkNodeConn(node, response) {
+  function sendNodeStatus(en_status) {
+    var resultJSON = {
+      role: "execution_node",
+      hostname: node.hostname,
+      port: node.port,
+      status: en_status
+    };
+    response(resultJSON);
+  }
+
+  var httpsCheckConn = {
+    hostname: node.hostname,
+    port: node.port,
+    path: '/connectionCheck',
+    key: fs.readFileSync('./ssl/key.pem'),
+    cert: fs.readFileSync('./ssl/cert.pem'),
+    rejectUnauthorized: false
+  };
+  //send a get request and capture the response
+  var checkConnRequest = https.request(httpsCheckConn, function (res) {
+    // Buffer the body entirely for processing as a whole.
+    var bodyChunks = [];
+    res.on('data', function (chunk) {
+      bodyChunks.push(chunk);
+    }).on('end', function () {
+      var body = Buffer.concat(bodyChunks);
+      if(body.toString() === 'true') {
+        console.log("Node at " + node.hostname + ":" + node.port + " is up and running.");
+        sendNodeStatus("up");
+      }
+    });
+  });
+
+  checkConnRequest.on('error', function (err) {
+    console.log("Error connecting to " + node.hostname + ":" + node.port);
+    sendNodeStatus("down");
+  });
+  checkConnRequest.end();
+}
+
+function addToNodeQueue(node) {
+  checkNodeConn(node, function (res) {
+    console.log(JSON.stringify(res));
+    if(res.status === "up"){
+      //node queue only requires the parameters hostname and port
+      delete res.status;
+      delete res.role;
+      node_queue.push(res);
+      console.log("Added node " + res.hostname + ":" + res.port + " to the node queue.");
+    }
+  });
+}
+
 app.get('/userCheck', function (req,res) {
   console.log('userCheck requested');
   res.send(true);
 });
 
-app.get('/connectionCheck', function (req,res) {
-  console.log('connectionCheck requested');
-  var result = 'Load Balancer Working\n';
-  var numOfNodes = nodes_data.Nodes.length;
-  function checkNodeConn(node){
-    var options = {
-      host: node.hostname,
-      port: node.port,
-      path: '/connectionCheck',
-      key : fs.readFileSync('./ssl/key.pem'),
-      cert: fs.readFileSync('./ssl/cert.pem'),
-      rejectUnauthorized:false,
-    };
-    //send a get request and capture the response
-    var req = https.request(options, function(res){
-      // Buffer the body entirely for processing as a whole.
-      var bodyChunks = [];
-      res.on('data', function(chunk){
-        bodyChunks.push(chunk);
-      }).on('end', function(){
-        var body = Buffer.concat(bodyChunks);
-        result = result.concat('<br/>Execution Node at '+node.hostname+':'+node.port+' working: ' + body);
-        console.log("nodeing");
-        //return if all requets processed
-        if(--numOfNodes === 0){
-          console.log("DispRes");
-          dispResult();
-        }
-      });
-    });
-    req.on('error', function(e) {
-      result = result.concat('<br/>Execution Node at  '+node.hostname+':'+node.port+' Error: ' + e.message);
-      //return if all requets processed
-      if(--numOfNodes === 0){
-      console.log("DispRes");
+app.get('/connectionCheck', function (req, res) {
+  var result = {};
+  result.components = [];
+  function dispResult() {
+    res.send(result);
+  }
+  function addToConnectionCheckResult(node) {
+    checkNodeConn(node, function (res) {
+      result.components.push(res);
+      //return if all the requests have been processed
+      if(--numOfNodes === 0) {
+        console.log("Connection check request completed");
+        result.job_queue_length = job_queue.length;
+        result.timestamp = (new Date()).toString();
         dispResult();
       }
     });
-    req.end();
-  } //checkNodeConnection ends
-
-  function dispResult(){
-    res.send(result);
   }
+  console.log('connectionCheck requested');
+  var numOfNodes = nodes_data.Nodes.length;
+  //since the request is being processed, it is assumed that laod balancer is up
+  var lbStatus = {
+    role: "load_balancer",
+    hostname: nodes_data.host_port.hostname,
+    port: nodes_data.host_port.port,
+    status: "up"
+  };
+  result.components.push(lbStatus);
   //Check connection of all nodes
-  for(var i=0;i<nodes_data.Nodes.length;i++)
-  {
-    console.log(numOfNodes);
-    checkNodeConn(nodes_data.Nodes[i]);
+  for(var i = 0; i < nodes_data.Nodes.length; i++) {
+    addToConnectionCheckResult(nodes_data.Nodes[i]);
   }
 });
 
@@ -258,7 +294,7 @@ app.post('/addNode', function(req, res){
   console.log(req.body)
   node_queue.push(req.body);
   console.log("Added "+req.body.hostname+":"+req.body.port+" to queue");
-  
+
   if(job_queue.length!==0)
   {
     var assigned_node = node_queue.pop();
@@ -321,45 +357,8 @@ try {
 
 }
 var node_queue=[];
-for(var i=0;i<nodes_data.Nodes.length;i++)
-{
-  checkNodeConn(nodes_data.Nodes[i]);
-  function checkNodeConn(node) {
-
-    var https_checkConn ={
-      hostname : node.hostname,
-      port : node.port,
-      path : '/connectionCheck',
-      key : fs.readFileSync('./ssl/key.pem'),
-      cert: fs.readFileSync('./ssl/cert.pem'),
-      rejectUnauthorized:false,
-    };
-
-  var checkConnRequest = https.request(https_checkConn,function(res)
-  {
-    var bodyChunks =[];
-    res.on('data',function(chunk)
-    {
-      bodyChunks.push(chunk);
-    }).on('end',function()
-    {
-      var body = Buffer.concat(bodyChunks);
-      if(body.toString()=='true')
-      {
-        console.log("Added "+node.hostname+":"+node.port+" to queue");
-        node_queue.push(node);
-      }
-    });
-  });
-
-  checkConnRequest.on('error',function(err)
-{
-  console.log("Error connecting to "+node.hostname+":"+node.port);
-
-});
-checkConnRequest.end();
-
-  }
+for(var i = 0; i < nodes_data.Nodes.length; i++) {
+  addToNodeQueue(nodes_data.Nodes[i]);
 }
 
 var job_queue = [];
@@ -368,8 +367,6 @@ if(process.env.mode !== "TESTING")
   server.listen(nodes_data.host_port.port);
   console.log("Listening at "+nodes_data.host_port.port);
 }
-
-
 
 setInterval(function () {
   connection.query('SELECT 1' ,function(err, rows, fields) {
