@@ -36,6 +36,7 @@
     "port": "80"
   },
   "host_port": {
+    "hostname": "localhost",
     "port": "8081"
   }
 }
