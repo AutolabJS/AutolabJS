@@ -1,6 +1,7 @@
 #!/bin/bash
 ###############
-# Purpose: dummy extraction script to replace execution_nodes/extract_run.sh for testing purposes
+# Purpose: dummy extraction script to replace execution_nodes/execution_node_1/extract_run.sh for testing purposes.
+# The same script is replaced for all other execution nodes as well.
 # Author: Ankshit Jain, Kashyap Gajera
 #The arguments obtained are stored in variables in lower case convention. They are:
 #  submission_id : submission id of the student
@@ -27,5 +28,5 @@ mkdir "$lab"
 cd "$lab" || exit
 
 # copy sample unit tests and execute
-cp -rf ../../../../docs/examples/unit_tests/* .
+cp -rf ../../../../../docs/examples/unit_tests/* .
 bash execute.sh "$language"

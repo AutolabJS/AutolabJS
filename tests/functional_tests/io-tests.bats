@@ -3,12 +3,20 @@
 # all the tests related to HackerRank compatible IO tests for DSA course
 # setup and teardown functions
 setup() {
-  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/extract_run.sh
+  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/execution_node_1/extract_run.sh
+  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/execution_node_2/extract_run.sh
+  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/execution_node_3/extract_run.sh
+  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/execution_node_4/extract_run.sh
+  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/execution_node_5/extract_run.sh
   mkdir "$BATS_TMPDIR/io-tests-example"
 }
 
 teardown() {
-  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/extract_run.sh
+  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/execution_node_1/extract_run.sh
+  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/execution_node_2/extract_run.sh
+  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/execution_node_3/extract_run.sh
+  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/execution_node_4/extract_run.sh
+  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/execution_node_5/extract_run.sh
   rm -rf "$BATS_TMPDIR/io-tests-example"
   mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
 }
