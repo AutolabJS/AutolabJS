@@ -32,6 +32,8 @@ bash ./helper_scripts/scoreboard/scoreboard_test_teardown.sh
 
 echo -e "\n=========missing files tests========="
 bats missing_files.bats
+echo -e "\n=========execution node tests========="
+bats execution_node.bats
 
 echo -e "\n=========socket events tests========="
 bats socket-events.bats
