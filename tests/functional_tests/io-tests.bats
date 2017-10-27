@@ -3,12 +3,18 @@
 # all the tests related to HackerRank compatible IO tests for DSA course
 # setup and teardown functions
 setup() {
-  sed -i 's/unit_tests/io_tests/' ../../execution_nodes/extract_run.sh
+  for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
+  do
+    sed -i 's/unit_tests/io_tests/' ../../execution_nodes/execution_node_"$i"/extract_run.sh
+  done
   mkdir "$BATS_TMPDIR/io-tests-example"
 }
 
 teardown() {
-  sed -i 's/io_tests/unit_tests/' ../../execution_nodes/extract_run.sh
+  for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
+  do
+    sed -i 's/io_tests/unit_tests/' ../../execution_nodes/execution_node_"$i"/extract_run.sh
+  done
   rm -rf "$BATS_TMPDIR/io-tests-example"
   mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
 }

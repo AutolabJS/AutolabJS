@@ -20,7 +20,16 @@ echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root'
 npm --quiet install --prefix main_server 1>/dev/null
 npm --quiet install --prefix main_server/public/js 1>/dev/null
 npm --quiet install --prefix load_balancer 1>/dev/null
-npm --quiet install --prefix execution_nodes 1>/dev/null
+
+mv execution_nodes/ execution_nodes_data/
+# The current test runs for 5 execution nodes
+for ((i=1; i <= 5; i++))
+do
+  mkdir -p execution_nodes/execution_node_"$i"
+  cp -r execution_nodes_data/* execution_nodes/execution_node_"$i"
+  npm --quiet install --prefix execution_nodes/execution_node_"$i" 1>/dev/null
+done
+rm -rf execution_nodes_data/
 
 #copy only the necessary files to the required directories
 cp main_server/public/js/node_modules/jquery/dist/jquery.min.js main_server/public/js/
