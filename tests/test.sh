@@ -38,55 +38,33 @@ cp -f main_server/admin.js tests/backup/main_server/
 cp -f main_server/database.js tests/backup/main_server/
 cp -f main_server/reval/reval.js tests/backup/main_server/
 
-
+NUMBER_OF_EXECUTION_NODES=5
+export NUMBER_OF_EXECUTION_NODES
 # change the config file paths in all the relevant js files
-sed -i 's/\/etc\/execution_node/\.\.\/\.\.\/deploy\/configs\/execution_nodes\/execution_node_1/' execution_nodes/execution_node_1/execute_node.js
-sed -i 's/\/etc\/execution_node/\.\.\/\.\.\/deploy\/configs\/execution_nodes\/execution_node_2/' execution_nodes/execution_node_2/execute_node.js
-sed -i 's/\/etc\/execution_node/\.\.\/\.\.\/deploy\/configs\/execution_nodes\/execution_node_3/' execution_nodes/execution_node_3/execute_node.js
-sed -i 's/\/etc\/execution_node/\.\.\/\.\.\/deploy\/configs\/execution_nodes\/execution_node_4/' execution_nodes/execution_node_4/execute_node.js
-sed -i 's/\/etc\/execution_node/\.\.\/\.\.\/deploy\/configs\/execution_nodes\/execution_node_5/' execution_nodes/execution_node_5/execute_node.js
 sed -i 's/\/etc\/load_balancer/\.\.\/deploy\/configs\/load_balancer/' load_balancer/load_balancer.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/main_server.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/admin.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/database.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/reval/reval.js
+# change the config file paths and replace gitlab dependency with a file system repository for execution nodes
+for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
+do
+  sed -i "s/\/etc\/execution_node/\.\.\/\.\.\/deploy\/configs\/execution_nodes\/execution_node_$i/" execution_nodes/execution_node_"$i"/execute_node.js
+  cp -f tests/extract_run_test.sh execution_nodes/execution_node_"$i"/extract_run.sh
+done
 #grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
-
-# replace gitlab dependency with a file system repository
-cp -f tests/extract_run_test.sh execution_nodes/execution_node_1/extract_run.sh
-cp -f tests/extract_run_test.sh execution_nodes/execution_node_2/extract_run.sh
-cp -f tests/extract_run_test.sh execution_nodes/execution_node_3/extract_run.sh
-cp -f tests/extract_run_test.sh execution_nodes/execution_node_4/extract_run.sh
-cp -f tests/extract_run_test.sh execution_nodes/execution_node_5/extract_run.sh
 
 # create a temporary log directory
 mkdir -p /tmp/log
 
-# run the execution node server
-cd execution_nodes/execution_node_1
-node execute_node.js >>/tmp/log/execute_node1.log 2>&1 &
-sleep 5
-cd ../..
-
-cd execution_nodes/execution_node_2
-node execute_node.js >>/tmp/log/execute_node2.log 2>&1 &
-sleep 5
-cd ../..
-
-cd execution_nodes/execution_node_3
-node execute_node.js >>/tmp/log/execute_node3.log 2>&1 &
-sleep 5
-cd ../..
-
-cd execution_nodes/execution_node_4
-node execute_node.js >>/tmp/log/execute_node4.log 2>&1 &
-sleep 5
-cd ../..
-
-cd execution_nodes/execution_node_5
-node execute_node.js >>/tmp/log/execute_node5.log 2>&1 &
-sleep 5
-cd ../..
+# run the execution node servers. We run 5 execution nodes for now and hence the value is fixed
+for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
+do
+  cd execution_nodes/execution_node_"$i"
+  node execute_node.js >>/tmp/log/execute_node"$i".log 2>&1 &
+  sleep 5
+  cd ../..
+done
 
 # run the load balancer server
 cd load_balancer
@@ -135,15 +113,11 @@ echo -e "\n\n=====Main Server Log====="
 cat /tmp/log/main_server.log
 echo -e "\n\n=====Load Balancer Log====="
 cat /tmp/log/load_balancer.log
-echo -e "\n\n=====Execution Node 1 Log====="
-cat /tmp/log/execute_node1.log
-echo -e "\n\n=====Execution Node 2 Log====="
-cat /tmp/log/execute_node2.log
-echo -e "\n\n=====Execution Node 3 Log====="
-cat /tmp/log/execute_node3.log
-echo -e "\n\n=====Execution Node 4 Log====="
-cat /tmp/log/execute_node4.log
-echo -e "\n\n=====Execution Node 5 Log====="
-cat /tmp/log/execute_node5.log
+
+for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
+do
+  echo -e "\n\n=====Execution Node $i Log====="
+  cat /tmp/log/execute_node"$i".log
+done
 # TODO: stop the autolab services and remove the logs
 # TODO: restore the files backed up on lines 20-28
