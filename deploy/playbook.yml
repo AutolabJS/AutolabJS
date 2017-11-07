@@ -145,6 +145,7 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/load_balancer:/etc/load_balancer"
           - "./keys/gitlab/load_balancer:/root/.ssh/"
+          - "../util:/util"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
@@ -167,6 +168,7 @@
           - "../main_server:/main_server"
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/main_server:/etc/main_server"
+          - "../util:/util"
 
 - hosts: executionnode1
   become: yes
@@ -230,6 +232,7 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_1:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_1:/root/.ssh/"
+          - "../util:/util"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
@@ -291,6 +294,7 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_2:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_2:/root/.ssh/"
+          - "../util:/util"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
@@ -351,6 +355,7 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_3:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_3:/root/.ssh/"
+          - "../util:/util"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
@@ -412,6 +417,7 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_4:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_4:/root/.ssh/"
+          - "../util:/util"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
 
@@ -473,5 +479,6 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_5:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_5:/root/.ssh/"
+          - "../util:/util"
         env:
           GITLAB_IP: "{{ gitlab_hostname }}"
