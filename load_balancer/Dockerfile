@@ -14,7 +14,11 @@ ENV LC_ALL en_IN.UTF-8
 # verify modified configuration
 RUN dpkg-reconfigure --frontend noninteractive locales
 
-RUN apt-get update && apt-get install --force-yes -y nodejs npm git
+RUN apt-get update && apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
+RUN bash nodesource_setup.sh
+RUN apt-get update && apt-get install --force-yes -y nodejs build-essential git
+RUN rm nodesource_setup.sh
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

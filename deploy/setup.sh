@@ -75,6 +75,8 @@ mkdir -p "$INSTALL_DIR"/execution_nodes/execution_node_5
 cp -rf ../execution_nodes/* "$INSTALL_DIR"/execution_nodes/execution_node_5
 npm install --prefix "$INSTALL_DIR"/execution_nodes/execution_node_5
 
+cp -rf ../util "$INSTALL_DIR"/
+npm install --prefix "$INSTALL_DIR"/util
 cp -rf ../deploy "$INSTALL_DIR"/
 
 echo "Creating SSL certificates"
@@ -83,5 +85,5 @@ bash keys.sh
 
 cat << EOF
 Done installing base packages.
-Follow the remaining procedure to finish installing AutolabJS. 
+Follow the remaining procedure to finish installing AutolabJS.
 EOF

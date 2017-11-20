@@ -20,7 +20,7 @@ echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root'
 npm --quiet install --prefix main_server 1>/dev/null
 npm --quiet install --prefix main_server/public/js 1>/dev/null
 npm --quiet install --prefix load_balancer 1>/dev/null
-
+npm --quiet install --prefix util 1>/dev/null
 mv execution_nodes/ execution_nodes_data/
 # The current test runs for 5 execution nodes
 for ((i=1; i <= 5; i++))
