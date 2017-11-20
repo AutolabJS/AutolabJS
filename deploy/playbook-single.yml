@@ -145,7 +145,10 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/load_balancer:/etc/load_balancer"
           - "./keys/gitlab/load_balancer:/root/.ssh/"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
         env:
+          LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
 
 - hosts: mainserver
@@ -167,6 +170,10 @@
           - "../main_server:/main_server"
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/main_server:/etc/main_server"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
+        env:
+          LOGGERCONFIG: "/etc/util/logger.json"
 
 - hosts: executionnode1
   become: yes
@@ -219,7 +226,10 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_1:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_1:/root/.ssh/"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
         env:
+          LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
 
 - hosts: executionnode2
@@ -268,7 +278,10 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_2:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_2:/root/.ssh/"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
         env:
+          LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
 
 - hosts: executionnode3
@@ -317,7 +330,10 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_3:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_3:/root/.ssh/"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
         env:
+          LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
 
 - hosts: executionnode4
@@ -366,7 +382,10 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_4:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_4:/root/.ssh/"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
         env:
+          LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
 
 - hosts: executionnode5
@@ -415,5 +434,8 @@
           - "/etc/localtime:/etc/localtime:ro"
           - "./configs/execution_nodes/execution_node_5:/etc/execution_node"
           - "./keys/gitlab/execution_nodes/execution_node_5:/root/.ssh/"
+          - "../util:/util"
+          - "./configs/util:/etc/util"
         env:
+          LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"

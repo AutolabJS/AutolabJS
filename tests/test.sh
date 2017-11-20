@@ -39,7 +39,8 @@ cp -f main_server/database.js tests/backup/main_server/
 cp -f main_server/reval/reval.js tests/backup/main_server/
 
 NUMBER_OF_EXECUTION_NODES=5
-export NUMBER_OF_EXECUTION_NODES
+LOGGERCONFIG='../deploy/configs/util/logger.json'
+export NUMBER_OF_EXECUTION_NODES LOGGERCONFIG
 # change the config file paths in all the relevant js files
 sed -i 's/\/etc\/load_balancer/\.\.\/deploy\/configs\/load_balancer/' load_balancer/load_balancer.js
 sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/main_server.js
@@ -56,6 +57,11 @@ done
 
 # create a temporary log directory
 mkdir -p /tmp/log
+
+# run unit tests for all components
+cd tests/unit_tests/
+bash test.sh
+cd ../..
 
 # run the execution node servers. We run 5 execution nodes for now and hence the value is fixed
 for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))

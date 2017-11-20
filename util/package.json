@@ -1,0 +1,36 @@
+{
+  "name": "logger",
+  "version": "0.1.0",
+  "description": "logger for all components of AutolabJS",
+  "main": "logger.js",
+  "scripts": {
+    "start": "node logger.js",
+    "test": "mocha -u bdd -R spec ./test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AutolabJS/AutolabJS.git"
+  },
+  "keywords": [
+    "autolab",
+    "lab",
+    "evaluation",
+    "logger"
+  ],
+  "author": "Ankshit Jain",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://github.com/AutolabJS/AutolabJS/issues"
+  },
+  "homepage": "https://github.com/AutolabJS/AutolabJS/wiki",
+  "dependencies": {
+    "winston": "^2.4.0"
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "chai-fs": "^2.0.0",
+    "dirty-chai": "^2.0.1",
+    "rewire": "^2.5.2"
+  }
+}
