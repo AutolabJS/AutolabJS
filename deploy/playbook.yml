@@ -47,7 +47,7 @@
     - name: Build GitLab Container
       docker_container:
         name: gitlab
-        image: "gitlab/gitlab-ce:latest"
+        image: "gitlab/gitlab-ce:10.1.4-ce.0"
         detach: yes
         hostname: gitlab.example.com
         env:
@@ -147,6 +147,7 @@
           - "./keys/gitlab/load_balancer:/root/.ssh/"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/load_balancer:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
@@ -172,6 +173,7 @@
           - "./configs/main_server:/etc/main_server"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/main_server:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
 
@@ -239,6 +241,7 @@
           - "./keys/gitlab/execution_nodes/execution_node_1:/root/.ssh/"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/execution_nodes/execution_node_1:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
@@ -303,6 +306,7 @@
           - "./keys/gitlab/execution_nodes/execution_node_2:/root/.ssh/"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/execution_nodes/execution_node_2:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
@@ -366,6 +370,7 @@
           - "./keys/gitlab/execution_nodes/execution_node_3:/root/.ssh/"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/execution_nodes/execution_node_3:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
@@ -430,6 +435,7 @@
           - "./keys/gitlab/execution_nodes/execution_node_4:/root/.ssh/"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/execution_nodes/execution_node_4:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
@@ -494,6 +500,7 @@
           - "./keys/gitlab/execution_nodes/execution_node_5:/root/.ssh/"
           - "../util:/util"
           - "./configs/util:/etc/util"
+          - "../log/execution_nodes/execution_node_5:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           GITLAB_IP: "{{ gitlab_hostname }}"
