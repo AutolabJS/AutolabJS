@@ -1,6 +1,7 @@
 {
   "node_details":
     {
+      "role": "execution_node",
       "hostname": "localhost",
       "port": "8085"
     },

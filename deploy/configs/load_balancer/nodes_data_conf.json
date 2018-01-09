@@ -1,41 +1,51 @@
 {
   "Nodes": [
     {
+      "role": "execution_node",
       "hostname": "localhost",
       "port": "8082"
     },
     {
+      "role": "execution_node",
       "hostname": "localhost",
       "port": "8083"
     },
     {
+      "role": "execution_node",
       "hostname": "localhost",
       "port": "8084"
     },
     {
+      "role": "execution_node",
       "hostname": "localhost",
       "port": "8085"
     },
     {
+      "role": "execution_node",
       "hostname": "localhost",
       "port": "8086"
     }
   ],
   "server_info": {
+    "role": "main_server",
     "hostname": "localhost",
     "port": "9000"
   },
   "database": {
+    "role": "database",
     "host": "localhost",
     "user": "root",
     "password": "root",
     "database": "Autolab"
   },
   "gitlab": {
+    "role": "gitlab",
     "hostname": "localhost",
     "port": "80"
   },
-  "host_port": {
+  "load_balancer": {
+    "role": "load_balancer",
+    "hostname": "localhost",
     "port": "8081"
   }
 }

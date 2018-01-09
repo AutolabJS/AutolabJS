@@ -3,12 +3,11 @@
 const winston = require('winston');
 const fs = require('fs');
 const path = require('path');
+const { check } = require('../util/environmentCheck.js');
 /* The environment variable LOGGERCONFIG will contain the path to the config file.
   The actual path for the config is "../deploy/configs/util/logger.json"
   For the docker containers, the path is /etc/util/logger.json */
-if (typeof process.env.LOGGERCONFIG === 'undefined' || process.env.LOGGERCONFIG === null) {
-  throw new Error('Path to config file is not specified.');
-}
+check('LOGGERCONFIG');
 
 const config = require(process.env.LOGGERCONFIG);
 

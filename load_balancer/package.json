@@ -4,7 +4,8 @@
   "description": "load balancer component of autolab evaluation sofware",
   "main": "load_balancer.js",
   "scripts": {
-    "start": "node load_balancer.js"
+    "start": "node load_balancer.js",
+    "test": "mocha -u bdd -R spec ./tests/"
   },
   "repository": {
     "type": "git",
@@ -17,7 +18,9 @@
   ],
   "author": "Rajat Agarwal",
   "contributors": [
-    "Tejas Sangol", "Gaurav Narula"
+    "Tejas Sangol",
+    "Gaurav Narula",
+    "Ankshit Jain"
   ],
   "license": "GPL-2.0",
   "bugs": {
@@ -28,6 +31,15 @@
     "body-parser": "1.8",
     "express": "^4.13.4",
     "httpolyglot": "^0.1.1",
-    "mysql": ""
+    "mysql": "",
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5 "
+  },
+  "devDependencies": {
+    "chai": "^4.1.1",
+    "mocha": "^3.5.0",
+    "rewire": "2.5.2",
+    "dirty-chai": "^2.0.1",
+    "chai-as-promised": "^7.1.1"
   }
 }
