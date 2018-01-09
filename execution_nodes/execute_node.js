@@ -1,3 +1,4 @@
+/* eslint import/no-dynamic-require: 0 */
 var fs = require('fs');
 var express = require('express');
 var app = express();
@@ -14,18 +15,22 @@ var exec = require('child_process').exec;
 var bodyParser = require('body-parser');
 var fs = require('fs');
 var path = require('path');
-var conf,scores;
-if(process.env.mode === 'TESTING')
-{
-  conf = require('../deploy/configs/execution_nodes/conf.json');
-  scores = require('../deploy/configs/execution_nodes/scores.json');
-}
-else
-{
-  conf = require('/etc/execution_node/conf.json');
-  scores = require('/etc/execution_node/scores.json');
-}
+const { check } = require('../../util/environmentCheck.js');
+/* The environment variables ENCONFIG and ENSCORES will contain the path to the
+  respective config file.
+  The paths for the config files are:
+  1.Variable: ENCONFIG
+    Actual Path: "../deploy/configs/execution_nodes/conf.json"
+    Path in docker containers: "/etc/execution_node/conf.json"
 
+  2.Variable: ENSCORES
+    Actual Path: "../deploy/configs/execution_nodes/scores.json"
+    Path in docker containers: "/etc/execution_node/scores.json"
+*/
+check('ENCONFIG');
+check('ENSCORES');
+const conf = require(process.env.ENCONFIG);
+const scores = require(process.env.ENSCORES);
 
 app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
@@ -156,5 +161,5 @@ request.on('error',function(err)
 request.end(body);
 
 
-server.listen(conf.host_port.port);
-console.log("Listening at "+conf.host_port.port);
+server.listen(conf.execution_node.port);
+console.log("Listening at "+conf.execution_node.port);

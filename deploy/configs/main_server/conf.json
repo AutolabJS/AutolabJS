@@ -1,10 +1,12 @@
 {
 "load_balancer": {
+  "role": "load_balancer",
   "hostname": "localhost",
   "port": "8081"
 },
  "database" :
  {
+   "role": "database",
    "host"     : "localhost",
    "user"    : "root",
    "password" : "root",
@@ -12,11 +14,14 @@
  },
  "gitlab" :
  {
+   "role": "gitlab",
    "username":"root",
    "password" : "12345678"
  },
- "host_port" :
+ "main_server" :
  {
+   "role": "main_server",
+   "hostname": "localhost",
    "port" : "9000"
  }
 }

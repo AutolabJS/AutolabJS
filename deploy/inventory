@@ -1,3 +1,6 @@
+[all:vars]
+reject_unauthorised=0
+
 [mysql]
 localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 sqldata=/opt/autolabjs/mysql mysql_root_pass=root
 

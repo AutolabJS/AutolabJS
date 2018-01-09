@@ -1,3 +1,4 @@
+/* eslint import/no-dynamic-require: 0 */
 var fs = require('fs');
 var express = require('express');
 var path = require('path');
@@ -28,9 +29,34 @@ var session = require('express-session')({
 
 app.use(session);
 var socketSession = require('express-socket.io-session')
-
-var config_details = require('/etc/main_server/conf.json');
 var mysql = require('mysql');
+
+const { check } = require('../util/environmentCheck.js');
+/* The environment variables MSCONFIG, MSLABCONFIG, MSSCORES and MSAPIKEYS
+  will contain the path to the respective config files.
+  The paths for the config files are
+  1.Variable: MSCONFIG
+    Actual Path: "../deploy/configs/main_server/conf.json"
+    Path in docker containers: "/etc/main_server/conf.json"
+
+  2.Variable: MSLABCONFIG
+    Actual Path: "../deploy/configs/main_server/labs.json"
+    Path in docker containers: "/etc/main_server/labs.json"
+
+  3.Variable: MSCOURSECONFIG
+    Actual Path: "../deploy/configs/main_server/course.json"
+    Path in docker containers: "/etc/main_server/course.json"
+
+  4.Variable: MSAPIKEYS
+    Actual Path: "../deploy/configs/main_server/APIKeys.json"
+    Path in docker containers: "/etc/main_server/APIKeys.json"
+*/
+
+check('MSCONFIG');
+check('MSLABCONFIG');
+check('MSCOURSECONFIG');
+check('MSAPIKEYS');
+var config_details = require(process.env.MSCONFIG);
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
@@ -45,7 +71,7 @@ var connection = require('./database.js');
 
 function initLabs()
 {
-  lab_config = require('/etc/main_server/labs.json');
+  lab_config = require(process.env.MSLABCONFIG);
   for(var j=0;j<lab_config.Labs.length;j++)
   {
     initScoreboard(lab_config.Labs[j].Lab_No);
@@ -87,8 +113,8 @@ initLabs();
 if(process.env.mode !== "TESTING")
 {
 
-    server.listen(config_details.host_port.port);
-    console.log("Listening at "+config_details.host_port.port);
+    server.listen(config_details.main_server.port);
+    console.log("Listening at "+config_details.main_server.port);
 }
 
 // Redirection from HTTP to HTTPS for all the routes.
@@ -171,7 +197,7 @@ app.get('/scoreboard/:Lab_no', function(req, res) {
   console.log('Scoreboard requested');
   lab = req.params.Lab_no;
   flag=0;
-  lab_conf = require('/etc/main_server/labs.json');
+  lab_conf = require(process.env.MSLABCONFIG);
   for(var i=0;i<lab_conf.Labs.length;i++) {
     if(lab_conf.Labs[i].Lab_No == lab)
     {
@@ -237,7 +263,7 @@ io.use(socketSession(session,{
 
 io.on('connection', function(socket) {
   require('./admin.js')(socket)
-  lab_conf = require('/etc/main_server/labs.json');
+  lab_conf = require(process.env.MSLABCONFIG);
   var current_time= new Date();
   labs_status=[];
   for(var i=0;i<lab_conf.Labs.length;i++) {
@@ -264,14 +290,14 @@ io.on('connection', function(socket) {
     labs_status.push(lab_x);
   }
   //emit course name,number and instructors
-  socket.emit('course details',require('/etc/main_server/course.json'));
+  socket.emit('course details',require(process.env.MSCOURSECONFIG));
 
   //emit lab status
   socket.emit('labs_status', labs_status);
 
   socket.on('submission', function(data) {
 
-    var APIKeys = require('/etc/main_server/APIKeys.json').keys
+    var APIKeys = require(process.env.MSAPIKEYS).keys
     console.log('Socket submission event triggered');
     id_number=data[0];
     lab_no=data[1];
@@ -293,7 +319,7 @@ io.on('connection', function(socket) {
         submission_pending.push(id_number);
          console.log("New request");
         current_time = new Date();
-        lab_config = require('/etc/main_server/labs.json');
+        lab_config = require(process.env.MSLABCONFIG);
         flag=0;
         penalty=0;
         for(var i=0;i<lab_config.Labs.length;i++) {
@@ -380,8 +406,8 @@ io.on('connection', function(socket) {
 
   socket.emit('lab_data',
   {
-    course:fs.readFileSync('/etc/main_server/course.json').toString('utf-8'),
-    lab:fs.readFileSync('/etc/main_server/labs.json').toString('utf-8')
+    course:fs.readFileSync(process.env.MSCOURSECONFIG).toString('utf-8'),
+    lab:fs.readFileSync(process.env.MSLABCONFIG).toString('utf-8')
   });
 
 
@@ -400,8 +426,8 @@ io.on('connection', function(socket) {
           initScoreboard(data.labs[i]["Lab_No"]);
         }
     }
-    fs.writeFile('/etc/main_server/labs.json',JSON.stringify(lab,null,4));
-    fs.writeFile('/etc/main_server/course.json',JSON.stringify(data.course,null,4));
+    fs.writeFile(process.env.MSLABCONFIG,JSON.stringify(lab,null,4));
+    fs.writeFile(process.env.MSCOURSECONFIG,JSON.stringify(data.course,null,4));
 
     socket.emit("saved");
   });
@@ -415,14 +441,14 @@ io.on('connection', function(socket) {
       console.log(err,rows,fields)
       if(process.env.mode === "TESTING" || (rows!=undefined && rows.length!==0))
       {
-        var lab_data = JSON.parse(fs.readFileSync('/etc/main_server/labs.json').toString());
+        var lab_data = JSON.parse(fs.readFileSync(process.env.MSLABCONFIG).toString());
 
         for(var i=0;i<lab_data.Labs.length;i++)
         {
           if(lab_data["Labs"][i]["Lab_No"] == tableName) lab_data["Labs"].splice(i,1);
         }
 
-        fs.writeFileSync('/etc/main_server/labs.json',JSON.stringify(lab_data,null,4));
+        fs.writeFileSync(process.env.MSLABCONFIG,JSON.stringify(lab_data,null,4));
         socket.emit('deleted');
       }
   });

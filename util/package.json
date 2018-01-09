@@ -5,7 +5,7 @@
   "main": "logger.js",
   "scripts": {
     "start": "node logger.js",
-    "test": "mocha -u bdd -R spec ./test/"
+    "test": "mocha -u bdd -R spec ./test"
   },
   "repository": {
     "type": "git",

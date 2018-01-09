@@ -1,5 +1,6 @@
 /* eslint no-underscore-dangle: [2, { "allow": ["__get__", "_logInfo", "_logError",
 "_logDebug"] }] */
+/* eslint import/no-dynamic-require: 0 */
 
 /* The writing in log file is async. Hence, even after specifying a wait period,
 there is a chance the tests may fail. */
@@ -13,7 +14,8 @@ const chaiFs = require('chai-fs');
 const path = require('path');
 const dirtyChai = require('dirty-chai');
 const rewire = require('rewire');
-const config = require('../../deploy/configs/util/logger.json');
+
+const config = require(`../${process.env.LOGGERCONFIG}`);
 
 const logDirectory = config.logDirectory;
 const createLoggerObject = rewire('../logger.js').__get__('createLoggerObject');
