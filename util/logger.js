@@ -11,7 +11,7 @@ check('LOGGERCONFIG');
 
 const config = require(process.env.LOGGERCONFIG);
 
-const timeStampFormat = () => (new Date()).toLocaleTimeString();
+const timeStampFormat = () => (new Date()).toJSON();
 
 const createLoggerObject = function createLoggerObject(logDirectory, component, logLevel) {
   return new (winston.Logger)({
