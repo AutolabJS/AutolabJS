@@ -1,7 +1,7 @@
 Autolab
 -------
 
-[![Maintainability](https://api.codeclimate.com/v1/badges/e1668db2aeb3196311bc/maintainability)](https://codeclimate.com/github/AutolabJS/AutolabJS/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/e1668db2aeb3196311bc/test_coverage)](https://codeclimate.com/github/AutolabJS/AutolabJS/test_coverage) [![Build Status](https://travis-ci.org/AutolabJS/AutolabJS.svg?branch=master)](https://travis-ci.org/AutolabJS/AutolabJS) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/856/badge)](https://bestpractices.coreinfrastructure.org/projects/856)    
+[![Maintainability](https://api.codeclimate.com/v1/badges/e1668db2aeb3196311bc/maintainability)](https://codeclimate.com/github/AutolabJS/AutolabJS/maintainability) [![Test Coverage](https://api.codeclimate.com/v1/badges/e1668db2aeb3196311bc/test_coverage)](https://codeclimate.com/github/AutolabJS/AutolabJS/test_coverage) [![Build Status](https://travis-ci.org/AutolabJS/AutolabJS.svg?branch=master)](https://travis-ci.org/AutolabJS/AutolabJS) [![Chat](http://badges.gitter.im/autolabjs/repo.png)](https://gitter.im/AutolabJS/Lobby) [![CII Best Practices](https://bestpractices.coreinfrastructure.org/projects/1568/badge)](https://bestpractices.coreinfrastructure.org/projects/1568) [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)    
 
 Autolab is an auto evaluation software for programming labs. The software currently supports automatic evaluation in Java, Python2, Python3, C++ and C programming languages. Autolab uses [Gitlab](https://gitlab.com/gitlab-org) as a component to provide the version control system. All the student code submissions reside in Gitlab, thus benefiting from powerful *git* system. The software is modular with separate microservice instances for all the application components.
 
@@ -16,4 +16,4 @@ Autolab is an auto evaluation software for programming labs. The software curren
 
 ***
 
-Respect others. Follow [Code of Conduct](http://contributor-covenant.org/version/1/2/0/) &nbsp;&nbsp;&nbsp;&nbsp;    
+Respect others. Follow [Code of Conduct](https://www.contributor-covenant.org/version/1/4/code-of-conduct.html) &nbsp;&nbsp;&nbsp;&nbsp;    
