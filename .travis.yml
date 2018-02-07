@@ -21,6 +21,10 @@ services:
 
 before_script:
  - bash tests/install.sh
+ - bash tests/compile.sh
 
 script:
  - bash tests/test.sh
+
+after_success:
+ - ./main_server/node_modules/.bin/codecov

@@ -4,7 +4,9 @@
   "description": "execution node component of autolab evaluation sofware",
   "main": "execute_node.js",
   "scripts": {
-    "start": "node execute_node.js"
+    "start": "node execute_node.js",
+    "test": "bash test.sh",
+    "coverage": "nyc --reporter=lcov --reporter=text-lcov -s npm test --silent && nyc report --reporter=lcov > coverage.lcov"
   },
   "repository": {
     "type": "git",
@@ -27,5 +29,18 @@
   "dependencies": {
     "body-parser": "1.8",
     "express": "^4.13.4"
+  },
+  "devDependencies": {
+    "mocha": "^3.5.0",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "jshint": "^2.9.5",
+    "istanbul": "^0.4.5",
+    "nyc": "^11.4.1",
+    "codecov": "^3.0.0",
+    "npm-check": "^5.5.2"
   }
 }

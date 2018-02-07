@@ -1,18 +1,23 @@
 #!/bin/bash
-
 ############
 # Authors: Ankshit Jain, Kashyap Gajera, Prasad Talasila
 # Purpose: To run tests in travis
-# Date: 06-Oct-2017
-# Previous Versions: 24-March-2017
+# Invocation: $bash test.sh
+# Date: 05-Feb-2018
+# Previous Versions: 06-Oct-2017, 24-March-2017
 ###########
 
-set -e # Exit with nonzero exit code if anything fails
-
-#create SSL certificates
-cd deploy/
-bash keys.sh
-cd ..
+set -ex # Exit with nonzero exit code if anything fails
+CONFIG=./tests/environment.conf
+PROCESSES=()
+if [[ -f $CONFIG ]]
+then
+  # shellcheck disable=SC1090
+  . "$CONFIG"
+else
+  echo "The environment variables file could not be located at ./tests/environment.conf. Exiting."
+  exit 1
+fi
 
 #jshint main_server/main_server.js || echo "=======jslint failure on mainserver========="
 #eslint main_server/main_server.js || echo "=======eslint failure on mainserver========="
@@ -38,20 +43,10 @@ cp -f main_server/admin.js tests/backup/main_server/
 cp -f main_server/database.js tests/backup/main_server/
 cp -f main_server/reval/reval.js tests/backup/main_server/
 
-NUMBER_OF_EXECUTION_NODES=5
-LOGGERCONFIG='../deploy/configs/util/logger.json'
-LBCONFIG='../deploy/configs/load_balancer/nodes_data_conf.json'
-NODE_TLS_REJECT_UNAUTHORIZED=0
-MSCONFIG="../deploy/configs/main_server/conf.json"
-MSLABCONFIG="../deploy/configs/main_server/labs.json"
-MSCOURSECONFIG="../deploy/configs/main_server/course.json"
-MSAPIKEYS="../deploy/configs/main_server/APIKeys.json"
+# The below environment variables are obtained from environment.conf.
 export NUMBER_OF_EXECUTION_NODES LOGGERCONFIG LBCONFIG NODE_TLS_REJECT_UNAUTHORIZED
-export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES
-# change the config file paths in all the relevant js files
-sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/admin.js
-sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/database.js
-sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/reval/reval.js
+export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES PROCESSES
+
 # change the config file paths and replace gitlab dependency with a file system repository for execution nodes
 for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
 do
@@ -59,8 +54,10 @@ do
 done
 #grep -rl --exclude-dir=node_modules '/etc' .. | xargs sed -i 's/\/etc/\.\.\/deploy\/configs/g'
 
-# create a temporary log directory
-mkdir -p /tmp/log
+# run unit tests for all components
+cd tests/unit_tests/
+bash test.sh
+cd ../..
 
 # run the execution node servers. We run 5 execution nodes for now and hence the value is fixed
 for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
@@ -69,18 +66,15 @@ do
   ENCONFIG="../../deploy/configs/execution_nodes/execution_node_$i/conf.json"
   ENSCORES="../../deploy/configs/execution_nodes/execution_node_$i/scores.json"
   node execute_node.js >>/tmp/log/execute_node"$i".log 2>&1 &
+  PROCESSES+=("$!")
   sleep 5
   cd ../..
 done
 
-# run unit tests for all components
-cd tests/unit_tests/
-bash test.sh
-cd ../..
-
 # run the load balancer server
 cd load_balancer
 node load_balancer.js >>/tmp/log/load_balancer.log 2>&1 &
+PROCESSES+=("$!")
 sleep 5
 cd ..
 
@@ -144,5 +138,13 @@ do
   echo -e "\n\n=====Execution Node $i Log====="
   cat /tmp/log/execute_node"$i".log
 done
-# TODO: stop the autolab services and remove the logs
+
+for (( i=0; i<${#PROCESSES[@]}; i++ ))
+do
+  kill -SIGKILL "${PROCESSES[$i]}" 2>/dev/null
+done
+
+# Delete the log directory
+rm -rf log/
+
 # TODO: restore the files backed up on lines 20-28
