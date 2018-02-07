@@ -34,10 +34,15 @@
   },
   "homepage": "https://github.com/AutolabJS/AutolabJS/wiki",
   "devDependencies": {
-    "eslint": "^3.19.0",
-    "eslint-config-airbnb": "^14.1.0",
-    "eslint-plugin-import": "^2.2.0",
-    "eslint-plugin-jsx-a11y": "^4.0.0",
-    "eslint-plugin-react": "^6.10.3"
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "jshint": "^2.9.5",
+    "istanbul": "^0.4.5",
+    "nyc": "^11.4.1",
+    "codecov": "^3.0.0",
+    "npm-check": "^5.5.2"
   }
 }

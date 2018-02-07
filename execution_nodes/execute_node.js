@@ -163,3 +163,5 @@ request.end(body);
 
 server.listen(conf.execution_node.port);
 console.log("Listening at "+conf.execution_node.port);
+
+module.exports.server = server;

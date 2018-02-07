@@ -10,7 +10,7 @@
 ###########
 #All constant variables are in upper case convention. They are:
 #  TMPDIR : Temporary working directory for all bats tests
-set -e	#exit on error
+set -ex	#exit on error
 
 TMPDIR="../../tmp"
 alias bats="node_modules/bats/libexec/bats"
@@ -29,6 +29,12 @@ echo -e "\n=========scoreboard tests========="
 bash ./helper_scripts/scoreboard/scoreboard_test_setup.sh
 bats scoreboard.bats
 bash ./helper_scripts/scoreboard/scoreboard_test_teardown.sh
+
+cd ../../main_server
+node main_server.js >>/tmp/log/main_server.log 2>&1 &
+PROCESSES+=("$!")
+sleep 5
+cd ../tests/functional_tests/
 
 echo -e "\n=========missing files tests========="
 bats missing_files.bats

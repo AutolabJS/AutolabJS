@@ -5,7 +5,8 @@
   "main": "logger.js",
   "scripts": {
     "start": "node logger.js",
-    "test": "mocha -u bdd -R spec ./test"
+    "test": "bash test.sh",
+    "coverage": "nyc --reporter=lcov --reporter=text-lcov -s npm test --silent && nyc report --reporter=lcov > coverage.lcov"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,16 @@
     "mocha": "^3.5.0",
     "chai-fs": "^2.0.0",
     "dirty-chai": "^2.0.1",
-    "rewire": "^2.5.2"
+    "rewire": "^2.5.2",
+    "eslint": "^4.17.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "jshint": "^2.9.5",
+    "istanbul": "^0.4.5",
+    "nyc": "^11.4.1",
+    "codecov": "^3.0.0",
+    "npm-check": "^5.5.2"
   }
 }
