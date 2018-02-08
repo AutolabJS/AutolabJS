@@ -6,6 +6,10 @@
 # Date: 01-Feb-2018
 # Previous Versions: None
 ###########
+# All variables that are exported/imported are in upper case convention. They are:
+#  TEST_TYPE : determines which tests are to be run
+#    Valid values are: "UNIT", "FUNCTION", "INTEGRATION", "THROUGHPUT"
+
 set -ex
 if [[ -f package.json ]]
 then

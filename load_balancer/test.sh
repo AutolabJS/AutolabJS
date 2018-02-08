@@ -6,6 +6,14 @@
 # Date: 01-Feb-2018
 # Previous Versions: None
 ###########
+# All variables that are exported/imported are in upper case convention. They are:
+#  TEST_TYPE : determines which tests are to be run
+#    Valid values are: "UNIT", "FUNCTION", "INTEGRATION", "THROUGHPUT"
+#  ENCONFIG  : the path for the conf.json file for an execution node
+#  ENSCORES  : the path for the scores.json file for an execution node
+# All other variables are in lower case convention. They are:
+#  processes : this array contains the pids for all the execution node processes
+
 set -ex
 if [[ -f package.json ]]
 then

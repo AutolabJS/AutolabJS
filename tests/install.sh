@@ -6,43 +6,59 @@
 # Date: 01-Feb-2018
 # Previous Versions: 24-March-2017
 #########################
+# All variables that are exported/imported are in upper case convention. They are:
+#  NUMBER_OF_EXECUTION_NODES : total number of execution nodes used for testing
+# All local variables are in lower case convention. They are:
+#  config : contains the path for the environment.conf file
 
 set -ex
-#initialize the DB
+config=./tests/environment.conf
+if [[ -f $config ]]
+then
+  # shellcheck disable=SC1090
+  . "$config"
+else
+  echo "The environment variables file could not be located at ./tests/environment.conf. Exiting."
+  exit 1
+fi
+
+# initialize the DB
 mysql -e 'CREATE DATABASE Autolab;'
 mysql -e 'USE Autolab;'
 echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | \
     mysql -u root
 
-npm --quiet install --prefix main_server 1>/dev/null
-npm --quiet install --prefix main_server/public/js 1>/dev/null
-npm --quiet install --prefix load_balancer 1>/dev/null
-npm --quiet install --prefix util 1>/dev/null
-mv execution_nodes/ execution_nodes_data/
+npm --quiet install --prefix main_server 1>/dev/null 2>&1
+npm --quiet install --prefix main_server/public/js 1>/dev/null 2>&1
+npm --quiet install --prefix load_balancer 1>/dev/null 2>&1
+npm --quiet install --prefix util 1>/dev/null 2>&1
+npm --quiet install --prefix execution_nodes 1>/dev/null 2>&1
 
-# The current test runs for 5 execution nodes
-for ((i=1; i <= 5; i++))
+mkdir execution_nodes_data/
+cp -rf execution_nodes/. execution_nodes_data/ 2>&1
+
+# current tests runs for 5 execution nodes
+for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
 do
   mkdir -p execution_nodes/execution_node_"$i"
-  cp -r execution_nodes_data/* execution_nodes/execution_node_"$i"
-  npm --quiet install --prefix execution_nodes/execution_node_"$i" 1>/dev/null
+  cp -rf execution_nodes_data/. execution_nodes/execution_node_"$i"
 done
 
 rm -rf execution_nodes_data/
 
-#copy only the necessary files to the required directories
+# copy only the necessary files to the required directories
 cp main_server/public/js/node_modules/jquery/dist/jquery.min.js main_server/public/js/
 cp main_server/public/js/node_modules/file-saver/FileSaver.min.js main_server/public/js/
 cp main_server/public/js/node_modules/materialize-css/dist/js/materialize.min.js main_server/public/js/
 cp main_server/public/js/node_modules/materialize-css/dist/css/materialize.min.css main_server/public/css/
 
-#remove the node_modules directory
+# remove the node_modules directory
 rm -rf main_server/public/js/node_modules
 
 # create a temporary log directory
 mkdir -p /tmp/log
 
-#create SSL certificates
+# create SSL certificates
 cd deploy/
 bash keys.sh
 cd .. || exit
@@ -55,5 +71,6 @@ sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/re
 # The structure of execution_nodes is changed during deployment and this does not
 # work with codecov. Hence the files are restored and changes are made so that
 # required files are found at the right place.
-cp -rf execution_nodes/execution_node_1/. execution_nodes/
+mkdir -p execution_nodes/ssl
+cp -rf execution_nodes/execution_node_1/ssl/. execution_nodes/ssl/
 sed -i "s/\.\.\/\.\.\/util\/environmentCheck\.js/\.\.\/util\/environmentCheck\.js/" execution_nodes/execute_node.js
