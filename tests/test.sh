@@ -6,14 +6,28 @@
 # Date: 05-Feb-2018
 # Previous Versions: 06-Oct-2017, 24-March-2017
 ###########
+# All variables that are exported/imported are in upper case convention. They are:
+#  TMPDIR : path for the temporary directory where tests will be run
+#  NUMBER_OF_EXECUTION_NODES : total number of execution nodes used for testing
+#  LOGGERCONFIG : path to the config file logger.json of logger module
+#  LBCONFIG : path to the config file nodes_data_conf.json of load balancer
+#  NODE_TLS_REJECT_UNAUTHORIZED : this variable relaxes the verification of
+#    certificates between https nodejs calls
+#  MSCONFIG : path to the conf.json of main server
+#  MSLABCONFIG : path to the labs.json of main server
+#  MSCOURSECONFIG : path to the course.json of main server
+#  MSAPIKEYS : path to the APIKeys.json of main
+#  ENCONFIG : the path for the conf.json file for an execution node
+#  ENSCORES : the path for the scores.json file for an execution node
+# All local variables are in lower case convention. They are:
+#  config : contains the path for the environment.conf file
 
 set -ex # Exit with nonzero exit code if anything fails
-CONFIG=./tests/environment.conf
-PROCESSES=()
-if [[ -f $CONFIG ]]
+config=./tests/environment.conf
+if [[ -f $config ]]
 then
   # shellcheck disable=SC1090
-  . "$CONFIG"
+  . "$config"
 else
   echo "The environment variables file could not be located at ./tests/environment.conf. Exiting."
   exit 1
@@ -43,9 +57,14 @@ cp -f main_server/admin.js tests/backup/main_server/
 cp -f main_server/database.js tests/backup/main_server/
 cp -f main_server/reval/reval.js tests/backup/main_server/
 
+# The file process_pid.txt will store the pids of all the node processes.
+touch tests/process_pid.txt
+
+TMPDIR="/tmp"
+export TMPDIR
 # The below environment variables are obtained from environment.conf.
 export NUMBER_OF_EXECUTION_NODES LOGGERCONFIG LBCONFIG NODE_TLS_REJECT_UNAUTHORIZED
-export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES PROCESSES
+export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES
 
 # change the config file paths and replace gitlab dependency with a file system repository for execution nodes
 for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
@@ -66,7 +85,7 @@ do
   ENCONFIG="../../deploy/configs/execution_nodes/execution_node_$i/conf.json"
   ENSCORES="../../deploy/configs/execution_nodes/execution_node_$i/scores.json"
   node execute_node.js >>/tmp/log/execute_node"$i".log 2>&1 &
-  PROCESSES+=("$!")
+  echo "$!" >> ../../tests/process_pid.txt
   sleep 5
   cd ../..
 done
@@ -74,13 +93,18 @@ done
 # run the load balancer server
 cd load_balancer
 node load_balancer.js >>/tmp/log/load_balancer.log 2>&1 &
-PROCESSES+=("$!")
+echo "$!" >> ../tests/process_pid.txt
 sleep 5
 cd ..
 
 # run the main server
 cd main_server
 node main_server.js >>/tmp/log/main_server.log 2>&1 &
+echo "$!" >> ../tests/process_pid.txt
+# Assumption: The main server is the last process to be added to the
+# process_pid.txt file, before executing the functional tests.
+# This assumption is implicitly used during the setup and
+# teardown of scoreboard tests in functional tests.
 sleep 5
 cd ..
 
@@ -139,10 +163,12 @@ do
   cat /tmp/log/execute_node"$i".log
 done
 
-for (( i=0; i<${#PROCESSES[@]}; i++ ))
+# Stop the nodejs processes and delete the process_pid.txt file
+while read -r line || [[ -n "$line" ]]
 do
-  kill -SIGKILL "${PROCESSES[$i]}" 2>/dev/null
-done
+  kill -SIGKILL "$line"
+done < tests/process_pid.txt
+rm tests/process_pid.txt
 
 # Delete the log directory
 rm -rf log/

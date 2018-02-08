@@ -1,9 +1,8 @@
 #!/bin/bash
 ######################################################
-#
 # Author: TSRK Prasad
-# Date: 28-Sep-2017
-# Previous Versions: 02-May-2017, 26-April-2017, 06-Dec-2016, Sep-2016
+# Date: 07-Feb-2018
+# Previous Versions: 28-Sep-2017, 02-May-2017, 26-April-2017, 06-Dec-2016, Sep-2016
 #
 # Purpose: script invoked by execution nodes with one command-line arguement
 #	   this script accomplishes one evaluation
@@ -242,14 +241,21 @@ then
   mv "$LOG" log.txt
 fi
 
-#copy core dump messages to log file
-cp shellOut.txt temp.txt
+#truncate if necessary and copy core dump messages to log file
+shellOutLength=$(wc -l shellOut.txt | awk '{print $1}')
+if [ "$shellOutLength" -gt 25 ]
+then
+  head -n 25 shellOut.txt >> temp.txt
+  echo -e "\n=====LOG TRUNCATED====\n" >> temp.txt
+else
+  cp shellOut.txt temp.txt
+fi
 
 # truncate a really long log to 50 lines
 logLength=$(wc -l log.txt | awk '{print $1}')
-if [ "$logLength" -gt 50 ]
+if [ "$logLength" -gt 25 ]
 then
-  head -n 50 log.txt >> temp.txt
+  head -n 25 log.txt >> temp.txt
   echo -e "\n=====LOG TRUNCATED====\n" >> temp.txt
   mv temp.txt log.txt
 else
