@@ -1,16 +1,17 @@
 {
-  "name": "functional_tests",
-  "version": "0.2.0",
-  "description": "functional tests for complete autolab application software",
-  "main": "test.js",
+  "name": "test_modules",
+  "version": "0.1.0",
+  "description": "test modules which can be used for multiple types of tests",
   "dependencies": {
     "bats": ">0.4.0",
     "bats-support": "git+https://github.com/ztombol/bats-support.git",
     "bats-assert": ">0.3.0",
-    "bats-file": "git+https://github.com/ztombol/bats-file.git"
-  },
-  "scripts": {
-    "start": "node test.js"
+    "bats-file": "git+https://github.com/ztombol/bats-file.git",
+    "cli-table": "^0.3.1",
+    "install": "^0.8.7",
+    "minimist": "^1.2.0",
+    "socket.io-client": "^1.7.3",
+    "node-jq": "^0.5.2"
   },
   "repository": {
     "type": "git",
@@ -21,10 +22,7 @@
     "evaluation",
     "testing"
   ],
-  "author": "Prasad Talasila",
-  "contributors": [
-    "Ankshit Jain"
-  ],
+  "author": "Ankshit Jain",
   "license": "GPL-3.0",
   "bugs": {
     "url": "https://github.com/AutolabJS/AutolabJS/issues"

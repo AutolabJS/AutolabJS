@@ -32,7 +32,7 @@ teardown() {
   do
     sed -i "/bash execute.sh \"\$language\"/ a rm -rf ./results/*" ../../execution_nodes/execution_node_"$i"/extract_run.sh
   done
-  node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
       "$BATS_TMPDIR/$TESTDIR/no-result-found.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/no-result-found.txt" "data/$TESTDIR/no_result_found.txt"
   result=$?
@@ -44,7 +44,7 @@ teardown() {
   do
     sed -i "/bash execute.sh \"\$language\"/ i rm -rf ./student_solution ./author_solution" ../../execution_nodes/execution_node_"$i"/extract_run.sh
   done
-  node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
       "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt" "data/$TESTDIR/author_student_repository.txt"
   result=$?
@@ -57,7 +57,7 @@ teardown() {
     sed -i "/bash execute.sh \"\$language\"/ i rm -f ./test_info.txt" ../../execution_nodes/execution_node_"$i"/extract_run.sh
     sed -i "/bash execute.sh \"\$language\"/ a cp ./results/log.txt /tmp/missing_files/no_test_info_found_log.txt" ../../execution_nodes/execution_node_"$i"/extract_run.sh
   done
-  node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
       "$BATS_TMPDIR/$TESTDIR/no_test_info_found.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/no_test_info_found.txt" "data/$TESTDIR/no_result_found.txt"
   result=$?

@@ -42,3 +42,4 @@ exclude_paths:
 - main_server/public/css/icon.css
 - tests/functional_tests/data/
 - tests/deployment_tests/data/
+- tests/test_modules/data/

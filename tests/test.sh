@@ -110,7 +110,7 @@ cd ..
 
 # run the functional tests for autolab
 cd tests/functional_tests
-bash autolab.sh
+bash test.sh
 sleep 2
 cd ../../
 
