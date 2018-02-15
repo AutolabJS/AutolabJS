@@ -9,8 +9,6 @@
 ###########
 # All variables that are exported/imported are in upper case convention. They are:
 #  TESTDIR : name of the test directory for a specific group of tests
-# All local variables are in lower case convention. They are:
-#  msPid : pid of the main server process
 
 set -ex	# exit on error
 alias bats="node_modules/bats/libexec/bats"
@@ -18,6 +16,11 @@ export TESTDIR
 
 # install node dependencies
 npm --quiet install 1>/dev/null 2>&1
+
+# Run the tests in the test_modules directory
+cd ../test_modules/
+# Setup for tests in the test_modules directory
+bash init.sh
 
 echo -e "\n\n========== Test Cases ==========\n"
 
@@ -33,40 +36,20 @@ echo -e "\n========== IO Tests =========="
 TESTDIR='io_tests_example'
 bats io_tests.bats
 
+echo -e "\n========== Execution Node Tests =========="
+TESTDIR='execution_node'
+bats execution_node.bats
+
+# Return back to the functional tests directory and run the remaining tests.
+cd ../functional_tests
+
 echo -e "\n========== Scoreboard Tests =========="
 TESTDIR='scoreboard'
-# Run the setup script to copy the necessary files to the evaluation directory.
-bash ./helper_scripts/scoreboard/scoreboard_test_setup.sh
-# Kill the running main server process and restart the main server
-msPid=$(tail -n 1 ../process_pid.txt)
-sed -i '$ d' ../process_pid.txt
-kill -SIGKILL "$msPid" > /dev/null 2>&1
-cd ../../main_server
-node main_server.js >>/tmp/log/main_server.log 2>&1 &
-msPid="$!"
-cd ../tests/functional_tests/
-sleep 5
-
-bats scoreboard.bats
-
-# Run the teardown script to restore the necessary files.
-bash ./helper_scripts/scoreboard/scoreboard_test_teardown.sh
-# Kill the running main server process and restart the main server
-kill -SIGKILL "$msPid" > /dev/null 2>&1
-cd ../../main_server
-node main_server.js >>/tmp/log/main_server.log 2>&1 &
-msPid="$!"
-cd ../tests/functional_tests/
-echo "$msPid" > ../process_pid.txt
-sleep 5
+bash scoreboard.sh
 
 echo -e "\n========== Missing Files Tests =========="
 TESTDIR='missing_files'
 bats missing_files.bats
-
-echo -e "\n========== Execution Node Tests =========="
-TESTDIR='execution_node'
-bats execution_node.bats
 
 echo -e "\n========== Evaluation Logs Tests =========="
 TESTDIR='evaluation_logs'
