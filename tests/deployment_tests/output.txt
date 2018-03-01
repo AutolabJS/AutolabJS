@@ -1,4 +1,0 @@
-2c2
-< Permission denied (publickey).
----
-> Permission denied (publickey).

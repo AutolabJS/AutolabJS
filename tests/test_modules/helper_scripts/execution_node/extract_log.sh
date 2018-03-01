@@ -7,7 +7,7 @@
 # Purpose: script invoked by execution_node.bats to check if a particular
 # execution node log file has a recent entry for an evaluation request
 #
-# Invocation: $./concurrent-eval.sh logFilePath idNumber labNumber language
+# Invocation: $./ectract_log.sh logFilePath idNumber labNumber language
 #
 # Arguments: The arguments have to be in the given order:
 #   1. logFilePath : path to the log file where the entry for an evaluation should be checked
@@ -32,6 +32,7 @@
 #   lastLine       :   the last line of the log file specified by the file at path logFilePath
 #	--------------------
 ######################################################
+set -ex
 IFS=
 logFilePath="$1"
 id="$2"

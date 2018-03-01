@@ -6,5 +6,5 @@
 # Invocation: $bash scoreboard_test_teardown.sh
 ###########
 set -ex
-cp -f ../backup/labs.json ../../deploy/configs/main_server/labs.json
-cp -f ../backup/savecode.sh ../../load_balancer/savecode.sh
+cp -f ../backup/labs.json "$INSTALL_DIR"/deploy/configs/main_server/labs.json
+cp -f ../backup/savecode.sh "$INSTALL_DIR"/load_balancer/savecode.sh

@@ -4,14 +4,17 @@
   "description": "deployment tests for complete autolab application software",
   "main": "test.js",
   "dependencies": {
-    "eslint": "^4.15.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
-    "simple-git": "^1.80.0"
+    "simple-git": "^1.80.0",
+    "bats": ">0.4.0",
+    "bats-support": "git+https://github.com/ztombol/bats-support.git",
+    "bats-assert": ">0.3.0",
+    "bats-file": "git+https://github.com/ztombol/bats-file.git"
   },
   "scripts": {
     "start": "node test.js",
-    "test": "mocha -u bdd -R spec ./test/"
+    "test": "mocha -u bdd -R tap --timeout 10000 ./test/"
   },
   "repository": {
     "type": "git",
