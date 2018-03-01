@@ -38,7 +38,7 @@ bats io_tests.bats
 
 echo -e "\n========== Execution Node Tests =========="
 TESTDIR='execution_node'
-bats execution_node.bats
+TYPE_OF_TEST='functional' bats execution_node.bats
 
 # Return back to the functional tests directory and run the remaining tests.
 cd ../functional_tests

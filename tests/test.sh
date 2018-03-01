@@ -19,11 +19,13 @@
 #  MSAPIKEYS : path to the APIKeys.json of main
 #  ENCONFIG : the path for the conf.json file for an execution node
 #  ENSCORES : the path for the scores.json file for an execution node
+#  INSTALL_DIR : installation directory for AutolabJS
 # All local variables are in lower case convention. They are:
 #  config : contains the path for the environment.conf file
 
 set -ex # Exit with nonzero exit code if anything fails
 config=./tests/environment.conf
+INSTALL_DIR=$(pwd)
 if [[ -f $config ]]
 then
   # shellcheck disable=SC1090
@@ -64,7 +66,7 @@ TMPDIR="/tmp"
 export TMPDIR
 # The below environment variables are obtained from environment.conf.
 export NUMBER_OF_EXECUTION_NODES LOGGERCONFIG LBCONFIG NODE_TLS_REJECT_UNAUTHORIZED
-export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES
+export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES INSTALL_DIR
 
 # change the config file paths and replace gitlab dependency with a file system repository for execution nodes
 for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))

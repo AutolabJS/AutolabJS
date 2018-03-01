@@ -6,8 +6,6 @@
 # Previous Versions: 26-March-2017
 ###########
 
-alias jq="node_modules/node-jq/bin/jq"
-
 # setup and teardown functions
 setup() {
   echo "TEST_TYPE='scoreboard'" > "$BATS_TMPDIR/submission.conf"
@@ -19,7 +17,7 @@ setup() {
 teardown() {
   rm "${BATS_TMPDIR:?}/submission.conf"
   rm -rf "${BATS_TMPDIR:?}/${TESTDIR:?}"
-  mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
 }
 
 @test "Empty scoreboard of a fresh lab" {
@@ -41,7 +39,9 @@ teardown() {
   node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/one-eval.txt"
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/first_eval.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/first_eval.json") "data/$TESTDIR/first_eval.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/first_eval.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
 }
@@ -52,7 +52,9 @@ teardown() {
   node submit.js -i 2015A7PS066G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/two-eval.txt"
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/second_eval.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/second_eval.json") "data/$TESTDIR/second_eval.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/second_eval.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/second_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
 }
@@ -60,10 +62,12 @@ teardown() {
 @test "No change on scoreboard for worse score" {
   node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   # Setup an incorrect code file and evaluate again
-  cp -f "./data/$TESTDIR/BuyerMistake.java" "$BATS_TMPDIR/$TESTDIR/student_solution/java/Buyer.java"
-  node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
+  cp -f "./data/$TESTDIR/BuyerMistake.cpp" "$BATS_TMPDIR/$TESTDIR/student_solution/cpp/Buyer.cpp"
+  node submit.js -i 2015A7PS006G -l lab1 --lang=cpp --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/worse_score.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/scoreboard/worse_score.json") "data/$TESTDIR/first_eval.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/worse_score.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
 }
@@ -71,14 +75,16 @@ teardown() {
 @test "Update scoreboard on better score" {
   #bash ./helper_scripts/scoreboard/worse_score_setup.sh
   # First we evaluate a code that will give us a low score
-  cp -f "$BATS_TMPDIR/$TESTDIR/student_solution/java/Buyer.java" ../backup/Buyer.java
-  cp -f "./data/$TESTDIR/BuyerMistake.java" "$BATS_TMPDIR/$TESTDIR/student_solution/java/Buyer.java"
-  node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
+  cp -f "$BATS_TMPDIR/$TESTDIR/student_solution/cpp/Buyer.cpp" ../backup/Buyer.cpp
+  cp -f "./data/$TESTDIR/BuyerMistake.cpp" "$BATS_TMPDIR/$TESTDIR/student_solution/cpp/Buyer.cpp"
+  node submit.js -i 2015A7PS006G -l lab1 --lang=cpp --host='localhost:9000' > /dev/null
   # Now we evaluate a code that will give us a better score
-  cp -f ../backup/Buyer.java "$BATS_TMPDIR/$TESTDIR/student_solution/java/Buyer.java"
+  # cp -f ../backup/Buyer.cpp "$BATS_TMPDIR/$TESTDIR/student_solution/java/Buyer.java"
   node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/better_score.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/better_score.json") "data/$TESTDIR/first_eval.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/better_score.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
 }
@@ -88,8 +94,12 @@ teardown() {
   node submit.js -i 2015A7PS006G -l lab2 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/lab1.json"
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab2 -o "$BATS_TMPDIR/$TESTDIR/lab2.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/lab1.json") "data/$TESTDIR/first_eval.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/scoreboard/lab2.json") "data/$TESTDIR/first_eval.json"
+  scores1=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/lab1.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  scores2=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/lab2.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores1") "data/$TESTDIR/first_eval.txt"
+  cmp <(echo "$scores2") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
 }
@@ -108,40 +118,48 @@ teardown() {
 @test "Variable length of submission ID" {
   node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/var_length.json") "data/$TESTDIR/first_eval.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/var_length.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
 
-  mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
 
   node submit.js -i 2015A7PS000006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/var_length.json") "data/$TESTDIR/15charID.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/var_length.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/15charID.txt"
   result=$?
   [ "$result" -eq 0 ]
 
-  mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
 
   node submit.js -i 2015A7PS12345678006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/var_length.json") "data/$TESTDIR/20charID.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/var_length.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/20charID.txt"
   result=$?
   [ "$result" -eq 0 ]
 
-  mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
 
   node submit.js -i 2015A7PS123456789012345678006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
-  cmp <(jq [.[].id_no,.[].score] "$BATS_TMPDIR/$TESTDIR/var_length.json") "data/$TESTDIR/30charID.json"
+  scores=$(node -e "data = require(\"$BATS_TMPDIR/$TESTDIR/var_length.json\"); \
+  for (let entry of data) console.log(entry.id_no, entry.score)")
+  cmp <(echo "$scores") "data/$TESTDIR/30charID.txt"
   result=$?
   [ "$result" -eq 0 ]
 
   #Note: For ID length greater than 30, travis stores the ID as truncated to 30 chars, instead of not storing it.
-  #mysql -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  #mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
 
   #node submit.js -i 2015A7PS1234567890123456789006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
   #curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/var_length.json
-  #cmp <(jq [.[].id_no,.[].score] $BATS_TMPDIR/scoreboard/var_length.json) data/scoreboard/empty.json
+  #cmp <(echo "$scores") data/scoreboard/empty.json
   #result=$?
   #[ "$result" -eq 0 ]
 }
