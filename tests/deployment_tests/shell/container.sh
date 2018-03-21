@@ -9,6 +9,6 @@
 # Setup
 sudo docker ps --format '{{.Image}} {{.Names}} {{.Status}}' | tee container_status.txt > /dev/null
 # Test
-$BATS container.bats
+$BATS bats/container.bats
 # Teardown
 rm container_status.txt

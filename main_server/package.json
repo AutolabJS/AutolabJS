@@ -5,7 +5,7 @@
   "main": "main_server.js",
   "scripts": {
     "start": "node main_server.js",
-    "test": "bash test.sh",
+    "test": "bash test/test.sh",
     "coverage": "nyc --reporter=lcov --reporter=text-lcov -s npm test --silent && nyc report --reporter=lcov > coverage.lcov"
   },
   "repository": {

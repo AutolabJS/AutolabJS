@@ -14,7 +14,7 @@ setup() {
   cp -rf ../../docs/examples/unit_tests/* "$BATS_TMPDIR/$TESTDIR/"
   for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
   do
-    cp -f ../extract_run_test.sh ../../execution_nodes/execution_node_"$i"/extract_run.sh
+    cp -f ./helper_scripts/extract_run_test.sh ../../execution_nodes/execution_node_"$i"/extract_run.sh
   done
 }
 
@@ -22,7 +22,7 @@ teardown() {
   rm -rf "${BATS_TMPDIR:?}/${TESTDIR:?}"
   for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
   do
-    cp -f ../extract_run_test.sh ../../execution_nodes/execution_node_"$i"/extract_run.sh
+    cp -f ./helper_scripts/extract_run_test.sh ../../execution_nodes/execution_node_"$i"/extract_run.sh
   done
 }
 

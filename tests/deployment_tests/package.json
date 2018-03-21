@@ -2,7 +2,6 @@
   "name": "deployment_tests",
   "version": "0.2.0",
   "description": "deployment tests for complete autolab application software",
-  "main": "test.js",
   "dependencies": {
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5",
@@ -13,7 +12,6 @@
     "bats-file": "git+https://github.com/ztombol/bats-file.git"
   },
   "scripts": {
-    "start": "node test.js",
     "test": "mocha -u bdd -R tap --timeout 10000 ./test/"
   },
   "repository": {
