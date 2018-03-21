@@ -102,6 +102,7 @@ teardown() {
   cmp <(echo "$scores2") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab2;"
 }
 
 @test "Scoreboards of two concurrently inactive labs" {

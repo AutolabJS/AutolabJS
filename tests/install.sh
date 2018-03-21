@@ -12,13 +12,13 @@
 #  config : contains the path for the environment.conf file
 
 set -ex
-config=./tests/environment.conf
+config=./tests/env.conf
 if [[ -f $config ]]
 then
   # shellcheck disable=SC1090
   . "$config"
 else
-  echo "The environment variables file could not be located at ./tests/environment.conf. Exiting."
+  echo "The environment variables file could not be located at ./tests/env.conf. Exiting."
   exit 1
 fi
 
@@ -28,11 +28,7 @@ mysql -e 'USE Autolab;'
 echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | \
     mysql -u root
 
-npm --quiet install --prefix main_server 1>/dev/null 2>&1
-npm --quiet install --prefix main_server/public/js 1>/dev/null 2>&1
-npm --quiet install --prefix load_balancer 1>/dev/null 2>&1
-npm --quiet install --prefix util 1>/dev/null 2>&1
-npm --quiet install --prefix execution_nodes 1>/dev/null 2>&1
+bash scripts/npm_install.sh travis "$(pwd)"
 
 mkdir execution_nodes_data/
 cp -rf execution_nodes/. execution_nodes_data/ 2>&1

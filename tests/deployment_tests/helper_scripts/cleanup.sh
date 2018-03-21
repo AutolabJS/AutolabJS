@@ -6,15 +6,20 @@
 # Previous Versions: None
 # Invocation: $ bash cleanup.sh
 ###########
-# Note: pwd is {DIRECTORY_FOR_AUTOLABJS}/tests/deployment_tests
+# All variables that are exported/imported are in upper case convention. They are:
+#   INSTALL_DIR : installation directory for AutolabJS
+# All local variables are in lower case convention. They are:
+#   userList         : users obtained from gitlab.js
+#   users            : array of all user names for the submission
+#   labsJsonCheck    : check if labs.json file is updated or not
+# Note: pwd is $INSTALL_DIR/tests/deployment_tests
 
 set -x
 
 # Delete any users existing on Gitlab except from the root user
 userList=$(node -e "require(\"./gitlab.js\").listUsers().then((data) => console.log(data)).catch((e) => {console.log(e); process.exit(1);})")
-users=$(echo "$userList" | tr -d "'" | tr -d "[" |  tr -d "]" | tr -d " ")
-userArray=$(echo "$users" | tr "," "\n")
-for user in $userArray
+users=$(echo "$userList" | tr -d "'" | tr -d "[" |  tr -d "]" | tr -d " " | tr "," "\n")
+for user in $users
 do
   if [ "$user" != "root" ]
   then

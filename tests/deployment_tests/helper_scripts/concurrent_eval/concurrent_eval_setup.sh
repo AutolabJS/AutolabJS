@@ -6,7 +6,8 @@
 # Previous Versions: None
 # Invocation: $ bash concurrent_eval_setup.sh
 ###########
-# All constant variables are in upper case convention. They are:
+# All variables that are exported/imported are in upper case convention. They are:
+#   GITLAB_DATA : path where all the git repositories are locally created and stored
 # All local variables are in lower case convention. They are:
 #   user          : array of all user names for the submission
 #   pass          : password for the all the user is same

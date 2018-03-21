@@ -1,15 +1,20 @@
 #!/bin/bash
 ############
-# Purpose: scoreboard tests written using BATS
+# Purpose: Scoreboard tests written using BATS
+# Authors: Ankshit Jain
 # Dependencies:	bats (https://github.com/sstephenson/bats)
 # Date : 15-Feb-2018
 # Previous Versions: -
 # Invocation: $bash scoreboard.sh
 ###########
+# All variables that are exported/imported are in upper case convention. They are:
+#   TESTDIR : name for the temporary directory where tests will be run
 # All local variables are in lower case convention. They are:
 #  msPid : pid of the main server process
 
 set -ex
+TESTDIR='scoreboard'
+export TESTDIR
 # Run the setup for scoreboard tests
 cd ../test_modules
 bash ./helper_scripts/scoreboard/scoreboard_test_setup.sh
@@ -22,10 +27,10 @@ node main_server.js >>/tmp/log/main_server.log 2>&1 &
 msPid="$!"
 sleep 5
 # Return back to the test_modules directory
-cd ../tests/test_modules/
+cd ../tests/test_modules
 
 # Run the scoreboard tests
-bats scoreboard.bats
+$BATS bats/scoreboard.bats
 
 # Run the teardown script to restore the necessary files.
 bash ./helper_scripts/scoreboard/scoreboard_test_teardown.sh

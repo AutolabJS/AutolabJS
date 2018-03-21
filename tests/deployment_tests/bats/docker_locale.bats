@@ -1,7 +1,7 @@
 #!node_modules/bats/libexec/bats
 ############
 # Authors: Ankshit Jain
-# Purpose: Tests for locale of the execution node docker containers
+# Purpose: Tests for locale settings of the execution node docker containers
 # Date: 19-Feb-2018
 # Previous Versions: -
 ###########
