@@ -214,7 +214,7 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ ansible_host }}-{{ port_1 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
@@ -226,7 +226,7 @@
 
     - name: Start execution_node container 1
       docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_1 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -275,14 +275,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ ansible_host }}-{{ port_2 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 2
       docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_2 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -331,14 +331,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ ansible_host }}-{{ port_3 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 3
       docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_3 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -387,14 +387,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ ansible_host }}-{{ port_4 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 4
       docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_4 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -443,14 +443,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ ansible_host }}-{{ port_5 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 5
       docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_5 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
