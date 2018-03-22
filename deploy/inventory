@@ -24,6 +24,7 @@ gitlab
 reject_unauthorised=0
 ansible_connection=local
 ansible_python_interpreter=/usr/bin/python2
+ansible_host=localhost
 
 [mainserver:vars]
 
@@ -36,9 +37,10 @@ gitlab_password=12345678
 gitlab_hostname=localhost
 gitlab_password=12345678
 
-[database]
+[database:vars]
 sqldata=/opt/autolabjs/mysql
 mysql_root_pass=root
 
-[git]
+[git:vars]
+ansible_host=localhost
 gitlab_password=12345678
