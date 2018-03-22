@@ -1,10 +1,10 @@
-- hosts: mainserver,executionnode1,executionnode2,executionnode3,executionnode4,executionnode5
+- hosts: ms
   become: yes
   tasks:
     - raw: which python || apt-get update
     - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
 
-- hosts: mainserver,executionnode1,executionnode2,executionnode3,executionnode4,executionnode5
+- hosts: ms
   become: yes
   tasks:
     - name: Install pip
@@ -15,7 +15,7 @@
       pip: name=docker-py version=1.9.0
 
 # Note: We assume main server has ssh open on port 2222
-- hosts: mysql
+- hosts: mysqldb
   become: yes
   tasks:
     - name: Build MySQL Container
@@ -34,7 +34,7 @@
       copy: src=wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
     - name: Waiting for MySQL server to be up
-      shell: ./wait-for-it.sh -t 60 {{ inventory_hostname }}:3306
+      shell: ./wait-for-it.sh -t 60 {{ ansible_host }}:3306
 
     - pause: seconds=10
 
@@ -52,7 +52,7 @@
         hostname: gitlab.example.com
         env:
           GITLAB_ROOT_PASSWORD: "{{ gitlab_password }}"
-          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ inventory_hostname }}'; nginx['redirect_http_to_https'] = true;"
+          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ ansible_host }}'; nginx['redirect_http_to_https'] = true;"
         published_ports:
           - "80:80"
           - "22:22"
@@ -63,8 +63,8 @@
           - "/opt/autolabjs/gitlab/config:/etc/gitlab"
           - "/opt/autolabjs/gitlab/logs:/var/log/gitlab"
           - "/opt/autolabjs/gitlab/data:/var/opt/gitlab"
-          - "./keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ inventory_hostname }}.key"
-          - "./keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ inventory_hostname }}.crt"
+          - "./keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ ansible_host }}.key"
+          - "./keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ ansible_host }}.crt"
 
     - name: Copy wait-for-it to container
       shell: docker cp wait-for-it.sh gitlab:/wait-for-it.sh
@@ -76,7 +76,7 @@
 
     - name: Get Private Token
       uri:
-        url: https://{{ inventory_hostname }}/api/v3/session
+        url: https://{{ ansible_host }}/api/v3/session
         status_code: 201
         method: POST
         body: "login=root&password={{ gitlab_password }}"
@@ -89,13 +89,13 @@
 
     - name: Create Test Project
       uri:
-        url: https://{{ inventory_hostname }}/api/v3/projects
+        url: https://{{ ansible_host }}/api/v3/projects
         method: POST
         status_code: 201
         body: "name=Test&private_token={{ session.private_token }}"
         validate_certs: no
 
-- hosts: loadbalancer
+- hosts: lb
   become: yes
   tasks:
     - name: Register public key
@@ -117,7 +117,7 @@
 
     - name: Add key to gitlab
       uri:
-        url: https://{{ inventory_hostname }}/api/v3/user/keys
+        url: https://{{ ansible_host }}/api/v3/user/keys
         status_code: 201
         method: POST
         body_format: json
@@ -155,7 +155,7 @@
           GITLAB_IP: "{{ gitlab_hostname }}"
           NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"
 
-- hosts: mainserver
+- hosts: ms
   become: yes
   tasks:
     - name: Build mainserver
@@ -185,7 +185,7 @@
           MSAPIKEYS: "/etc/main_server/APIKeys.json"
 #          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"
 
-- hosts: executionnode1
+- hosts: en1
   become: yes
   tasks:
 
@@ -214,7 +214,7 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
@@ -226,7 +226,7 @@
 
     - name: Start execution_node container 1
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -246,7 +246,7 @@
           ENSCORES: "/etc/execution_node/scores.json"
 #          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"
 
-- hosts: executionnode2
+- hosts: en2
   become: yes
   tasks:
 
@@ -275,14 +275,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 2
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -302,7 +302,7 @@
           ENSCORES: "/etc/execution_node/scores.json"
 #          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"
 
-- hosts: executionnode3
+- hosts: en3
   become: yes
   tasks:
 
@@ -331,14 +331,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 3
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -358,7 +358,7 @@
           ENSCORES: "/etc/execution_node/scores.json"
 #          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"
 
-- hosts: executionnode4
+- hosts: en4
   become: yes
   tasks:
 
@@ -387,14 +387,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 4
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes
@@ -414,7 +414,7 @@
           ENSCORES: "/etc/execution_node/scores.json"
 #          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"
 
-- hosts: executionnode5
+- hosts: en5
   become: yes
   tasks:
 
@@ -443,14 +443,14 @@
         body_format: json
         HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
         body:
-          title: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
+          title: "execution-node-{{ ansible_host }}-{{ port }}"
           key: "{{ ssh_key.stdout }}"
         validate_certs: no
         return_content: yes
 
     - name: Start execution_node container 5
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
         network_mode: host
         detach: yes

@@ -1,29 +1,46 @@
-[all:vars]
-reject_unauthorised=0
-
-[mysql]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 sqldata=/opt/autolabjs/mysql mysql_root_pass=root
-
-[gitlab]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_password=12345678
+[mainserver]
+ms
 
 [loadbalancer]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 submissions_dir=../load_balancer/submissions gitlab_hostname=localhost gitlab_password=12345678
+lb
 
-[mainserver]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2
+[executionnodes]
+en1 port=8081
+en2 port=8082
+en3 port=8083
+en4 port=8084
+en5 port=8085
 
-[executionnode1]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_1=8082
+[database]
+mysqldb
 
-[executionnode2]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_2=8083
+[git]
+gitlab
 
-[executionnode3]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_3=8084
 
-[executionnode4]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_4=8085
 
-[executionnode5]
-localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python2 gitlab_hostname=localhost gitlab_password=12345678 port_5=8086
+
+[all:vars]
+reject_unauthorised=0
+ansible_connection=local
+ansible_python_interpreter=/usr/bin/python2
+ansible_host=localhost
+
+[mainserver:vars]
+
+[loadbalancer:vars]
+submissions_dir=../load_balancer/submissions
+gitlab_hostname=localhost
+gitlab_password=12345678
+
+[executionnodes:vars]
+gitlab_hostname=localhost
+gitlab_password=12345678
+
+[database:vars]
+sqldata=/opt/autolabjs/mysql
+mysql_root_pass=root
+
+[git:vars]
+ansible_host=localhost
+gitlab_password=12345678
