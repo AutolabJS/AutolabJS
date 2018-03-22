@@ -1,4 +1,4 @@
-- hosts: mysql
+- hosts: mysqldb
   become: yes
   tasks:
     - name: Stop and Remove Database Container
@@ -28,7 +28,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: loadbalancer
+- hosts: lb
   become: yes
   tasks:
 
@@ -44,7 +44,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: mainserver
+- hosts: ms
   become: yes
   tasks:
 
@@ -60,48 +60,48 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode1
+- hosts: en1
   become: yes
   tasks:
     - name: Stop and remove execution_node container 1
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port_1 }}"
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode2
+- hosts: en2
   become: yes
   tasks:
     - name: Stop and remove execution_node container 2
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port_2 }}"
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode3
+- hosts: en3
   become: yes
   tasks:
     - name: Stop and remove execution_node container 3
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port_3 }}"
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode4
+- hosts: en4
   become: yes
   tasks:
     - name: Stop and remove execution_node container 4
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port_4 }}"
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode5
+- hosts: en5
   become: yes
   tasks:
     - name: Stop and remove execution_node container 5
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port_5 }}"
         state: absent
       ignore_errors: yes
 

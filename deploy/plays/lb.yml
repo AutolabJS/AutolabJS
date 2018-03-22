@@ -1,0 +1,59 @@
+- hosts: lb
+  become: yes
+  tasks:
+    - name: Register public key
+      shell: cat ../keys/gitlab/load_balancer/id_rsa.pub
+      register: ssh_key
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ gitlab_hostname }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Add key to gitlab
+      uri:
+        url: https://{{ ansible_host }}/api/v3/user/keys
+        status_code: 201
+        method: POST
+        body_format: json
+        HEADER_PRIVATE-TOKEN: "{{ session.private_token }}"
+        body:
+          title: "loadbalancer"
+          key: "{{ ssh_key.stdout }}"
+        validate_certs: no
+        return_content: yes
+
+    - name: Build loadbalancer
+      docker_image:
+        name: load_balancer
+        path: ../../load_balancer
+
+    - name: Start loadbalancer container
+      docker_container:
+        name: loadbalancer
+        image: load_balancer
+        network_mode: host
+        detach: yes
+        restart_policy: always
+        volumes:
+          - "../../load_balancer:/load_balancer"
+          - "{{ submissions_dir }}:/load_balancer/submissions"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "../configs/load_balancer:/etc/load_balancer"
+          - "../keys/gitlab/load_balancer:/root/.ssh/"
+          - "../../util:/util"
+          - "../configs/util:/etc/util"
+          - "../../log/load_balancer:/log"
+        env:
+          LOGGERCONFIG: "/etc/util/logger.json"
+          LBCONFIG: "/etc/load_balancer/nodes_data_conf.json"
+          GITLAB_IP: "{{ gitlab_hostname }}"
+          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"

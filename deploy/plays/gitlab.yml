@@ -1,0 +1,53 @@
+- hosts: gitlab
+  become: yes
+  tasks:
+    - name: Build GitLab Container
+      docker_container:
+        name: gitlab
+        image: "gitlab/gitlab-ce:10.1.4-ce.0"
+        detach: yes
+        hostname: gitlab.example.com
+        env:
+          GITLAB_ROOT_PASSWORD: "{{ gitlab_password }}"
+          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ ansible_host }}'; nginx['redirect_http_to_https'] = true;"
+        published_ports:
+          - "80:80"
+          - "22:22"
+          - "443:443"
+        restart_policy: always
+        volumes:
+          - "/etc/localtime:/etc/localtime:ro"
+          - "/opt/autolabjs/gitlab/config:/etc/gitlab"
+          - "/opt/autolabjs/gitlab/logs:/var/log/gitlab"
+          - "/opt/autolabjs/gitlab/data:/var/opt/gitlab"
+          - "../keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ ansible_host }}.key"
+          - "../keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ ansible_host }}.crt"
+
+    - name: Copy wait-for-it to container
+      shell: docker cp helper_scripts/wait-for-it.sh gitlab:/wait-for-it.sh
+
+    - name: Waiting for Unicorn on GitLab server to be up
+      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
+
+    - pause: seconds=60
+
+    - name: Get Private Token
+      uri:
+        url: https://{{ ansible_host }}/api/v3/session
+        status_code: 201
+        method: POST
+        body: "login=root&password={{ gitlab_password }}"
+        validate_certs: no
+        return_content: yes
+      register: session_json
+
+    - set_fact:
+        session: "{{ session_json.content | from_json }}"
+
+    - name: Create Test Project
+      uri:
+        url: https://{{ ansible_host }}/api/v3/projects
+        method: POST
+        status_code: 201
+        body: "name=Test&private_token={{ session.private_token }}"
+        validate_certs: no
