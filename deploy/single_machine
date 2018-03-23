@@ -27,9 +27,9 @@ mysqldb
 [git]
 gitlab
 
-[git-credentials]
-gitlab
-lb
+[git-credentials:children]
+git
+loadbalancer
 executionnodes
 
 # The group variables sections follow
@@ -60,7 +60,7 @@ sqldata=/opt/autolabjs/mysql
 mysql_root_pass=root
 
 #GitLab credentials
-[git-credentials]
+[git-credentials:vars]
 #remember to change host name to proper DNS name or IP address
 gitlab_hostname=localhost
 #remember to change the password to a secure password
