@@ -37,7 +37,7 @@
         name: execution_node
         path: "../../execution_nodes/{{ en_dir }}"
 
-    - name: Start execution_node container 1
+    - name: Start execution_node container
       docker_container:
         name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node

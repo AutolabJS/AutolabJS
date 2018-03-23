@@ -57,6 +57,9 @@ ansible_python_interpreter=/usr/bin/python2
 ansible_host=localhost
 install_dir=/opt/autolabjs
 
+[machines:vars]
+#no exclusive variables for machines group
+
 [mainserver:vars]
 #no exclusive variables for mainserver group
 
