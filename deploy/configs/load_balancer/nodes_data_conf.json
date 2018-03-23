@@ -3,27 +3,52 @@
     {
       "role": "execution_node",
       "hostname": "localhost",
-      "port": "8082"
+      "port": "8091"
     },
     {
       "role": "execution_node",
       "hostname": "localhost",
-      "port": "8083"
+      "port": "8092"
     },
     {
       "role": "execution_node",
       "hostname": "localhost",
-      "port": "8084"
+      "port": "8093"
     },
     {
       "role": "execution_node",
       "hostname": "localhost",
-      "port": "8085"
+      "port": "8094"
     },
     {
       "role": "execution_node",
       "hostname": "localhost",
-      "port": "8086"
+      "port": "8095"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8096"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8097"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8098"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8099"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8100"
     }
   ],
   "server_info": {
