@@ -1,4 +1,4 @@
-- hosts: mysql
+- hosts: mysqldb
   become: yes
   tasks:
     - name: Stop and Remove Database Container
@@ -28,7 +28,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: loadbalancer
+- hosts: lb
   become: yes
   tasks:
 
@@ -44,7 +44,7 @@
         state: absent
       ignore_errors: yes
 
-- hosts: mainserver
+- hosts: ms
   become: yes
   tasks:
 
@@ -60,51 +60,18 @@
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode1
+- hosts: executionnodes
   become: yes
   tasks:
-    - name: Stop and remove execution_node container 1
+    - name: Stop and remove execution_node container
       docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_1 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         state: absent
       ignore_errors: yes
 
-- hosts: executionnode2
+- hosts: en5
   become: yes
   tasks:
-    - name: Stop and remove execution_node container 2
-      docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_2 }}"
-        state: absent
-      ignore_errors: yes
-
-- hosts: executionnode3
-  become: yes
-  tasks:
-    - name: Stop and remove execution_node container 3
-      docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_3 }}"
-        state: absent
-      ignore_errors: yes
-
-- hosts: executionnode4
-  become: yes
-  tasks:
-    - name: Stop and remove execution_node container 4
-      docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_4 }}"
-        state: absent
-      ignore_errors: yes
-
-- hosts: executionnode5
-  become: yes
-  tasks:
-    - name: Stop and remove execution_node container 5
-      docker_container:
-        name: "execution-node-{{ inventory_hostname }}-{{ port_5 }}"
-        state: absent
-      ignore_errors: yes
-
     - name: Remove executionnode Image
       docker_image:
         name: execution_node
@@ -112,5 +79,5 @@
       ignore_errors: yes
 
     - name: Remove autolab directory completely
-      file: "dest=/opt/autolabjs state=absent"
+      file: "dest={{ install_dir }} state=absent"
       ignore_errors: yes
