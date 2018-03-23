@@ -60,51 +60,18 @@
         state: absent
       ignore_errors: yes
 
-- hosts: en1
+- hosts: executionnodes
   become: yes
   tasks:
-    - name: Stop and remove execution_node container 1
+    - name: Stop and remove execution_node container
       docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_1 }}"
-        state: absent
-      ignore_errors: yes
-
-- hosts: en2
-  become: yes
-  tasks:
-    - name: Stop and remove execution_node container 2
-      docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_2 }}"
-        state: absent
-      ignore_errors: yes
-
-- hosts: en3
-  become: yes
-  tasks:
-    - name: Stop and remove execution_node container 3
-      docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_3 }}"
-        state: absent
-      ignore_errors: yes
-
-- hosts: en4
-  become: yes
-  tasks:
-    - name: Stop and remove execution_node container 4
-      docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_4 }}"
+        name: "execution-node-{{ ansible_host }}-{{ port }}"
         state: absent
       ignore_errors: yes
 
 - hosts: en5
   become: yes
   tasks:
-    - name: Stop and remove execution_node container 5
-      docker_container:
-        name: "execution-node-{{ ansible_host }}-{{ port_5 }}"
-        state: absent
-      ignore_errors: yes
-
     - name: Remove executionnode Image
       docker_image:
         name: execution_node
@@ -112,5 +79,5 @@
       ignore_errors: yes
 
     - name: Remove autolab directory completely
-      file: "dest=/opt/autolabjs state=absent"
+      file: "dest={{ install_dir }} state=absent"
       ignore_errors: yes
