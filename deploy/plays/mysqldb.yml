@@ -15,6 +15,9 @@
         env:
           MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
 
+    - name: Give permissions over log directory to mysql user of mysqldb container
+      shell: bash helper_scripts/mysql_log.sh
+
     - name: Transfer wait-for-it
       copy: src=./helper_scripts/wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
@@ -22,9 +25,6 @@
       shell: ./helper_scripts/wait-for-it.sh -t 60 {{ ansible_host }}:3306
 
     - pause: seconds=10
-
-    - name: Give permissions over log directory to mysql user of mysqldb container
-      shell: bash helper_scripts/mysql_log.sh
 
     - name: Create AutolabJS database
       command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE AutolabJS'"
