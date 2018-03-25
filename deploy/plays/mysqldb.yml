@@ -23,5 +23,8 @@
 
     - pause: seconds=10
 
+    - name: Give permissions over log directory to mysql user of mysqldb container
+      shell: bash helper_scripts/mysql_log.sh
+
     - name: Create AutolabJS database
       command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE AutolabJS'"
