@@ -8,8 +8,10 @@
         detach: yes
         network_mode: host
         volumes:
-          - "{{ sqldata }}:/var/lib/mysql"
           - "/etc/localtime:/etc/localtime:ro"
+          - "{{ install_dir }}/mysql:/var/lib/mysql"
+          - "{{ install_dir }}/log/mysql:/var/log/mysql"
+          - "../configs/db:/etc/mysql/conf.d"
         env:
           MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
 
