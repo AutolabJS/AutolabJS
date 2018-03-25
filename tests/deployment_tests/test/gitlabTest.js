@@ -1,9 +1,10 @@
 const chai = require('chai');
 const chaiAsPromised = require('chai-as-promised');
 const dirtyChai = require('dirty-chai');
-const { User, Project, listUsers } = require('../gitlab.js');
-const { gitlab } = require('../../../deploy/configs/gitlab/gitlab.json');
 const git = require('simple-git/promise');
+const { User, Project, listUsers } = require('../gitlab.js');
+// eslint-disable-next-line import/no-dynamic-require
+const { gitlab } = require(`${process.env.INSTALL_DIR}/deploy/configs/gitlab/gitlab.json`);
 
 chai.should();
 chai.use(chaiAsPromised);

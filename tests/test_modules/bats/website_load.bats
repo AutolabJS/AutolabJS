@@ -33,7 +33,8 @@ teardown() {
   curl -s --ipv4 -k https://127.0.0.1:9000/status -o "$BATS_TMPDIR/$TESTDIR/status.txt"
   cp "$INSTALL_DIR/deploy/configs/load_balancer/nodes_data_conf.json" "$BATS_TMPDIR/$TESTDIR/nodes_data_conf.json"
   result=$(bash helper_scripts/"$TESTDIR"/status_check.sh)
-  [ "$result" -eq 11 ]
+  expectedResult=$(( $NUMBER_OF_EXECUTION_NODES + 1 ))
+  [ "$result" -eq $expectedResult ]
 }
 
 @test "Load AutolabJS specific client side js files" {

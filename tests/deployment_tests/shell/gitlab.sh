@@ -34,8 +34,6 @@ fi
 mkdir -p "$COMMITPATH"
 mkdir -p "$GITLABTEMP"
 cp -r ../../docs/examples/unit_tests/student_solution/java/ "$COMMITPATH"
-git config --global user.email "autolabjs@autolabjs.com" || :
-git config --global user.name "autolabjs" || :
 
 # Test
 npm test || :

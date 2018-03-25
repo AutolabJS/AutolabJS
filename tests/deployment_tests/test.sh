@@ -27,9 +27,10 @@
 
 sudo true
 set -ex
-cd tests/deployment_tests
-BATS="node_modules/bats/libexec/bats"
 config=./env.conf
+cd tests/deployment_tests
+# Export all varaibles defined in the following lines
+set -o allexport
 if [[ -f $config ]]
 then
   # shellcheck disable=SC1090
@@ -38,9 +39,12 @@ else
   echo "The environment variables file could not be located at ./details.conf. Exiting."
   exit 1
 fi
-
-export GIT_SSL_NO_VERIFY NODE_TLS_REJECT_UNAUTHORIZED TESTDIR COMMITPATH
-export GITLABTEMP TMPDIR GITLAB_DATA NUMBER_OF_EXECUTION_NODES BATS INSTALL_DIR
+# shellcheck disable=2034
+BATS="node_modules/bats/libexec/bats"
+# shellcheck disable=2034
+TESTDIR=""
+set +o allexport
+# End exporting all variables.
 
 # Create a backup directory
 mkdir -p ../backup
@@ -60,9 +64,16 @@ do
   # The sed command capitalised every first character of a word in the string.
   testName=$(echo "$test" | tr '_' ' ' | sed -e "s/\b\(.\)/\u\1/g")
   echo -e "\n========== ${testName:0:-3} Checks =========="
+  set +e
   bash "shell/$test"
+  status=$?
+  set +e
   # Cleanup
   bash ./helper_scripts/cleanup.sh
+  if [ "$status" -ne 0 ]
+  then
+    exit 1
+  fi
 done
 
 rm -rf ../backup
