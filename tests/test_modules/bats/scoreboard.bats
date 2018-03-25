@@ -17,7 +17,7 @@ setup() {
 teardown() {
   rm "${BATS_TMPDIR:?}/submission.conf"
   rm -rf "${BATS_TMPDIR:?}/${TESTDIR:?}"
-  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab1;"
 }
 
 @test "Empty scoreboard of a fresh lab" {
@@ -102,7 +102,7 @@ teardown() {
   cmp <(echo "$scores2") "data/$TESTDIR/first_eval.txt"
   result=$?
   [ "$result" -eq 0 ]
-  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab2;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab2;"
 }
 
 @test "Scoreboards of two concurrently inactive labs" {
@@ -125,7 +125,7 @@ teardown() {
   result=$?
   [ "$result" -eq 0 ]
 
-  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab1;"
 
   node submit.js -i 2015A7PS000006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
@@ -135,7 +135,7 @@ teardown() {
   result=$?
   [ "$result" -eq 0 ]
 
-  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab1;"
 
   node submit.js -i 2015A7PS12345678006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
@@ -145,7 +145,7 @@ teardown() {
   result=$?
   [ "$result" -eq 0 ]
 
-  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab1;"
 
   node submit.js -i 2015A7PS123456789012345678006G -l lab1 --lang=java --host='localhost:9000' > /dev/null
   curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o "$BATS_TMPDIR/$TESTDIR/var_length.json"
@@ -156,7 +156,7 @@ teardown() {
   [ "$result" -eq 0 ]
 
   #Note: For ID length greater than 30, travis stores the ID as truncated to 30 chars, instead of not storing it.
-  #mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  #mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab1;"
 
   #node submit.js -i 2015A7PS1234567890123456789006G -l lab1 --lang=java --host='localhost:9000' >/dev/null
   #curl -s --ipv4 -k https://127.0.0.1:9000/scoreboard/lab1 -o $BATS_TMPDIR/scoreboard/var_length.json

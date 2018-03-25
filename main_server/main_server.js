@@ -96,7 +96,7 @@ function initScoreboard(lab_no) {
 
       if(rows!=undefined && rows.length===0)
       {
-        var q='CREATE TABLE l'+lab_no+'(id_no varchar(30), score int, time datetime)';
+        var q='CREATE TABLE l'+lab_no+'(id_no varchar(30), score int, time datetime, PRIMARY KEY (id_no))';
         connection.query(q, function(err, rows, fields) {
           console.log(err,rows,fields)
         });

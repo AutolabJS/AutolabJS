@@ -23,8 +23,8 @@ else
 fi
 
 # initialize the DB
-mysql -e 'CREATE DATABASE Autolab;'
-mysql -e 'USE Autolab;'
+mysql -e 'CREATE DATABASE AutolabJS;'
+mysql -e 'USE AutolabJS;'
 echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | \
     mysql -u root
 

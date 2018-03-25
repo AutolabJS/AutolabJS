@@ -21,5 +21,5 @@
 
     - pause: seconds=10
 
-    - name: Create Autolab database
-      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE Autolab'"
+    - name: Create AutolabJS database
+      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE AutolabJS'"
