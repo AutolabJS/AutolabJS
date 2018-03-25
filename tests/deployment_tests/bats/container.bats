@@ -18,7 +18,7 @@
 
 @test "Execution Nodes Container Check" {
      result=$(grep -c "^execution_node execution-node.* Up.*" container_status.txt)
-    [ "$result" -eq 5 ]
+    [ "$result" -eq "$NUMBER_OF_EXECUTION_NODES" ]
 }
 
 @test "Database Container Check" {

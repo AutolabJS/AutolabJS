@@ -1,6 +1,17 @@
-- hosts: executionnodes
+- hosts: executionnodes-remote
   become: yes
   tasks:
+    - name: Get Docker installation script
+      get_url:
+        url: https://get.docker.com
+        dest: "/opt/autolabjs/execution_nodes/docker.sh"
+        mode: 0775
+
+    - name: Install Docker
+      shell: "/opt/autolabjs/execution_nodes/docker.sh"
+
+    - name: Start docker
+      service: name=docker state=started
 
     - name: Register public key
       shell: "cat ../keys/gitlab/execution_nodes/{{ en_dir }}/id_rsa.pub"

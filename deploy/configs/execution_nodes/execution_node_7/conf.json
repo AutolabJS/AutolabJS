@@ -12,6 +12,6 @@
 {
   "role": "execution_node",
   "hostname": "localhost",
-  "port" : "8094"
+  "port" : "8097"
 }
 }

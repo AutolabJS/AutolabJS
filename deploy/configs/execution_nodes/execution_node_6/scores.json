@@ -3,7 +3,7 @@
     {
       "role": "execution_node",
       "hostname": "localhost",
-      "port": "8093"
+      "port": "8096"
     },
   "submission_details":
     {
