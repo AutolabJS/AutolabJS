@@ -8,6 +8,8 @@
 
 set -ex
 # Increase the rate limit of gitlab, default value is 10
+git config --global user.email "autolabjs@autolabjs.com" || :
+git config --global user.name "autolabjs" || :
 sudo docker exec gitlab sed -i "s/# gitlab_rails\['rate_limit_requests_per_period'] = 10/gitlab_rails\['rate_limit_requests_per_period'] = 1000/" /etc/gitlab/gitlab.rb
 sudo docker exec gitlab gitlab-ctl reconfigure
 sudo docker exec gitlab gitlab-ctl restart

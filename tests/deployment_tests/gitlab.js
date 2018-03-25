@@ -1,6 +1,7 @@
 const request = require('request-promise-native');
 const simpleGit = require('simple-git/promise')();
-const { gitlab } = require('../../deploy/configs/gitlab/gitlab.json');
+// eslint-disable-next-line import/no-dynamic-require
+const { gitlab } = require(`${process.env.INSTALL_DIR}/deploy/configs/gitlab/gitlab.json`);
 
 const adminUserName = gitlab.username;
 const adminPassword = gitlab.password;

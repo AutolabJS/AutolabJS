@@ -17,6 +17,8 @@
 
 set -ex
 config=./tests/unit_tests/env.conf
+# Export all varaibles defined in the following lines
+set -o allexport
 if [[ -f $config ]]
 then
   # shellcheck disable=SC1090
@@ -25,8 +27,8 @@ else
   echo "The details file could not be located at ./env.conf. Exiting."
   exit 1
 fi
-export NUMBER_OF_EXECUTION_NODES LOGGERCONFIG LBCONFIG NODE_TLS_REJECT_UNAUTHORIZED
-export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS ENCONFIG ENSCORES
+set +o allexport
+# End exporting all variables.
 
 echo -e "\n\n==========Unit Tests=========="
 for i in "${COMPONENTS[@]}"

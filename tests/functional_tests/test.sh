@@ -27,10 +27,8 @@
 # Note: pwd is $INSTALL_DIR
 
 set -ex	# exit on error
-BATS="node_modules/bats/libexec/bats"
 INSTALL_DIR=$(pwd)
-TMPDIR="/tmp"
-
+export INSTALL_DIR
 # create backups of code files that are being changed for testing
 mkdir -p tests/backup
 mkdir -p tests/backup/execution_nodes
@@ -51,9 +49,15 @@ touch tests/process_pid.txt
 
 # Move to the functional tests directory
 cd ./tests/functional_tests/
-
 # Load the environment variables.
 config=./env.conf
+
+# Export all varaibles defined in the following lines
+set -o allexport
+# shellcheck disable=2034
+BATS="node_modules/bats/libexec/bats"
+# shellcheck disable=2034
+TMPDIR="/tmp"
 if [[ -f $config ]]
 then
   # shellcheck disable=SC1090
@@ -62,10 +66,8 @@ else
   echo "The environment variables file could not be located at ./env.conf. Exiting."
   exit 1
 fi
-
-# The below environment variables are obtained from env.conf.
-export NUMBER_OF_EXECUTION_NODES LOGGERCONFIG LBCONFIG NODE_TLS_REJECT_UNAUTHORIZED
-export MSCONFIG MSLABCONFIG MSCOURSECONFIG MSAPIKEYS INSTALL_DIR BATS TMPDIR
+set +o allexport
+# End exporting all variables.
 
 # Run the setup.
 bash helper_scripts/setup.sh

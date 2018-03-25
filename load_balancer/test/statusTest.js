@@ -78,7 +78,7 @@ describe('Method getStatus returns correct status object', () => {
 
   it('Correct status object for input array of working nodes', () => {
     nodes = nodesData.Nodes;
-    return checkStatusObject(10, 'up');
+    return checkStatusObject(Number(process.env.NUMBER_OF_EXECUTION_NODES), 'up');
   });
 
   it('Correct status for input array of nodes that dont exist', () => {
@@ -103,7 +103,7 @@ describe('Method selectActiveNodes returns expected array of nodes', () => {
 
   it('Correct array for an input array of working nodes', () => {
     nodes = nodesData.Nodes;
-    return checkNodeQueue(10);
+    return checkNodeQueue(Number(process.env.NUMBER_OF_EXECUTION_NODES));
   });
 
   it('Empty array for an input array of nodes that dont exist', () => {
