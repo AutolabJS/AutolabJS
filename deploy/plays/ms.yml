@@ -1,0 +1,29 @@
+- hosts: ms
+  become: yes
+  tasks:
+    - name: Build mainserver
+      docker_image:
+        name: main_server
+        path: ../../main_server
+
+    - name: Start mainserver container
+      docker_container:
+        name: mainserver
+        image: main_server
+        network_mode: host
+        detach: yes
+        restart_policy: always
+        volumes:
+          - "../../main_server:/main_server"
+          - "/etc/localtime:/etc/localtime:ro"
+          - "../configs/main_server:/etc/main_server"
+          - "../../util:/util"
+          - "../configs/util:/etc/util"
+          - "../../log/main_server:/log"
+        env:
+          LOGGERCONFIG: "/etc/util/logger.json"
+          MSCONFIG: "/etc/main_server/conf.json"
+          MSLABCONFIG: "/etc/main_server/labs.json"
+          MSCOURSECONFIG: "/etc/main_server/course.json"
+          MSAPIKEYS: "/etc/main_server/APIKeys.json"
+#          NODE_TLS_REJECT_UNAUTHORIZED: "{{ reject_unauthorised }}"

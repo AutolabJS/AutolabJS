@@ -1,31 +1,8 @@
-- hosts: mainserver,executionnode1,executionnode2,executionnode3,executionnode4,executionnode5
-  become: yes
-  tasks:
-    - raw: which python || apt-get update
-    - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
 
-    - name: Install pip
-      apt: name=python-pip update_cache=true
-      when: ansible_distribution == 'Ubuntu'
+- import_playbook: plays/deps.yml
+- import_playbook: plays/mysqldb.yml
+- import_playbook: plays/gitlab.yml
+- import_playbook: plays/lb.yml
+- import_playbook: plays/ms.yml
+- import_playbook: plays/executionnodes-remote.yml
 
-    - name: Install docker-py
-      pip: name=docker-py version=1.9.0
-
-# Note: We assume main server has ssh open on port 2222
-
-
-- import_playbook: mysql_play.yml
-
-- import_playbook: gitlab_play.yml
-
-- import_playbook: loadbalancer_play.yml
-
-- import_playbook: mainserver_play.yml
-
-- import_playbook: executionnode_play.yml
-  with_items :
-    - {"hostname" : "executionnode1", "nodepath" : "execution_node_1", "nodeport" : "{{ port_1 }}"}
-    - {"hostname" : "executionnode2", "nodepath" : "execution_node_2", "nodeport" : "{{ port_2 }}"}
-    - {"hostname" : "executionnode3", "nodepath" : "execution_node_3", "nodeport" : "{{ port_3 }}"}
-    - {"hostname" : "executionnode4", "nodepath" : "execution_node_4", "nodeport" : "{{ port_4 }}"}
-    - {"hostname" : "executionnode5", "nodepath" : "execution_node_5", "nodeport" : "{{ port_5 }}"}

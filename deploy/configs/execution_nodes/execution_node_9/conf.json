@@ -1,0 +1,17 @@
+{ "load_balancer" :{
+  "role": "load_balancer",
+  "hostname": "localhost",
+  "port": "8081"
+},
+"gitlab" :{
+  "role": "gitlab",
+  "hostname": "localhost",
+  "port": "80"
+},
+"execution_node" :
+{
+  "role": "execution_node",
+  "hostname": "localhost",
+  "port" : "8099"
+}
+}

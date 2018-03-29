@@ -1,0 +1,20 @@
+{
+  "node_details":
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8098"
+    },
+  "submission_details":
+    {
+      "marks" :[],
+      "comment" :[],
+      "id_no" :"",
+      "Lab_No": "",
+      "commit": "",
+      "time":"",
+      "status": "",
+      "penalty": "" ,
+      "socket": ""
+    }
+}

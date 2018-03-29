@@ -1,0 +1,86 @@
+# This hosts file is for a single machine installation of AutolabJS software
+
+[machines]
+m1
+m2 ansible_connection=ssh
+
+[mainserver]
+ms
+
+[loadbalancer]
+lb
+
+#By default installs ten execution nodes. If you don't need so many, you can
+# comment out the unnecessary ones and limit the installation to few
+# execution nodes.
+[executionnodes]
+en1 en_dir=execution_node_1 port=8091
+en2 en_dir=execution_node_2 port=8092
+en3 en_dir=execution_node_3 port=8093
+en4 en_dir=execution_node_4 port=8094
+en5 en_dir=execution_node_5 port=8095
+en6 en_dir=execution_node_6 port=8096
+en7 en_dir=execution_node_7 port=8097
+en8 en_dir=execution_node_8 port=8098
+en9 en_dir=execution_node_9 port=8099
+en10 en_dir=execution_node_10 port=8100
+
+[executionnodes-remote]
+en11 en_dir=execution_node_11 port=8101
+en12 en_dir=execution_node_12 port=8102
+en13 en_dir=execution_node_13 port=8103
+en14 en_dir=execution_node_14 port=8104
+en15 en_dir=execution_node_15 port=8105
+en16 en_dir=execution_node_16 port=8106
+en17 en_dir=execution_node_17 port=8107
+en18 en_dir=execution_node_18 port=8108
+en19 en_dir=execution_node_19 port=8109
+en20 en_dir=execution_node_20 port=8110
+
+[database]
+mysqldb
+
+[git]
+gitlab
+
+[git-credentials:children]
+git
+loadbalancer
+executionnodes
+
+# The group variables sections follow
+[all:vars]
+reject_unauthorised=0
+ansible_connection=local
+ansible_python_interpreter=/usr/bin/python2
+#optionally, you can change host name to proper DNS name or IP address
+ansible_host=localhost
+install_dir=/opt/autolabjs
+
+[machines:vars]
+#no exclusive variables for machines group
+
+[mainserver:vars]
+#no exclusive variables for mainserver group
+
+[loadbalancer:vars]
+submissions_dir=../load_balancer/submissions
+
+[executionnodes:vars]
+#no exclusive variables for executionnodes group
+
+[git:vars]
+#no exclusive variables for git group
+
+#MySQL credentials
+[database:vars]
+sqldata=/opt/autolabjs/mysql
+#remember to change the password to a secure password
+mysql_root_pass=root
+
+#GitLab credentials
+[git-credentials:vars]
+#remember to change host name to proper DNS name or IP address
+gitlab_hostname=localhost
+#remember to change the password to a secure password
+gitlab_password=12345678

@@ -35,7 +35,7 @@ exclude_paths:
 - "**.txt"
 - "**.json"
 - docs/examples/unit_tests/author_solution/java/lib/
-- deploy/wait-for-it.sh
+- deploy/plays/helper_scripts/wait-for-it.sh
 - main_server/public/fonts/
 - main_server/public/font/
 - main_server/public/css/2fcrYFNaTjcS6g4U3t-Y5ZjZjT5FdEJ140U2DJYC3mY.woff2
