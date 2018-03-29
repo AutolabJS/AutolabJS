@@ -1,4 +1,5 @@
-- import_playbook: plays/deps.yml
+#for the moment, the dependencies.yml is being run from dependencies.sh
+#- import_playbook: plays/dependencies.yml
 - import_playbook: plays/mysqldb.yml
 - import_playbook: plays/gitlab.yml
 - import_playbook: plays/lb.yml

@@ -1,0 +1,78 @@
+- hosts: machines
+  become: yes
+  tasks:
+
+    - name: Setting assume-yes as true for apt-get
+      copy:
+        content: 'APT::Get::Assume-Yes "true";'
+        dest: '/etc/apt/apt.conf.d/90forceyes' 
+
+    - name: Update package index
+      apt:
+        update_cache: yes
+
+    - name: Install Python and Aptitude
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - python
+        - python-apt
+        - aptitude
+
+    - name: Installing lxc, bsdtar, wget, curl and 'linux-image-extra-$(uname -r)'
+      apt: name={{ item }} 
+      with_items:
+        - lxc
+        - bsdtar
+        - wget
+        - curl
+        - "linux-image-extra-{{ ansible_kernel }}"
+
+    - name: Adding the AUFS module
+      modprobe: name=aufs
+
+    - name: Check if docker is installed
+      stat: path=/etc/init.d/docker
+      register: docker_status
+
+    - name: If not available, install docker
+      import_tasks: tasks/docker.yml
+      when: docker_status.stat.exists == False
+
+
+    - name: Check if nodejs is installed
+      shell: dpkg-query -W -f='${Status}' nodejs | grep 'install ok installed'
+      register: is_installed
+      failed_when: False
+      changed_when: False      
+
+    - name: If not available, install nodejs and npm
+      import_tasks: tasks/nodejs.yml
+      when: is_installed.rc != 0   #if the return code of previous task is not zero
+
+    - name: Installing python-pip, libssl-dev, sshpass, libffi-dev, and python-dev
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - python-pip
+        - libssl-dev
+        - sshpass
+        - libffi-dev
+        - python-dev
+
+    - name: Installing and upgrading pip
+      pip:
+        name: pip
+        state: latest
+
+    - name: Installing cryptography, setuptools
+      pip:
+        name: "{{ item }}"
+      with_items:
+        - cryptography
+        - setuptools
+
+    - name: Install docker-py
+      pip:
+        name: docker-py 
+        version: 1.9.0

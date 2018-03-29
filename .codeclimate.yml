@@ -35,6 +35,7 @@ exclude_paths:
 - "**.txt"
 - "**.json"
 - docs/examples/unit_tests/author_solution/java/lib/
+- deploy/ansible_plugins/human_log.py
 - deploy/plays/helper_scripts/wait-for-it.sh
 - main_server/public/fonts/
 - main_server/public/font/
