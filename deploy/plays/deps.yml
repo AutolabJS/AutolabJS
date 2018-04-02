@@ -1,12 +1,96 @@
 - hosts: machines
   become: yes
   tasks:
+    - name: Create an out file
+      file: path=./logs/deps.txt state=touch
+
+    - name: Clear the file
+      shell : truncate -s 0 ./logs/deps.txt
+
     - raw: which python || apt-get update
+      register: t1
+
+    - name : Adding line for t1 'stdout'
+      lineinfile: 
+        line: "t1 stdout \n {{t1['stdout']}}"
+        path: "./logs/deps.txt"
+      when:
+        - t1['stdout'] is defined
+        - t1['stdout']!=""
+
+
+    - name : Adding line for t1 'stderr'
+      lineinfile: 
+        line: "t1 stderr \n {{t1['stderr']}}"
+        path: "./logs/deps.txt"
+      when: 
+        - t1['stderr'] is defined
+        - t1['stderr']!=""
+
+
     - raw: (which python && which aptitude) || apt-get install -y python python-apt aptitude
+      register: t2
+
+    - name : Adding line for t2 'stdout'
+      lineinfile: 
+        line: "t2 stdout\n {{t2['stdout']}}"
+        path: "./logs/deps.txt"
+      when:
+        - t2['stdout'] is defined
+        - t2['stdout']!=""
+
+
+    - name : Adding line for t2 'stderr'
+      lineinfile: 
+        line: "t2 stderr \n {{t2['stderr']}}"
+        path: "./logs/deps.txt"
+      when: 
+        - t2['stderr'] is defined
+        - t2['stderr']!=""
+
 
     - name: Install pip
       apt: name=python-pip update_cache=true
       when: ansible_distribution == 'Ubuntu'
+      register: t3
+
+    - name : Adding line for t3 'stdout'
+      lineinfile: 
+        line: "t3 stdout \n {{t3['stdout']}}"
+        path: "./logs/deps.txt"
+      when:
+        - t3['stdout'] is defined
+        - t3['stdout']!=""
+
+
+    - name : Adding line for t3 'stderr'
+      lineinfile: 
+        line: "t3 stderr \n {{t3['stderr']}}"
+        path: "./logs/deps.txt"
+      when: 
+        - t3['stderr'] is defined
+        - t3['stderr']!=""
+
+
 
     - name: Install docker-py
       pip: name=docker-py version=1.9.0
+      register: t4
+
+    - name : Adding line for t4 'stdout'
+      lineinfile: 
+        line: "t4 stdout \n {{t4['stdout']}}"
+        path: "./logs/deps.txt"
+      when:
+        - t4['stdout'] is defined
+        - t4['stdout']!=""
+
+
+    - name : Adding line for t4 'stderr'
+      lineinfile: 
+        line: "t4 stderr \n {{t4['stderr']}}"
+        path: "./logs/deps.txt"
+      when: 
+        - t4['stderr'] is defined
+        - t4['stderr']!=""
+
