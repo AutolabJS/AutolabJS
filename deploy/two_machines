@@ -74,7 +74,6 @@ submissions_dir=../load_balancer/submissions
 
 #MySQL credentials
 [database:vars]
-sqldata=/opt/autolabjs/mysql
 #remember to change the password to a secure password
 mysql_root_pass=root
 
