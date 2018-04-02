@@ -54,7 +54,7 @@
         - '{{ playbook_dir }}/tempdocker.sh'
         - '{{ playbook_dir }}/nodesource_setup.sh'
 
-    - name: Installing python-pip, libssl-dev, sshpass, libffi-dev, build-essential, python-dev
+    - name: Installing python-pip, libssl-dev, sshpass, libffi-dev, and python-dev
       apt:
         name: {{ item }}
         update_cache: yes
@@ -63,7 +63,6 @@
         - libssl-dev
         - sshpass
         - libffi-dev
-        - build-essential
         - python-dev
 
     - name: Installing and upgrading pip
