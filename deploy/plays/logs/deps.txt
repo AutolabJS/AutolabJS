@@ -1,0 +1,23 @@
+t1 stdout 
+ /usr/bin/python
+
+t2 stdout
+ /usr/bin/python
+/usr/bin/aptitude
+
+t4 stdout 
+ Requirement already satisfied (use --upgrade to upgrade): docker-py==1.9.0 in /usr/local/lib/python2.7/dist-packages
+Requirement already satisfied (use --upgrade to upgrade): six>=1.4.0 in /usr/lib/python2.7/dist-packages (from docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): ipaddress>=1.0.16; python_version < "3.3" in /usr/lib/python2.7/dist-packages (from docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): websocket-client>=0.32.0 in /usr/local/lib/python2.7/dist-packages (from docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): backports.ssl-match-hostname>=3.5; python_version < "3.5" in /usr/local/lib/python2.7/dist-packages (from docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): requests>=2.5.2 in /usr/local/lib/python2.7/dist-packages (from docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): certifi>=2017.4.17 in /usr/local/lib/python2.7/dist-packages (from requests>=2.5.2->docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): chardet<3.1.0,>=3.0.2 in /usr/local/lib/python2.7/dist-packages (from requests>=2.5.2->docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): idna<2.7,>=2.5 in /usr/local/lib/python2.7/dist-packages (from requests>=2.5.2->docker-py==1.9.0)
+Requirement already satisfied (use --upgrade to upgrade): urllib3<1.23,>=1.21.1 in /usr/local/lib/python2.7/dist-packages (from requests>=2.5.2->docker-py==1.9.0)
+
+t4 stderr 
+ You are using pip version 8.1.1, however version 9.0.3 is available.
+You should consider upgrading via the 'pip install --upgrade pip' command.
+
