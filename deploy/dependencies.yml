@@ -8,13 +8,13 @@
         dest: '/etc/apt/apt.conf.d/90forceyes' 
 
     - name: Installing lxc, bsdtar, wget, curl and 'linux-image-extra-$(uname -r)'
-      apt: name={{item}} 
+      apt: name={{ item }} 
       with_items:
         - lxc
         - bsdtar
         - wget
         - curl
-        - "linux-image-extra-{{ansible_kernel}}"
+        - "linux-image-extra-{{ ansible_kernel }}"
 
     - name: Adding the AUFS module
       modprobe: name=aufs
@@ -22,24 +22,24 @@
     - name: Getting docker script
       get_url: 
         url: https://get.docker.com/
-        dest: '{{playbook_dir}}/tempdocker.sh'
+        dest: '{{ playbook_dir }}/tempdocker.sh'
 
     - name: Running docker script
-      shell: '{{playbook_dir}}/tempdocker.sh'
+      shell: '{{ playbook_dir }}/tempdocker.sh'
 
     - name: Getting node source setup script
       uri:
         url: https://deb.nodesource.com/setup_8.x
         method: GET
         follow_redirects: safe
-        dest: '{{playbook_dir}}/nodesource_setup.sh'
+        dest: '{{ playbook_dir }}/nodesource_setup.sh'
 
     - name: Running node source setup script
-      shell: '{{playbook_dir}}/nodesource_setup.sh'
+      shell: '{{ playbook_dir }}/nodesource_setup.sh'
 
     - name: Install nodejs and build-essential
       apt: 
-        name: {{item}}
+        name: {{ item }}
         update_cache: yes
         force: yes
       with_items:
@@ -48,15 +48,15 @@
 
     - name: Deleting nodesource_setup.sh and tempdocker.sh
       file:
-        path: {{item}}
+        path: {{ item }}
         state: absent
       with_items:
-        - '{{playbook_dir}}/tempdocker.sh'
-        - '{{playbook_dir}}/nodesource_setup.sh'
+        - '{{ playbook_dir }}/tempdocker.sh'
+        - '{{ playbook_dir }}/nodesource_setup.sh'
 
     - name: Installing python-pip, libssl-dev, sshpass, libffi-dev, build-essential, python-dev
       apt:
-        name: {{item}}
+        name: {{ item }}
         update_cache: yes
       with_items:
         - python-pip
@@ -71,13 +71,12 @@
         name: pip
         state: latest
 
-    - name: Installing cryptography, setuptools and ansible
+    - name: Installing cryptography, setuptools
       pip:
-        name: {{item}}
+        name: {{ item }}
       with_items:
         - cryptography
         - setuptools
-        - ansible
 
     - name: Restarting the docker service
       service:
