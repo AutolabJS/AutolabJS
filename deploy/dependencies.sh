@@ -5,8 +5,8 @@
 # Previous Versions: -
 # Invocation: $bash dependencies.sh <inventory file>
 ###########
-# All variables are in upper case convention. They are:
-#  INV_TYPE : type of inventory file for the ansible playbook. Valid values are: single_machine, two_machines.
+# Variable passed as argument is:
+# $1 : type of inventory file for the ansible playbook. Valid values are: single_machine, two_machines.
 
 sudo apt-get install ansible
-sudo ansible-playbook -i "$INV_TYPE" dependencies.yml
+sudo ansible-playbook -i "$1" dependencies.yml
