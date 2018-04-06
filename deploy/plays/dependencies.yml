@@ -11,17 +11,18 @@
       apt:
         update_cache: yes
 
-    - name: Install Python and Aptitude
+    - name: Install apt package dependencies
       apt:
         name: "{{ item }}"
       with_items:
-        - python
-        - python-apt
         - aptitude
-
-    - name: Installing lxc, bsdtar, wget, curl and 'linux-image-extra-$(uname -r)'
-      apt: name={{ item }} 
-      with_items:
+        - python
+        - python-dev
+        - python-apt
+        - python-pip
+        - libssl-dev
+        - sshpass
+        - libffi-dev
         - lxc
         - bsdtar
         - wget
@@ -50,29 +51,11 @@
       import_tasks: tasks/nodejs.yml
       when: is_installed.rc != 0   #if the return code of previous task is not zero
 
-    - name: Installing python-pip, libssl-dev, sshpass, libffi-dev, and python-dev
-      apt:
-        name: "{{ item }}"
-      with_items:
-        - python-pip
-        - libssl-dev
-        - sshpass
-        - libffi-dev
-        - python-dev
-
-    - name: Installing and upgrading pip
-      pip:
-        name: pip
-        state: latest
-
-    - name: Installing cryptography, setuptools
+    - name: Installing python pip packages
       pip:
         name: "{{ item }}"
       with_items:
+        - pip
         - cryptography
         - setuptools
-
-    - name: Install docker-py
-      pip:
-        name: docker-py 
-        version: 1.9.0
+        - docker-py

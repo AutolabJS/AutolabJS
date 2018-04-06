@@ -4,4 +4,4 @@
 - import_playbook: plays/gitlab.yml
 - import_playbook: plays/lb.yml
 - import_playbook: plays/ms.yml
-- import_playbook: plays/executionnodes-remote.yml
+- import_playbook: plays/executionnodes.yml

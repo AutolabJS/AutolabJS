@@ -10,6 +10,8 @@
 
 set -ex
 
+INVENTORY="$1"
+
 # install Ansible from the Ansible repository
 sudo apt-get update
 sudo apt-get install -y software-properties-common
@@ -17,4 +19,4 @@ sudo apt-add-repository -y ppa:ansible/ansible
 sudo apt-get update
 sudo apt-get install -y ansible
 
-sudo ansible-playbook -i "$1" plays/dependencies.yml
+sudo ansible-playbook -i "$INVENTORY" plays/dependencies.yml

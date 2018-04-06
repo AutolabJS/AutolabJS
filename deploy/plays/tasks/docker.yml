@@ -2,18 +2,18 @@
 - name: Getting docker script
   get_url: 
     url: https://get.docker.com/
-    dest: '{{ playbook_dir }}/helper_scripts/tempdocker.sh'
+    dest: '{{ install_dir }}/tmp/tempdocker.sh'
     mode: 0775
 
 - name: Running docker script
-  shell: '{{ playbook_dir }}/helper_scripts/tempdocker.sh'
+  shell: '{{ install_dir }}/tmp/tempdocker.sh'
 
 - name: Delete tempdocker.sh
   file:
     path: "{{ item }}"
     state: absent
   with_items:
-    - '{{ playbook_dir }}/helper_scripts/tempdocker.sh'
+    - '{{ install_dir }}/tmp/tempdocker.sh'
 
 - name: Restarting the docker service
   service:
