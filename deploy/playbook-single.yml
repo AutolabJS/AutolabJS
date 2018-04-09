@@ -1,6 +1,0 @@
-- import_playbook: plays/deps.yml
-- import_playbook: plays/mysqldb.yml
-- import_playbook: plays/gitlab.yml
-- import_playbook: plays/lb.yml
-- import_playbook: plays/ms.yml
-- import_playbook: plays/executionnodes.yml
