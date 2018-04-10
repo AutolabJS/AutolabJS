@@ -8,10 +8,15 @@
         detach: yes
         network_mode: host
         volumes:
-          - "{{ sqldata }}:/var/lib/mysql"
           - "/etc/localtime:/etc/localtime:ro"
+          - "{{ install_dir }}/mysql:/var/lib/mysql"
+          - "{{ install_dir }}/log/mysql:/var/log/mysql"
+          - "../configs/db:/etc/mysql/conf.d"
         env:
           MYSQL_ROOT_PASSWORD: "{{ mysql_root_pass }}"
+
+    - name: Give permissions over log directory to mysql user of mysqldb container
+      shell: bash helper_scripts/mysql_log.sh
 
     - name: Transfer wait-for-it
       copy: src=./helper_scripts/wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
@@ -21,5 +26,5 @@
 
     - pause: seconds=10
 
-    - name: Create Autolab database
-      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE Autolab'"
+    - name: Create AutolabJS database
+      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE AutolabJS'"

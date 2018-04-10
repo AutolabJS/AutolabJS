@@ -22,12 +22,13 @@ sudo chown -R "$USER" "$INSTALL_DIR"
 # granted to the current user. This is generally not advisable.
 # sudo usermod -aG docker "$USER"
 
+mkdir -p "$INSTALL_DIR"/tmp
 mkdir -p "$INSTALL_DIR"/gitlab
 mkdir -p "$INSTALL_DIR"/gitlab/config
-mkdir -p "$INSTALL_DIR"/gitlab/logs
+mkdir -p "$INSTALL_DIR"/log/gitlab
 mkdir -p "$INSTALL_DIR"/gitlab/data
 mkdir -p "$INSTALL_DIR"/mysql
-mkdir -p "$INSTALL_DIR"/log
+mkdir -p "$INSTALL_DIR"/log/mysql
 
 mkdir -p "$INSTALL_DIR"/main_server
 mkdir -p "$INSTALL_DIR"/log/main_server

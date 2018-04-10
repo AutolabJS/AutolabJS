@@ -1,0 +1,61 @@
+- hosts: machines
+  become: yes
+  tasks:
+
+    - name: Setting assume-yes as true for apt-get
+      copy:
+        content: 'APT::Get::Assume-Yes "true";'
+        dest: '/etc/apt/apt.conf.d/90forceyes' 
+
+    - name: Update package index
+      apt:
+        update_cache: yes
+
+    - name: Install apt package dependencies
+      apt:
+        name: "{{ item }}"
+      with_items:
+        - aptitude
+        - python
+        - python-dev
+        - python-apt
+        - python-pip
+        - libssl-dev
+        - sshpass
+        - libffi-dev
+        - lxc
+        - bsdtar
+        - wget
+        - curl
+        - "linux-image-extra-{{ ansible_kernel }}"
+
+    - name: Adding the AUFS module
+      modprobe: name=aufs
+
+    - name: Check if docker is installed
+      stat: path=/etc/init.d/docker
+      register: docker_status
+
+    - name: If not available, install docker
+      import_tasks: tasks/docker.yml
+      when: docker_status.stat.exists == False
+
+
+    - name: Check if nodejs is installed
+      shell: dpkg-query -W -f='${Status}' nodejs | grep 'install ok installed'
+      register: is_installed
+      failed_when: False
+      changed_when: False      
+
+    - name: If not available, install nodejs and npm
+      import_tasks: tasks/nodejs.yml
+      when: is_installed.rc != 0   #if the return code of previous task is not zero
+
+    - name: Installing python pip packages
+      pip:
+        name: "{{ item }}"
+      with_items:
+        - pip
+        - cryptography
+        - setuptools
+        - docker-py

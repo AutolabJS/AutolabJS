@@ -17,7 +17,7 @@ setup() {
 teardown() {
   rm "${BATS_TMPDIR:?}/submission.conf"
   rm -rf "${BATS_TMPDIR:?}/${TESTDIR:?}"
-  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM Autolab.llab1;"
+  mysql -h 127.0.0.1 -uroot -proot -e "DELETE FROM AutolabJS.llab1;"
 }
 
 @test "IO test for C" {
