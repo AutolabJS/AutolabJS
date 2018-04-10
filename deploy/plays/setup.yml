@@ -1,0 +1,54 @@
+- hosts: machines
+  become: yes
+  vars:
+    main_server_public: '{{ install_dir }}/main_server/public'
+  tasks:
+
+    - name: Install node packages mentioned in package.json for main server
+      npm:
+        path: '{{ install_dir }}/main_server'
+
+    - name: Install node packages mentioned in package.json for user-facing website of AutolabJS
+      npm:
+        path: '{{ main_server_public }}/js'
+
+    - name: Copy the required website dependencies to correct location
+      copy:
+        src: '{{ main_server_public }}/js/node_modules/jquery/dist/jquery.min.js'
+        dst: '{{ main_server_public }}/js'
+    - copy:
+        src: '{{ main_server_public }}/js/node_modules/file-saver/FileSaver.min.js'
+        dst: '{{ main_server_public }}/js'
+    - copy:
+        src: '{{ main_server_public }}/js/node_modules/materialize-css/dist/js/materialize.min.js'
+        dst: '{{ main_server_public }}/js'
+    - copy:
+        src: '{{ main_server_public }}/js/node_modules/materialize-css/dist/css/materialize.min.css'
+        dst: '{{ main_server_public }}/css'
+
+    - name: Remove node_modules directory of AutolabJS website
+      file:
+        state: absent
+        path: '{{ main_server_public }}/js/node_modules/'
+
+    - name: Install node packages mentioned in package.json for load balancer
+      npm:
+        path: '{{ install_dir }}/load_balancer' 
+
+    - name: Install node packages mentioned in package.json for execution nodes
+      npm:
+        path: '{{ install_dir }}/execution_nodes/execution_node_{{ item }}'
+      with_sequence: start=1 count={{ number_of_execution_nodes }}
+
+    - name: Install node packages mentioned in package.json for util/ module
+      npm:
+        path: '{{ install_dir }}/util'
+
+    - debug:
+        msg: "Creating SSL Certificates"
+
+    - name: Generate SSL keys using keys.sh
+      shell: keys.sh
+      args:
+        chdir: '{{ install_dir }}/deploy/'
+        executable: /bin/bash

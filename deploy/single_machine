@@ -43,6 +43,7 @@ ansible_python_interpreter=/usr/bin/python2
 #optionally, you can change host name to proper DNS name or IP address
 ansible_host=localhost
 install_dir=/opt/autolabjs
+number_of_execution_nodes=10
 
 [machines:vars]
 #no exclusive variables for machines group
