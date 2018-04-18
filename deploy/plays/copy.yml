@@ -1,0 +1,100 @@
+- hosts: machines
+  vars:
+    main_server_public: '{{ install_dir }}/main_server/public'
+  tasks:
+
+    - name: Create the installation directory
+      file:
+        path: '{{ install_dir }}'
+        state: directory
+        owner: {{ ansible_user }}
+        recurse: yes
+      become: yes
+
+    - name: Create the subdirectories under installation directory
+      file:
+        path: '{{ install_dir }}/tmp'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/gitlab'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/gitlab/config'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/gitlab/data'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/log/gitlab'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/mysql'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/log/mysql'
+        state: directory
+
+    - name: Copy files to main_server subdirectory of installation directory
+      file:
+        path: '{{ install_dir }}/main_server'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/log/main_server'
+        state: directory
+    - copy:
+        src: 'main_server/'
+        dst: '{{ install_dir }}/main_server/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+
+    - name: Copy files to load_balancer subdirectory of installation directory
+      file:
+        path: '{{ install_dir }}/load_balancer'
+        state: directory
+    - file:
+        path: '{{ install_dir }}/log/load_balancer'
+        state: directory
+    - copy:
+        src: 'load_balancer/'
+        dst: '{{ install_dir }}/load_balancer/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+
+    - name: Creating directories for execution nodes
+      file:
+        path: '{{ install_dir }}/execution_nodes/execution_node_{{ item }}'
+        state: directory
+      with_sequence: start=1 count={{ number_of_execution_nodes }
+
+    - name: Creating log directories for execution nodes
+      file:
+        path: '{{ install_dir }}/log/execution_nodes/execution_node_{{ item }}'
+        state: directory
+      with_sequence: start=1 count={{ number_of_execution_nodes }
+
+    - name: Copying files to directories of execution nodes
+      copy:
+        src: 'execution_nodes/'
+        dst: '{{ install_dir }}/execution_nodes/execution_node_{{ item }}'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+      with_sequence: start=1 count={{ number_of_execution_nodes }
+
+    - name: Copy files of util subdirectory
+      copy:
+        src: 'util/'
+        dst: '{{ install_dir }}/util/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+    - name: Copy files of deploy subdirectory
+      copy:
+        src: 'deploy/'
+        dst: '{{ install_dir }}/deploy/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+    - name: Copy files of docker-images subdirectory
+      copy:
+        src: 'docker-images/'
+        dst: '{{ install_dir }}/docker-images/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
