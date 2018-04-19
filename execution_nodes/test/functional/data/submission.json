@@ -1,0 +1,133 @@
+{
+  "requestRunData": [
+      {
+        "case": "normal_evaluation",
+        "submission": {
+          "id_no": "STUDENT_PYTHON",
+          "Lab_No": "test1",
+          "time": "2018-01-12 18:03:21",
+          "commit": "",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "language": "python2"
+        },
+        "result":{
+          "marks": [ "1", "1", "1", "1" ],
+          "comment": [ "Accepted", "Accepted", "Accepted", "Accepted" ],
+          "id_no": "STUDENT_PYTHON",
+          "Lab_No": "test1",
+          "commit": "",
+          "time": "2018-01-12 18:03:21",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "log": "Tk8gTE9HUyBGT1IgVEhJUyBFVkFMVUFUSU9O"
+        }
+      },
+      {
+        "case": "results_directory_missing",
+        "submission": {
+          "id_no": "STUDENT_PYTHON",
+          "Lab_No": "test1",
+          "time": "2018-01-12 18:03:21",
+          "commit": "",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "language": "python2"
+        },
+        "result": {
+          "marks": [ 0 ],
+          "comment": [ "" ],
+          "id_no": "STUDENT_PYTHON",
+          "Lab_No": "test1",
+          "commit": "",
+          "time": "2018-01-12 18:03:21",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "log": "RVZBTFVBVElPTiBSRVNVTFQgRklMRVMgTk9UIEZPVU5E"
+        }
+      },
+      {
+        "case": "binary_missing",
+        "submission": {
+          "id_no": "STUDENT_JAVA",
+          "Lab_No": "test1",
+          "time": "2018-01-12 18:03:21",
+          "commit": "",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "language": "java"
+        },
+        "result": {
+          "marks": [ "0", "0", "0", "0" ],
+          "comment":
+          [ "CompilationError",
+            "CompilationError",
+            "CompilationError",
+            "CompilationError" ],
+          "id_no": "STUDENT_JAVA",
+          "Lab_No": "test1",
+          "commit": "",
+          "time": "2018-01-12 18:03:21",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "log": "Y29tcGlsZS5zaDogbGluZSAyNzogamF2YWMxOiBjb21tYW5kIG5vdCBmb3VuZApjb21waWxlLnNoOiBsaW5lIDI3OiBqYXZhYzE6IGNvbW1hbmQgbm90IGZvdW5kCmNvbXBpbGUuc2g6IGxpbmUgMjc6IGphdmFjMTogY29tbWFuZCBub3QgZm91bmQKY29tcGlsZS5zaDogbGluZSAyNzogamF2YWMxOiBjb21tYW5kIG5vdCBmb3VuZAo="
+        }
+      },
+      {
+        "case": "unsupported_language",
+        "submission": {
+          "id_no": "STUDENT_C",
+          "Lab_No": "test1",
+          "time": "2018-01-12 18:03:21",
+          "commit": "",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "language": "c"
+        },
+        "result": {
+          "marks": [],
+          "comment": [],
+          "id_no": "STUDENT_C",
+          "Lab_No": "test1",
+          "commit": "",
+          "time": "2018-01-12 18:03:21",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "log": "VU5TVVBQT1JURUQgTEFOR1VBR0UgQ0hPU0VOCllvdXIgaW5zdHJ1Y3RvciBkb2VzIG5vdCB3aXNoIHRvIGV2YWx1YXRlIGNvZGUgc3VibWlzc2lvbnMgaW4gYyBsYW5ndWFnZQo="
+        }
+      },
+      {
+        "case": "unavailable_language",
+        "submission": {
+          "id_no": "STUDENT_MATLAB",
+          "Lab_No": "test1",
+          "time": "2018-01-12 18:03:21",
+          "commit": "",
+          "status": 1,
+          "penalty": 0,
+          "socket": "4JiZSe0VIluhK654AAAC",
+          "language": "matlab"
+        },
+         "result": {
+           "marks": [],
+           "comment": [],
+           "id_no": "STUDENT_MATLAB",
+           "Lab_No": "test1",
+           "commit": "",
+           "time": "2018-01-12 18:03:21",
+           "status": 1,
+           "penalty": 0,
+           "socket": "4JiZSe0VIluhK654AAAC",
+           "log": "VU5TVVBQT1JURUQgTEFOR1VBR0UgQ0hPU0VOCllvdXIgaW5zdHJ1Y3RvciBkb2VzIG5vdCB3aXNoIHRvIGV2YWx1YXRlIGNvZGUgc3VibWlzc2lvbnMgaW4gbWF0bGFiIGxhbmd1YWdlCg=="
+        }
+      }
+  ]
+}

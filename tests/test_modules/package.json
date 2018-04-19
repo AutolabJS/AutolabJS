@@ -34,7 +34,7 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
     "jshint": "^2.9.5",
-    "istanbul": "^0.4.5",
+    "istanbul": "^1.0.0-alpha.2",
     "nyc": "^11.4.1",
     "codecov": "^3.0.0",
     "npm-check": "^5.5.2"

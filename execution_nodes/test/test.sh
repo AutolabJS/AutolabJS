@@ -15,10 +15,9 @@ if [[ -f package.json ]]
 then
   case $TEST_TYPE in
     "UNIT")
-      mocha -u bdd -R spec ./test/ ;;
+      mocha -u bdd -R tap ./test/unit/ ;;
     "FUNCTION")
-      # DO NOTHING FOR NOW
-      : ;;
+      mocha -u bdd -R tap --timeout 10000 ./test/functional ;;
     "INTEGRATION")
       # DO NOTHING FOR NOW
       : ;;

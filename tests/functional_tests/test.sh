@@ -28,7 +28,7 @@
 
 set -ex	# exit on error
 INSTALL_DIR=$(pwd)
-export INSTALL_DIR
+export INSTALL_DIR TEST_TYPE
 # create backups of code files that are being changed for testing
 mkdir -p tests/backup
 mkdir -p tests/backup/execution_nodes
@@ -69,23 +69,34 @@ fi
 set +o allexport
 # End exporting all variables.
 
-# Run the setup.
-bash helper_scripts/setup.sh
+# change the config file paths and replace gitlab dependency with a file system
+# repository for execution nodes
+# This is a temporary change. Once we have a clean way of dealing with environment
+# variables, this part will shift back to setup.sh
+for ((i=1; i <= NUMBER_OF_EXECUTION_NODES; i++))
+do
+  cp -f helper_scripts/extract_run_test.sh ../../execution_nodes/execution_node_"$i"/extract_run.sh
+done
 
 # Find all the tests in the shell directory.
 tests=$(ls shell)
 
 # Run all the tests found in the shell directory.
 echo -e "\n\n========== Test Cases ==========\n"
-for test in $tests
+for TEST_TYPE in $tests
 do
-  # The sed command capitalised every first character of a word in the string.
-  testName=$(echo "$test" | tr '_' ' ' | sed -e "s/\b\(.\)/\u\1/g")
-  echo -e "\n========== ${testName:0:-3} Checks =========="
-  bash "shell/$test"
+    # Run the setup.
+    bash helper_scripts/setup.sh
+    # The sed command capitalised every first character of a word in the string.
+    testName=$(echo "$TEST_TYPE" | tr '_' ' ' | sed -e "s/\b\(.\)/\u\1/g")
+    echo -e "\n========== ${testName:0:-3} Checks =========="
+    bash "shell/$TEST_TYPE"
+    # Run the teardown.
+    bash helper_scripts/teardown.sh
 done
 
 sleep 5
 
-# Run the teardown.
-bash helper_scripts/teardown.sh
+# Delete the log directory
+cd ../..
+rm -rf log/

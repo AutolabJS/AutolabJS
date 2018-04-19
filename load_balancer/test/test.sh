@@ -38,7 +38,7 @@ then
       cd ../load_balancer/ || exit
 
       # Run the tests
-      mocha -u bdd -R spec ./test/
+      mocha -u bdd -R tap ./test/unit/
 
       #Stop the execution nodes
       for (( i=0; i<${#processes[@]}; i++ ))
