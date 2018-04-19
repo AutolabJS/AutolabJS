@@ -12,8 +12,9 @@
 set -ex
 if [ -d "tests/$TEST_TYPE" ]
 then
-  # Run the test file.
-  bash "tests/$TEST_TYPE/test.sh"
+  # Run the test file with coverage.
+  ./main_server/node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov -s bash "tests/$TEST_TYPE/test.sh" \
+  && ./main_server/node_modules/.bin/nyc report --reporter=lcov > coverage.lcov
 else
   echo "Invalid test type. Exiting."
   exit 1

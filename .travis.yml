@@ -22,6 +22,7 @@ services:
 env:
 - TEST_TYPE="unit_tests"
 - TEST_TYPE="functional_tests"
+- TEST_TYPE="component_tests"
 
 before_script:
  - bash tests/install.sh
@@ -30,5 +31,5 @@ before_script:
 script:
  - bash tests/test_runner.sh
 
-after_success:
- - ./main_server/node_modules/.bin/codecov
+after_script:
+ - ./main_server/node_modules/.bin/codecov -F ${TEST_TYPE:0:-6}

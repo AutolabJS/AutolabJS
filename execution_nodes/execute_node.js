@@ -36,6 +36,10 @@ app.use(express.static(__dirname + '/public'));
 app.use(bodyParser.urlencoded({extended: true}));
 
 app.use(bodyParser.json());
+
+server.listen(conf.execution_node.port);
+console.log("Listening at "+conf.execution_node.port);
+
 app.get('/connectionCheck', function (req,res) {
   console.log('connectionCheck requested');
   res.send(true);
@@ -159,9 +163,5 @@ request.on('error',function(err)
   console.log(err);
 });
 request.end(body);
-
-
-server.listen(conf.execution_node.port);
-console.log("Listening at "+conf.execution_node.port);
 
 module.exports.server = server;

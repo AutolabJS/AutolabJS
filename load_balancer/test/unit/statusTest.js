@@ -1,15 +1,15 @@
 /* eslint no-underscore-dangle: [2, { "allow": ["__get__"] }] */
 /* eslint import/no-dynamic-require: 0 */
 const chai = require('chai');
-const { Status } = require('../status.js');
+const { Status } = require('../../status.js');
 const dirtyChai = require('dirty-chai');
 const rewire = require('rewire');
-const { check } = require('../../util/environmentCheck.js');
+const { check } = require('../../../util/environmentCheck.js');
 const chaiAsPromised = require('chai-as-promised');
 
 check('LBCONFIG');
-const nodesData = require(`../${process.env.LBCONFIG}`);
-const getComponentStatus = rewire('../status.js').__get__('getComponentStatus');
+const nodesData = require(`../../${process.env.LBCONFIG}`);
+const getComponentStatus = rewire('../../status.js').__get__('getComponentStatus');
 chai.should();
 chai.use(dirtyChai);
 chai.use(chaiAsPromised);

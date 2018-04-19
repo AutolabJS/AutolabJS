@@ -5,8 +5,7 @@
   "main": "execute_node.js",
   "scripts": {
     "start": "node execute_node.js",
-    "test": "bash test/test.sh",
-    "coverage": "nyc --reporter=lcov --reporter=text-lcov -s npm test --silent && nyc report --reporter=lcov > coverage.lcov"
+    "test": "bash test/test.sh"
   },
   "repository": {
     "type": "git",
@@ -33,14 +32,19 @@
     "express": "^4.13.4"
   },
   "devDependencies": {
+    "request": "^2.83.0",
     "mocha": "^3.5.0",
+    "chai": "^4.1.1",
+    "dirty-chai": "^2.0.1",
+    "sinon": "^4.5.0",
+    "nock": "^9.2.3",
     "eslint": "^4.17.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
     "jshint": "^2.9.5",
-    "istanbul": "^0.4.5",
+    "istanbul": "^1.0.0-alpha.2",
     "nyc": "^11.4.1",
     "codecov": "^3.0.0",
     "npm-check": "^5.5.2"

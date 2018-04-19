@@ -7,7 +7,7 @@ there is a chance the tests may fail. */
 
 const chai = require('chai');
 const winston = require('winston');
-const { Logger } = require('../logger.js');
+const { Logger } = require('../../logger.js');
 const { exec } = require('child_process');
 const fs = require('fs');
 const chaiFs = require('chai-fs');
@@ -15,10 +15,10 @@ const path = require('path');
 const dirtyChai = require('dirty-chai');
 const rewire = require('rewire');
 
-const config = require(`../${process.env.LOGGERCONFIG}`);
+const config = require(`../../${process.env.LOGGERCONFIG}`);
 
 const logDirectory = config.logDirectory;
-const createLoggerObject = rewire('../logger.js').__get__('createLoggerObject');
+const createLoggerObject = rewire('../../logger.js').__get__('createLoggerObject');
 
 chai.should();
 chai.use(chaiFs);
