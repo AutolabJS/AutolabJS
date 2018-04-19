@@ -15,16 +15,16 @@
     - name: Copy the required website dependencies to correct location
       copy:
         src: '{{ main_server_public }}/js/node_modules/jquery/dist/jquery.min.js'
-        dst: '{{ main_server_public }}/js'
+        dest: '{{ main_server_public }}/js'
     - copy:
         src: '{{ main_server_public }}/js/node_modules/file-saver/FileSaver.min.js'
-        dst: '{{ main_server_public }}/js'
+        dest: '{{ main_server_public }}/js'
     - copy:
         src: '{{ main_server_public }}/js/node_modules/materialize-css/dist/js/materialize.min.js'
-        dst: '{{ main_server_public }}/js'
+        dest: '{{ main_server_public }}/js'
     - copy:
         src: '{{ main_server_public }}/js/node_modules/materialize-css/dist/css/materialize.min.css'
-        dst: '{{ main_server_public }}/css'
+        dest: '{{ main_server_public }}/css'
 
     - name: Remove node_modules directory of AutolabJS website
       file:
