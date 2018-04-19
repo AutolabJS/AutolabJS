@@ -1,0 +1,76 @@
+- hosts: machines
+  vars:
+    main_server_public: '{{ install_dir }}/main_server/public'
+  tasks:
+
+    - name: Create the installation directory
+      file:
+        path: '{{ install_dir }}'
+        state: directory
+        owner: {{ ansible_user }}
+        recurse: yes
+      become: yes
+
+    - name: Create the subdirectories under installation directory
+      file:
+        path: {{ item }}
+        state: directory
+      with_items:
+        - '{{ install_dir }}/tmp'
+        - '{{ install_dir }}/gitlab'
+        - '{{ install_dir }}/gitlab/config'
+        - '{{ install_dir }}/gitlab/data'
+        - '{{ install_dir }}/log/gitlab'
+        - '{{ install_dir }}/mysql'
+        - '{{ install_dir }}/log/mysql'
+
+    - name: Copy files to main_server subdirectory of installation directory
+      file:
+        path: {{ item }}
+        state: directory
+      with_items:
+        - '{{ install_dir }}/main_server'
+        - '{{ install_dir }}/log/main_server'
+    - copy:
+        src: 'main_server/'
+        dest: '{{ install_dir }}/main_server/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+
+    - name: Copy files to load_balancer subdirectory of installation directory
+      file:
+        path: {{ item }}
+        state: directory
+      with_items:
+        - '{{ install_dir }}/load_balancer'
+        - '{{ install_dir }}/log/load_balancer'
+    - copy:
+        src: 'load_balancer/'
+        dest: '{{ install_dir }}/load_balancer/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+
+    - name: Creating log directories for execution nodes
+      file:
+        path: '{{ install_dir }}/log/execution_nodes/execution_node_{{ item }}'
+        state: directory
+      with_sequence: start=1 count={{ number_of_execution_nodes }
+
+    - name: Copying files to directories of execution nodes
+      copy:
+        src: 'execution_nodes/'
+        dest: '{{ install_dir }}/execution_nodes/execution_node_{{ item }}'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+      with_sequence: start=1 count={{ number_of_execution_nodes }
+
+    - name: Copy files of util, deploy, docker-images subdirectory
+      copy:
+        src: '{{ item }}/'
+        dest: '{{ install_dir }}/{{ item }}/'
+      args:
+        chdir: '{{ playbook_dir }}/../'
+      with_items:
+        - util
+        - deploy
+        - docker-images
