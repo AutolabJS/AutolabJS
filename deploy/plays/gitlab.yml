@@ -20,14 +20,14 @@
           - "{{ install_dir }}/config:/etc/gitlab"
           - "{{ install_dir }}/log/gitlab:/var/log/gitlab"
           - "{{ install_dir }}/gitlab/data:/var/opt/gitlab"
-          - "../keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ ansible_host }}.key"
-          - "../keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ ansible_host }}.crt"
+          - "{{ install_dir }}/deploy/keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ ansible_host }}.key"
+          - "{{ install_dir }}/deploy/keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ ansible_host }}.crt"
 
     - name: Copy wait-for-it to container
       shell: docker cp helper_scripts/wait-for-it.sh gitlab:/wait-for-it.sh
 
     - name: Waiting for Unicorn on GitLab server to be up
-      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 300 127.0.0.1:8080"
+      shell: docker exec gitlab bash -c "/wait-for-it.sh -t 600 127.0.0.1:8080"
 
     - pause: seconds=60
 

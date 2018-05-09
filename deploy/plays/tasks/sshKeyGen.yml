@@ -1,0 +1,8 @@
+---
+  - name: Generate ssh key for {{ path }}
+    command: "ssh-keygen \
+                -t rsa \
+                -b 4096 \
+                -C '{{ comment }}' \
+                -f '{{ install_dir }}/{{ path }}/id_rsa' \
+                -N '' -q"

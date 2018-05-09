@@ -4,8 +4,8 @@
 
     - name: Setting assume-yes as true for apt-get
       copy:
-        content: 'APT::Get::Assume-Yes "true";'
-        dest: '/etc/apt/apt.conf.d/90forceyes' 
+        content: "APT::Get::Assume-Yes 'true';"
+        dest: "/etc/apt/apt.conf.d/90forceyes"
 
     - name: Update package index
       apt:
@@ -42,10 +42,10 @@
 
 
     - name: Check if nodejs is installed
-      shell: dpkg-query -W -f='${Status}' nodejs | grep 'install ok installed'
+      shell: dpkg-query -s -f="${Status}" nodejs | grep "install ok installed"
       register: is_installed
       failed_when: False
-      changed_when: False      
+      changed_when: False
 
     - name: If not available, install nodejs and npm
       import_tasks: tasks/nodejs.yml
@@ -59,3 +59,6 @@
         - cryptography
         - setuptools
         - docker-py
+
+    - import_tasks: tasks/dockerpull.yml
+    - import_tasks: tasks/dockerbuild.yml

@@ -1,6 +1,26 @@
 - hosts: executionnodes
-  become: yes
   tasks:
+
+    - name: Create the required directories
+      file:
+        path: "{{ install_dir }}/{{ item }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: 0755
+      with_items:
+        - "deploy/keys/execution_nodes/{{ en_dir }}"
+        - "deploy/keys/gitlab/execution_nodes/{{ en_dir }}"
+
+    - name: Generate certificate for execution node
+      include_tasks: tasks/createCert.yml domain="deploy/keys/execution_nodes/{{ en_dir }}" common_name="{{ inventory_hostname }}.{{ organization }}"
+
+    - copy:
+        src: "{{ install_dir }}/deploy/keys/execution_nodes/{{ en_dir }}/"
+        dest: "{{ install_dir }}/execution_nodes/{{ en_dir }}/ssl/"
+        mode: 0755
+
+    - name: Generate ssh login keys for Gitlab
+      include_tasks: tasks/sshKeyGen.yml path="deploy/keys/gitlab/execution_nodes/{{ en_dir }}" comment="load balancer key for {{ inventory_hostname }}@autolabjs"
 
     - name: Register public key
       shell: "cat {{ install_dir }}/deploy/keys/gitlab/execution_nodes/{{ en_dir }}/id_rsa.pub"
@@ -33,11 +53,13 @@
         return_content: yes
 
     - name: Build executionnode
+      become: yes
       docker_image:
         name: execution_node
         path: "{{ install_dir }}/execution_nodes/{{ en_dir }}"
 
     - name: Start execution_node container
+      become: yes
       docker_container:
         name: "execution-node-{{ ansible_host }}-{{ port }}"
         image: execution_node
