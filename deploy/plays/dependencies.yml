@@ -60,5 +60,5 @@
         - setuptools
         - docker-py
 
-    - import_tasks: tasks/dockerpull.yml
-    - import_tasks: tasks/dockerbuild.yml
+    - import_tasks: tasks/dockerPull.yml
+    - import_tasks: tasks/dockerBuild.yml

@@ -1,7 +1,7 @@
 - hosts: executionnodes
   tasks:
 
-    - name: Create the required directories
+    - name: Create the required directories for storing security keys
       file:
         path: "{{ install_dir }}/{{ item }}"
         state: directory
