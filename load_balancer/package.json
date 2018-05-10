@@ -31,7 +31,7 @@
     "body-parser": "1.8",
     "express": "^4.13.4",
     "httpolyglot": "^0.1.1",
-    "mysql": "",
+    "mysql": "^2.15.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5 "
   },

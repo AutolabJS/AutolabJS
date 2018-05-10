@@ -61,4 +61,8 @@
         - docker-py
 
     - import_tasks: tasks/dockerPull.yml
+      when: not load_docker_images
     - import_tasks: tasks/dockerBuild.yml
+      when: not load_docker_images
+    - import_tasks: tasks/dockerLoad.yml
+      when: load_docker_images  

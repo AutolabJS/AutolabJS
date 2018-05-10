@@ -13,7 +13,7 @@
     path: "{{ item }}"
     state: absent
   with_items:
-    - "tmp/tempdocker.sh"
+    - "/tmp/tempdocker.sh"
 
 - name: Restarting the docker service
   service:

@@ -3,16 +3,16 @@
     become: yes
     docker_image:
       name: "main_server"
-      path: "../../main_server"
+      path: "{{ playbook_dir }}/../../main_server"
 
   - name: Build load balancer docker image
     become: yes
     docker_image:
       name: "load_balancer"
-      path: "../../load_balancer"
+      path: "{{ playbook_dir }}/../../load_balancer"
 
   - name: Build execution node docker image
     become: yes
     docker_image:
       name: "execution_node"
-      path: "../../execution_nodes"
+      path: "{{ playbook_dir }}/../../execution_nodes"

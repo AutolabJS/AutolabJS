@@ -53,7 +53,9 @@ organizational_unit=CSIS
 email=tsrkp@goa.bits-pilani.ac.in
 app_name=AutolabJS
 password=autolabjs
-
+# Development variables
+load_docker_images=false
+docker_images_location=/path/to/docker/images
 
 [machines:vars]
 #no exclusive variables for machines group
