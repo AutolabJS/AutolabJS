@@ -56,7 +56,7 @@
         state: absent
       ignore_errors: yes
       with_items:
-        - "mysql:latest"
+        - "mysql:5.7"
         - "gitlab/gitlab-ce:10.1.4-ce.0"
         - "main_server:latest"
         - "load_balancer:latest"

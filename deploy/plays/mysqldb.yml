@@ -4,7 +4,7 @@
     - name: Build MySQL Container
       docker_container:
         name: autolab-db
-        image: "mysql:latest"
+        image: "mysql:5.7"
         detach: yes
         network_mode: host
         volumes:

@@ -60,9 +60,18 @@
         - setuptools
         - docker-py
 
+    - name: Check if installation directory exists
+      stat:
+        path: "{{ install_dir }}"
+      register: installation_exists
+
+    - name: Run the uninstall setup if directory exists
+      import_playbook: "{{ inventory_dir }}/uninstall.yml"
+      when: installation_exists.stat.exists and installation_exists.stat.isdir
+
     - import_tasks: tasks/dockerPull.yml
-      when: not load_docker_images
+      when: load_docker_images == "no"
     - import_tasks: tasks/dockerBuild.yml
-      when: not load_docker_images
+      when: load_docker_images == "no"
     - import_tasks: tasks/dockerLoad.yml
-      when: load_docker_images  
+      when: load_docker_images == "yes"

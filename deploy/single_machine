@@ -54,7 +54,7 @@ email=tsrkp@goa.bits-pilani.ac.in
 app_name=AutolabJS
 password=autolabjs
 # Development variables
-load_docker_images=false
+load_docker_images=no
 docker_images_location=/path/to/docker/images
 
 [machines:vars]
