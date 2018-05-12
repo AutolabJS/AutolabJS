@@ -4,11 +4,11 @@
     url: http://deb.nodesource.com/setup_8.x
     method: GET
     follow_redirects: safe
-    dest: '{{ install_dir }}/tmp/nodesource_setup.sh'
+    dest: '/tmp/nodesource_setup.sh'
     mode: 0775
 
 - name: Running node source setup script
-  shell: '{{ install_dir }}/tmp/nodesource_setup.sh'
+  shell: '/tmp/nodesource_setup.sh'
 
 - name: Install nodejs and build-essential
   apt:
@@ -24,5 +24,4 @@
     path: "{{ item }}"
     state: absent
   with_items:
-    - '{{ install_dir }}/tmp/nodesource_setup.sh'
-
+    - '/tmp/nodesource_setup.sh'

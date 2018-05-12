@@ -1,8 +1,19 @@
 - hosts: lb
-  become: yes
   tasks:
+
+    - name: Generate certificate for load balancer
+      include_tasks: tasks/createCert.yml domain=deploy/keys/load_balancer common_name=lb.{{ organization }}
+
+    - copy:
+        src: "{{ install_dir }}/deploy/keys/load_balancer/"
+        dest: "{{ install_dir }}/load_balancer/ssl/"
+        mode: 0755
+
+    - name: Generate ssh login keys for Gitlab
+      include_tasks: tasks/sshKeyGen.yml path="deploy/keys/gitlab/load_balancer" comment="load balancer key for lb@autolabjs"
+
     - name: Register public key
-      shell: cat ../keys/gitlab/load_balancer/id_rsa.pub
+      shell: cat {{ install_dir }}/deploy/keys/gitlab/load_balancer/id_rsa.pub
       register: ssh_key
 
     - name: Get Private Token
@@ -32,11 +43,13 @@
         return_content: yes
 
     - name: Build loadbalancer
+      become: yes
       docker_image:
         name: load_balancer
-        path: ../../load_balancer
+        path: "{{ install_dir }}/load_balancer"
 
     - name: Start loadbalancer container
+      become: yes
       docker_container:
         name: loadbalancer
         image: load_balancer
@@ -44,14 +57,14 @@
         detach: yes
         restart_policy: always
         volumes:
-          - "../../load_balancer:/load_balancer"
-          - "{{ submissions_dir }}:/load_balancer/submissions"
+          - "{{ install_dir }}/load_balancer:/load_balancer"
+          - "{{ install_dir }}/{{ submissions_dir }}:/load_balancer/submissions"
           - "/etc/localtime:/etc/localtime:ro"
-          - "../configs/load_balancer:/etc/load_balancer"
-          - "../keys/gitlab/load_balancer:/root/.ssh/"
-          - "../../util:/util"
-          - "../configs/util:/etc/util"
-          - "../../log/load_balancer:/log"
+          - "{{ install_dir }}/deploy/configs/load_balancer:/etc/load_balancer"
+          - "{{ install_dir }}/deploy/keys/gitlab/load_balancer:/root/.ssh/"
+          - "{{ install_dir }}/util:/util"
+          - "{{ install_dir }}/deploy/configs/util:/etc/util"
+          - "{{ install_dir }}/log/load_balancer:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           LBCONFIG: "/etc/load_balancer/nodes_data_conf.json"

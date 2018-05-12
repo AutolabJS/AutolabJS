@@ -1,0 +1,38 @@
+---
+
+  - name: Generate key request for "{{ domain }}"
+    # Generate a private key
+    command: "openssl genrsa \
+                -passout pass:{{ password }} \
+                -out {{ install_dir }}/{{ domain }}/key.pem \
+                -aes256 \
+                2048"
+  # Remove the passphrase
+  - command: "openssl rsa \
+                -in {{ install_dir }}/{{ domain }}/key.pem \
+                -passin pass:{{ password }} \
+                -out {{ install_dir }}/{{ domain }}/key.pem"
+  # Create the certificate signing request
+  - command: "openssl req -new \
+                -sha512
+                -key {{ install_dir }}/{{ domain }}/key.pem \
+                -out {{ install_dir }}/{{ domain }}/csr.pem \
+                -passin pass:{{ password }} \
+                -config {{ install_dir }}/deploy/openssl.cnf
+                -subj '/C={{ country }}\
+                  /ST={{ state }}\
+                  /L={{ locality }}\
+                  /O={{ organization }}\
+                  /OU={{ organizational_unit }}\
+                  /CN={{ common_name }}\
+                  /emailAddress={{ email }}'"
+    args:
+      chdir: "{{ install_dir }}/deploy"
+  # Sign the certificate with our root certificate
+  - command:  "openssl ca -batch \
+                -name CA_RootCA \
+                -in {{ install_dir }}/{{ domain }}/csr.pem \
+                -out {{ install_dir }}/{{ domain }}/cert.pem \
+                -config {{ install_dir }}/deploy/openssl.cnf"
+    args:
+      chdir: "{{ install_dir }}/deploy"

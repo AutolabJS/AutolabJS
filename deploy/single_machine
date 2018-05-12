@@ -43,6 +43,19 @@ ansible_python_interpreter=/usr/bin/python2
 #optionally, you can change host name to proper DNS name or IP address
 ansible_host=localhost
 install_dir=/opt/autolabjs
+number_of_execution_nodes=10
+# Key generation details
+country=IN
+state=Goa
+locality=BITSGoa
+organization=autolab.bits-goa.ac.in
+organizational_unit=CSIS
+email=tsrkp@goa.bits-pilani.ac.in
+app_name=AutolabJS
+password=autolabjs
+# Development variables
+load_docker_images=no
+docker_images_location=/path/to/docker/images
 
 [machines:vars]
 #no exclusive variables for machines group
@@ -51,7 +64,7 @@ install_dir=/opt/autolabjs
 #no exclusive variables for mainserver group
 
 [loadbalancer:vars]
-submissions_dir=../load_balancer/submissions
+submissions_dir=load_balancer/submissions
 
 [executionnodes:vars]
 #no exclusive variables for executionnodes group

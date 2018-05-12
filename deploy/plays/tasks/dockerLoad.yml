@@ -1,0 +1,13 @@
+---
+  - name: Load all images from location {{ docker_images_location }}
+    docker_image:
+      name: "{{ item.name }}"
+      tag: "{{ item.tag }}"
+      load_path: "{{ docker_images_location }}/{{ item.path }}"
+    with_items:
+      - { name: ubuntu, tag: 16.04, path: ubuntu-16.04.tar }
+      - { name: gitlab/gitlab-ce, tag: 10.1.4-ce.0, path: gitlab.tar }
+      - { name: mysql, tag: 5.7, path: mysql.tar }
+      - { name: main_server, tag: latest, path: main_server.tar }
+      - { name: load_balancer, tag: latest, path: load_balancer.tar }
+      - { name: execution_node, tag: latest, path: execution_node.tar }

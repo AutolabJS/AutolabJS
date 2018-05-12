@@ -7,12 +7,6 @@
         state: absent
       ignore_errors: yes
 
-    - name: Remove Database Image
-      docker_image:
-        name: "mysql:latest"
-        state: absent
-      ignore_errors: yes
-
 - hosts: gitlab
   become: yes
   tasks:
@@ -22,41 +16,21 @@
         state: absent
       ignore_errors: yes
 
-    - name: Remove Gitlab Image
-      docker_image:
-        name: "gitlab/gitlab-ce:latest"
-        state: absent
-      ignore_errors: yes
-
 - hosts: lb
   become: yes
   tasks:
-
     - name: Stop and Remove Loadbalancer container
       docker_container:
         name: loadbalancer
         state: absent
       ignore_errors: yes
 
-    - name: Remove Loadbalancer Image
-      docker_image:
-        name: load_balancer
-        state: absent
-      ignore_errors: yes
-
 - hosts: ms
   become: yes
   tasks:
-
     - name: Stop and remove mainserver container
       docker_container:
         name: mainserver
-        state: absent
-      ignore_errors: yes
-
-    - name: Remove mainserver Image
-      docker_image:
-        name: main_server
         state: absent
       ignore_errors: yes
 
@@ -69,15 +43,22 @@
         state: absent
       ignore_errors: yes
 
-- hosts: en5
+- hosts: machines
   become: yes
   tasks:
-    - name: Remove executionnode Image
-      docker_image:
-        name: execution_node
-        state: absent
-      ignore_errors: yes
-
     - name: Remove autolab directory completely
       file: "dest={{ install_dir }} state=absent"
       ignore_errors: yes
+
+    - name: Remove all images
+      docker_image:
+        name: "{{ item }}"
+        state: absent
+      ignore_errors: yes
+      with_items:
+        - "mysql:5.7"
+        - "gitlab/gitlab-ce:10.1.4-ce.0"
+        - "main_server:latest"
+        - "load_balancer:latest"
+        - "execution_node:latest"
+        - "ubuntu:16.04"

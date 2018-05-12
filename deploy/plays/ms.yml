@@ -4,7 +4,7 @@
     - name: Build mainserver
       docker_image:
         name: main_server
-        path: ../../main_server
+        path: "{{ install_dir }}/main_server"
 
     - name: Start mainserver container
       docker_container:
@@ -14,12 +14,12 @@
         detach: yes
         restart_policy: always
         volumes:
-          - "../../main_server:/main_server"
+          - "{{ install_dir }}/main_server:/main_server"
           - "/etc/localtime:/etc/localtime:ro"
-          - "../configs/main_server:/etc/main_server"
-          - "../../util:/util"
-          - "../configs/util:/etc/util"
-          - "../../log/main_server:/log"
+          - "{{ install_dir }}/deploy/configs/main_server:/etc/main_server"
+          - "{{ install_dir }}/util:/util"
+          - "{{ install_dir }}/deploy/configs/util:/etc/util"
+          - "{{ install_dir }}/log/main_server:/log"
         env:
           LOGGERCONFIG: "/etc/util/logger.json"
           MSCONFIG: "/etc/main_server/conf.json"

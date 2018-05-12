@@ -1,0 +1,39 @@
+- hosts: machines
+  vars:
+    main_server_public: "{{ install_dir }}/main_server/public"
+  tasks:
+
+    - name: Install node packages mentioned in package.json for execution nodes
+      command: "npm install --prefix {{ install_dir }}/execution_nodes/execution_node_{{ item }}"
+      with_sequence: start=1 count={{ number_of_execution_nodes }}
+
+    - name: Install node packages mentioned in package.json for remaining components
+      command: "npm install --prefix {{ install_dir }}/{{ item }}"
+      with_items:
+        - "main_server"
+        - "load_balancer"
+        - "util"
+        - "main_server/public/js"
+
+    - name: Copy the required website dependencies to correct location
+      copy:
+        src: "{{ main_server_public }}/js/node_modules/{{ item }}"
+        dest: "{{ main_server_public }}/js"
+      with_items:
+        - "jquery/dist/jquery.min.js"
+        - "file-saver/FileSaver.min.js"
+        - "materialize-css/dist/js/materialize.min.js"
+
+    - copy:
+        src: "{{ main_server_public }}/js/node_modules/materialize-css/dist/css/materialize.min.css"
+        dest: "{{ main_server_public }}/css"
+
+    - name: Remove node_modules directory of AutolabJS website
+      file:
+        state: absent
+        path: "{{ main_server_public }}/js/node_modules/"
+
+    - debug:
+        msg: "Creating SSL Certificates"
+
+- import_playbook: keys.yml

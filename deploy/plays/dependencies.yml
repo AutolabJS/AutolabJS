@@ -4,8 +4,8 @@
 
     - name: Setting assume-yes as true for apt-get
       copy:
-        content: 'APT::Get::Assume-Yes "true";'
-        dest: '/etc/apt/apt.conf.d/90forceyes' 
+        content: "APT::Get::Assume-Yes 'true';"
+        dest: "/etc/apt/apt.conf.d/90forceyes"
 
     - name: Update package index
       apt:
@@ -42,10 +42,10 @@
 
 
     - name: Check if nodejs is installed
-      shell: dpkg-query -W -f='${Status}' nodejs | grep 'install ok installed'
+      shell: dpkg-query -s -f="${Status}" nodejs | grep "install ok installed"
       register: is_installed
       failed_when: False
-      changed_when: False      
+      changed_when: False
 
     - name: If not available, install nodejs and npm
       import_tasks: tasks/nodejs.yml
@@ -59,3 +59,19 @@
         - cryptography
         - setuptools
         - docker-py
+
+    - name: Check if installation directory exists
+      stat:
+        path: "{{ install_dir }}"
+      register: installation_exists
+
+    - name: Run the uninstall setup if directory exists
+      import_playbook: "{{ inventory_dir }}/uninstall.yml"
+      when: installation_exists.stat.exists and installation_exists.stat.isdir
+
+    - import_tasks: tasks/dockerPull.yml
+      when: load_docker_images == "no"
+    - import_tasks: tasks/dockerBuild.yml
+      when: load_docker_images == "no"
+    - import_tasks: tasks/dockerLoad.yml
+      when: load_docker_images == "yes"
