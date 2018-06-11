@@ -47,8 +47,7 @@ then
       done
       ;;
     "FUNCTION")
-      # DO NOTHING FOR NOW
-      : ;;
+      mocha -u bdd -R tap --timeout 10000 ./test/integration ;;
     "INTEGRATION")
       # DO NOTHING FOR NOW
       : ;;

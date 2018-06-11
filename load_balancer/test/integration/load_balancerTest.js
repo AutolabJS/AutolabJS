@@ -17,23 +17,24 @@ const chai = require('chai');
 const dirtyChai = require('dirty-chai');
 const request = require('request');
 const nock = require('nock');
+const dns = require('dns');
 const sinon = require('sinon');
 const rewire = require('rewire');
-const proxyquire = require('proxyquire');
 const { check } = require('../../../util/environmentCheck.js');
-const { Status } = require('../../status.js')
-
-check('LBCONFIG');
-// eslint-disable-next-line import/no-dynamic-require
+const { Status } = require('../../status.js');
+const testData = require('./data/submission.json');
 const nodes_data = require(`../../${process.env.LBCONFIG}`);
 const lbUrl = `https://${nodes_data.load_balancer.hostname}:${nodes_data.load_balancer.port}`;
+const sandbox = sinon.createSandbox();
+
+let loadBalancer;
+let logStub;
+
+// eslint-disable-next-line import/no-dynamic-require
+check('LBCONFIG');
+
 chai.should();
 chai.use(dirtyChai);
-let loadBalancer;
-let testStatus;
-var job_queue;
-let logStub;
-const sandbox = sinon.createSandbox();
 
 const activateNocks = function activateNocks() {
   if (!nock.isActive()) {
@@ -67,42 +68,45 @@ const startLoadBalancer = function startLoadBalancer() {
 // console.log('* TODO: ignores invalid messages from execution nodes');
 
 describe('Correctly maintains list of ENs', () => {
-
   beforeEach(() => {
     stubConsole();
     startLoadBalancer();
     restoreConsole();
-    //activateNocks();
+    activateNocks();
   });
 
   afterEach((done) => {
-    //cleanNocks();
+    cleanNocks();
     loadBalancer.server.close(done);
   });
 
   it('during status check', (done) => {
     stubConsole();
-    testStatus = new Status(nodes_data.Nodes);
-    //proxyquire('./../../load_balancer.js', { 'status': testStatus});
-    loadBalancer.__set__('status',testStatus);    
-    sandbox.stub(testStatus, 'checkStatus').callsFake(() => {
-      var result = {};
-      result.components = JSON.parse(JSON.stringify(nodes_data.Nodes));
-      result.components.forEach((elem) => {
-        elem.status = "down";
-      });
-      return result;
-    });
-    let lbTestStatus = nodes_data.load_balancer;
-    lbTestStatus.status = "up";    
-    request.get(`${lbUrl}/connectionCheck`, (error, response) => { 
-      let responseBody = JSON.parse(response.body);
+    const res = JSON.parse(JSON.stringify(nodes_data.Nodes));
+    const lbTestStatus = nodes_data.load_balancer;
+    lbTestStatus.status = 'up';
+    for (var i = 0; i <= 1; i++) {
+      nock(`https://${res[i].hostname}:${res[i].port}`)
+        .persist()
+        .get('/connectionCheck')
+        .reply(200, (uri, requestBody) => {
+          return true;
+        });
+    }
+    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
+      const responseBody = JSON.parse(response.body);
       response.should.exist();
-      responseBody.should.have.all.keys("components","job_queue_length","timestamp");
+      responseBody.should.have.all.keys('components', 'job_queue_length', 'timestamp');
       responseBody.job_queue_length.should.equal(loadBalancer.job_queue.length);
       responseBody.timestamp.should.be.a('string');
       responseBody.components.should.be.an('array');
       responseBody.components.should.deep.include(lbTestStatus);
+      responseBody.components.forEach((elem, index) => {
+        if(index === 0 || index === 1 || index === 10)
+          elem.status.should.equal('up');
+        else
+          elem.status.should.equal('down');
+      });
       restoreConsole();
       done();
     });
@@ -112,54 +116,198 @@ describe('Correctly maintains list of ENs', () => {
 // console.log('* TODO: correctly handles results json with large logs of 50000 lines');
 // console.log('* TODO: verifies the authenticity of each execution node before adding it to the worker pool');
 // console.log('* TODO: verifies the origins of each evaluation result');
-describe('Verifies', () => {
+describe('Correctly adds a newly started node', () => {
 
   beforeEach(() => {
     stubConsole();
     startLoadBalancer();
     restoreConsole();
-    //activateNocks();
+    activateNocks();
   });
 
   afterEach((done) => {
-    //cleanNocks();
+    cleanNocks();
     loadBalancer.server.close(done);
   });
 
-  it('when new EN sends addNode request', (done) => {
+  it('when no job is pending', (done) => {
     stubConsole();
-    let testNode = nodes_data.Nodes[0];
-    loadBalancer.__set__('job_queue', []);
-    loadBalancer.__set__('node_queue', []);
-    request.post(`${lbUrl}/addNode`, { json: testNode }, (error,response) => {
-      (error === null).should.be.true();
-      response.body.should.equal(true);
-      //sinon.assert.calledThrice(logStub);
-      loadBalancer.node_queue = loadBalancer.__get__('node_queue');
-      loadBalancer.node_queue.should.be.an('array').that.deep.includes(testNode);
+    const tempNode = testData.nodesData[0];
+    var requestRunNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .persist()
+      .post('/requestRun')
+      .reply(200, (uri, requestBody) => {
+        requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
+        requestBody.should.deep.equal(tempJob);
+        return true;
+      });
+    nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .get('/connectionCheck')
+      .reply(200, (uri, requestBody) => {
+        return false;
+      });
+    let connectionCheckNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .get('/connectionCheck')
+      .reply(200, (uri, requestBody) => {
+        return true;
+      });
+    request.post(`${lbUrl}/addNode`, { json: tempNode });
+    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
+      const responseBody = JSON.parse(response.body);
+      responseBody.components.forEach((elem, index) => {
+        if(index === 0 || index === 10)
+          elem.status.should.equal('up');
+        else
+          elem.status.should.equal('down');
+      });
+      requestRunNock.isDone().should.equal(false);
       restoreConsole();
       done();
     });
   });
 
-  it('when already added EN sends addNode request', (done) => {
-    //stubConsole();
-    let testNode = nodes_data.Nodes[0];
-    loadBalancer.__set__('job_queue', []);
-    loadBalancer.__set__('node_queue', [testNode]);
-    console.log(loadBalancer.__get__('node_queue'));
-    request.post(`${lbUrl}/addNode`, { json: testNode }, (error,response) => {
-      (error === null).should.be.true();
+  it('when a job is pending', (done) => {
+    stubConsole();
+    const tempNode = testData.nodesData[0];
+    const tempJob = testData.submissionsData[0];
+    nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .get('/connectionCheck')
+      .reply(200, (uri, requestBody) => {
+        return false;
+      });
+    nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .get('/connectionCheck')
+      .reply(200, (uri, requestBody) => {
+        return true;
+      });
+    var requestRunNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .persist()
+      .post('/requestRun')
+      .reply(200, (uri, requestBody) => {
+        requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
+        requestBody.should.deep.equal(tempJob);
+        return true;
+      });
+    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
+      (error === null).should.be.true;
       response.body.should.equal(true);
-      //sinon.assert.calledOnce(logStub);
-      loadBalancer.node_queue = loadBalancer.__get__('node_queue');
-      loadBalancer.node_queue.should.be.an('array').that.deep.includes(testNode);
-      //restoreConsole();
+    });
+    request.post(`${lbUrl}/addNode`, { json: tempNode });
+    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
+      const responseBody = JSON.parse(response.body);
+      responseBody.components.forEach((elem, index) => {
+        if(index === 0 || index === 10)
+          elem.status.should.equal('up');
+        else
+          elem.status.should.equal('down');
+      });
+      requestRunNock.isDone().should.equal(true);
+      restoreConsole();
+      done();
+    });
+  });
+
+  it('when incorrect EN sends addNode request', (done) => {
+    const wrongNode = {
+      role: 'execution_node',
+      hostname: 'localhost',
+      port: '8087',
+    };
+    const tempJob = testData.submissionsData[0];
+    stubConsole();
+    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
+      (error === null).should.be.true;
+      response.body.should.equal(true);
+    });
+    setTimeout(() => {
+      request.post(`${lbUrl}/addNode`, { json: wrongNode });
+    }, 50);
+    setTimeout(() => {
+      sinon.assert.calledWith(logStub.getCall(1), sinon.match(tempJob));
+      sinon.assert.calledWith(logStub.getCall(3), sinon.match(wrongNode));
+      sinon.assert.calledWith(logStub.getCall(5), sinon.match.has('code', 'ECONNREFUSED'));
+      sinon.assert.calledWith(logStub.getCall(5), sinon.match.has('port', parseInt(wrongNode.port, 10)));
+      dns.lookup(wrongNode.hostname, (err, address) => {
+        if (!err) {
+          sinon.assert.calledWith(logStub.getCall(5), sinon.match.has('address', address));
+          restoreConsole();
+          done();
+        }
+      });
+    }, 100);
+  });
+});
+
+describe('Correctly accepts jobs', () => {
+  beforeEach(() => {
+    stubConsole();
+    startLoadBalancer();
+    restoreConsole();
+    activateNocks();
+  });
+
+  afterEach((done) => {
+    cleanNocks();
+    loadBalancer.server.close(done);
+  });
+
+  it('when no node is available', (done) => {
+    stubConsole();
+    const tempJob = testData.submissionsData[0];
+    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
+      (error === null).should.be.true;
+      response.body.should.equal(true);
+    });
+    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
+      const responseBody = JSON.parse(response.body);
+      responseBody.components.forEach((elem, index) => {
+        if (index === 10)
+          elem.status.should.equal('up');
+        else
+          elem.status.should.equal('down');
+      });
+      restoreConsole();
+      done();
+    });
+  });
+
+  it('when node is available to process request', (done) => {
+
+    stubConsole();
+    const tempNode = testData.nodesData[0];
+    const tempJob = testData.submissionsData[0];
+    nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .persist()
+      .get('/connectionCheck')
+      .reply(200, (uri, requestBody) => {
+        return true;
+      });
+    var requestRunNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
+      .persist()
+      .post('/requestRun')
+      .reply(200, (uri, requestBody) => {
+        requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
+        requestBody.should.deep.equal(tempJob);
+        return true;
+      });
+    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
+      (error === null).should.be.true;
+      response.body.should.equal(true);
+    });
+    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
+      const responseBody = JSON.parse(response.body);
+      responseBody.components.forEach((elem, index) => {
+        if(index === 0 || index === 10)
+          elem.status.should.equal('up');
+        else
+          elem.status.should.equal('down');
+      });
+      requestRunNock.isDone().should.equal(true);
+      restoreConsole();
       done();
     });
   });
 });
-
 
 // console.log('* TODO: Remains online and active when database is offline');
 // console.log('* TODO: Connects to database when database comes back online');
