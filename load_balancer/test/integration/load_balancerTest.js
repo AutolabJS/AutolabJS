@@ -1,17 +1,4 @@
 console.log('======integration tests on load balancer======\n');
-/*
-best choices for E2E automation testing are:
-      cucumber.js - for requirements testing
-      mocha.js    - for unit testing
-      chai.js     - for assertions
-      sinon.js    - for test doubles
-      nightmare.js - for headless browser-based testing;
-                     to be used with mocha and chai for functional tests
-      nightwatch.js - high-level selenium-driver with own assertions;
-                      easy to use; to be used with mocha for functional tests
-      webdriverIO.js - low-level, but sensible selenium-driver which has to be used with
-                      mocha and chai for functional tests
-*/
 
 const chai = require('chai');
 const dirtyChai = require('dirty-chai');
@@ -19,18 +6,16 @@ const request = require('request');
 const nock = require('nock');
 const dns = require('dns');
 const sinon = require('sinon');
-const rewire = require('rewire');
 const { check } = require('../../../util/environmentCheck.js');
-const { Status } = require('../../status.js');
 const testData = require('./data/submission.json');
-const nodes_data = require(`../../${process.env.LBCONFIG}`);
-const lbUrl = `https://${nodes_data.load_balancer.hostname}:${nodes_data.load_balancer.port}`;
+// eslint-disable-next-line import/no-dynamic-require
+const configData = require(`../../${process.env.LBCONFIG}`);
+const lbUrl = `https://${configData.load_balancer.hostname}:${configData.load_balancer.port}`;
 const sandbox = sinon.createSandbox();
 
 let loadBalancer;
 let logStub;
 
-// eslint-disable-next-line import/no-dynamic-require
 check('LBCONFIG');
 
 chai.should();
@@ -59,13 +44,51 @@ const restoreConsole = function restoreConsole() {
 const startLoadBalancer = function startLoadBalancer() {
   delete require.cache[require.resolve('../../load_balancer.js')];
   // eslint-disable-next-line global-require
-  loadBalancer = rewire('../../load_balancer.js');
+  loadBalancer = require('../../load_balancer.js');
 };
 
-// console.log('* TODO: correctly maintains the list of execution nodes during status check');
-// console.log('* TODO: correctly maintains the list of execution nodes during concurrent return of results');
-// console.log('* TODO: correctly maintains the list of execution nodes during errors in neighbouring components');
-// console.log('* TODO: ignores invalid messages from execution nodes');
+const mockENStatus = function mockENStatus(url, returnVal) {
+  const nockObj = nock(url)
+    .get('/connectionCheck')
+    .reply(200, returnVal);
+  return nockObj;
+};
+
+const requestRunNock = function requestRunNock(url) {
+  const tempJob = testData.submissionsData[0];
+  const nockObj = nock(url)
+    .persist()
+    .post('/requestRun')
+    .reply(200, (uri, requestBody) => {
+      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
+      requestBody.should.deep.equal(tempJob);
+      return true;
+    });
+  return nockObj;
+};
+
+const connectionCheckAssert = function connectionCheckAssert(upArray, resp) {
+  request.get(`${lbUrl}/connectionCheck`, (error, response) => {
+    const responseBody = JSON.parse(response.body);
+    responseBody.components.forEach((elem, index) => {
+      if (upArray.includes(index)) {
+        elem.status.should.equal('up');
+      } else {
+        elem.status.should.equal('down');
+      }
+    });
+    restoreConsole();
+    resp();
+  });
+};
+
+const jobSubmitCheck = function jobSubmitCheck() {
+  const tempJob = testData.submissionsData[0];
+  request.post(`${lbUrl}/submit`, { json: tempJob }, (error, response) => {
+    (error === null).should.be.true();
+    response.body.should.equal(true);
+  });
+};
 
 describe('Correctly maintains list of ENs', () => {
   beforeEach(() => {
@@ -82,17 +105,13 @@ describe('Correctly maintains list of ENs', () => {
 
   it('during status check', (done) => {
     stubConsole();
-    const res = JSON.parse(JSON.stringify(nodes_data.Nodes));
-    const lbTestStatus = nodes_data.load_balancer;
+    const res = JSON.parse(JSON.stringify(configData.Nodes));
+    const lbTestStatus = configData.load_balancer;
     lbTestStatus.status = 'up';
-    for (var i = 0; i <= 1; i++) {
-      nock(`https://${res[i].hostname}:${res[i].port}`)
-        .persist()
-        .get('/connectionCheck')
-        .reply(200, (uri, requestBody) => {
-          return true;
-        });
-    }
+    [0, 1].forEach((elem) => {
+      mockENStatus(`https://${res[elem].hostname}:${res[elem].port}`, true);
+      mockENStatus(`https://${res[elem].hostname}:${res[elem].port}`, true);
+    });
     request.get(`${lbUrl}/connectionCheck`, (error, response) => {
       const responseBody = JSON.parse(response.body);
       response.should.exist();
@@ -102,10 +121,11 @@ describe('Correctly maintains list of ENs', () => {
       responseBody.components.should.be.an('array');
       responseBody.components.should.deep.include(lbTestStatus);
       responseBody.components.forEach((elem, index) => {
-        if(index === 0 || index === 1 || index === 10)
+        if (index === 0 || index === 1 || index === 10) {
           elem.status.should.equal('up');
-        else
+        } else {
           elem.status.should.equal('down');
+        }
       });
       restoreConsole();
       done();
@@ -113,11 +133,7 @@ describe('Correctly maintains list of ENs', () => {
   });
 });
 
-// console.log('* TODO: correctly handles results json with large logs of 50000 lines');
-// console.log('* TODO: verifies the authenticity of each execution node before adding it to the worker pool');
-// console.log('* TODO: verifies the origins of each evaluation result');
 describe('Correctly adds a newly started node', () => {
-
   beforeEach(() => {
     stubConsole();
     startLoadBalancer();
@@ -130,79 +146,32 @@ describe('Correctly adds a newly started node', () => {
     loadBalancer.server.close(done);
   });
 
-  it('when no job is pending', (done) => {
-    stubConsole();
+  const addNodeCheck = function addNodeCheck(jobPending, resp) {
     const tempNode = testData.nodesData[0];
-    var requestRunNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .persist()
-      .post('/requestRun')
-      .reply(200, (uri, requestBody) => {
-        requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
-        requestBody.should.deep.equal(tempJob);
-        return true;
-      });
-    nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .get('/connectionCheck')
-      .reply(200, (uri, requestBody) => {
-        return false;
-      });
-    let connectionCheckNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .get('/connectionCheck')
-      .reply(200, (uri, requestBody) => {
-        return true;
-      });
+    stubConsole();
+    mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, false);
+    mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
+    const requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
+    if (jobPending) {
+      jobSubmitCheck();
+    }
     request.post(`${lbUrl}/addNode`, { json: tempNode });
-    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
-      const responseBody = JSON.parse(response.body);
-      responseBody.components.forEach((elem, index) => {
-        if(index === 0 || index === 10)
-          elem.status.should.equal('up');
-        else
-          elem.status.should.equal('down');
+    setTimeout(() => {
+      requestRunNockObj.isDone().should.equal(jobPending);
+      connectionCheckAssert([0, 10], () => {
+        resp();
       });
-      requestRunNock.isDone().should.equal(false);
-      restoreConsole();
+    }, 50);
+  };
+
+  it('when no job is pending', (done) => {
+    addNodeCheck(false, () => {
       done();
     });
   });
 
   it('when a job is pending', (done) => {
-    stubConsole();
-    const tempNode = testData.nodesData[0];
-    const tempJob = testData.submissionsData[0];
-    nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .get('/connectionCheck')
-      .reply(200, (uri, requestBody) => {
-        return false;
-      });
-    nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .get('/connectionCheck')
-      .reply(200, (uri, requestBody) => {
-        return true;
-      });
-    var requestRunNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .persist()
-      .post('/requestRun')
-      .reply(200, (uri, requestBody) => {
-        requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
-        requestBody.should.deep.equal(tempJob);
-        return true;
-      });
-    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
-      (error === null).should.be.true;
-      response.body.should.equal(true);
-    });
-    request.post(`${lbUrl}/addNode`, { json: tempNode });
-    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
-      const responseBody = JSON.parse(response.body);
-      responseBody.components.forEach((elem, index) => {
-        if(index === 0 || index === 10)
-          elem.status.should.equal('up');
-        else
-          elem.status.should.equal('down');
-      });
-      requestRunNock.isDone().should.equal(true);
-      restoreConsole();
+    addNodeCheck(true, () => {
       done();
     });
   });
@@ -215,10 +184,7 @@ describe('Correctly adds a newly started node', () => {
     };
     const tempJob = testData.submissionsData[0];
     stubConsole();
-    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
-      (error === null).should.be.true;
-      response.body.should.equal(true);
-    });
+    jobSubmitCheck();
     setTimeout(() => {
       request.post(`${lbUrl}/addNode`, { json: wrongNode });
     }, 50);
@@ -253,70 +219,24 @@ describe('Correctly accepts jobs', () => {
 
   it('when no node is available', (done) => {
     stubConsole();
-    const tempJob = testData.submissionsData[0];
-    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
-      (error === null).should.be.true;
-      response.body.should.equal(true);
-    });
-    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
-      const responseBody = JSON.parse(response.body);
-      responseBody.components.forEach((elem, index) => {
-        if (index === 10)
-          elem.status.should.equal('up');
-        else
-          elem.status.should.equal('down');
-      });
-      restoreConsole();
+    jobSubmitCheck();
+    connectionCheckAssert([10], () => {
       done();
     });
   });
 
   it('when node is available to process request', (done) => {
-
-    stubConsole();
     const tempNode = testData.nodesData[0];
-    const tempJob = testData.submissionsData[0];
-    nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .persist()
-      .get('/connectionCheck')
-      .reply(200, (uri, requestBody) => {
-        return true;
+    stubConsole();
+    mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
+    mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
+    const requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
+    jobSubmitCheck();
+    setTimeout(() => {
+      requestRunNockObj.isDone().should.equal(true);
+      connectionCheckAssert([0, 10], () => {
+        done();
       });
-    var requestRunNock = nock(`https://${tempNode.hostname}:${tempNode.port}`)
-      .persist()
-      .post('/requestRun')
-      .reply(200, (uri, requestBody) => {
-        requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
-        requestBody.should.deep.equal(tempJob);
-        return true;
-      });
-    request.post(`${lbUrl}/submit`, { json: tempJob}, (error, response) => {
-      (error === null).should.be.true;
-      response.body.should.equal(true);
-    });
-    request.get(`${lbUrl}/connectionCheck`, (error, response) => {
-      const responseBody = JSON.parse(response.body);
-      responseBody.components.forEach((elem, index) => {
-        if(index === 0 || index === 10)
-          elem.status.should.equal('up');
-        else
-          elem.status.should.equal('down');
-      });
-      requestRunNock.isDone().should.equal(true);
-      restoreConsole();
-      done();
-    });
+    }, 50);
   });
 });
-
-// console.log('* TODO: Remains online and active when database is offline');
-// console.log('* TODO: Connects to database when database comes back online');
-
-// console.log('* TODO: Sets aside execution nodes that are offiline');
-// console.log('* TODO: incoming requests are distributed uniformly among all execution nodes');
-
-// console.log('* TODO: A user cancelled evaluation request is removed from job queue');
-// console.log('* TODO: Informs execution node about a cancelled job.');
-
-// console.log('* TODO: Accept requests / results only from authorized execution nodes');
-// console.log('* TODO: Uses a valid SSL certificate');
