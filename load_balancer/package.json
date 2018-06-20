@@ -41,6 +41,8 @@
     "rewire": "2.5.2",
     "dirty-chai": "^2.0.1",
     "chai-as-promised": "^7.1.1",
+    "sinon": "^4.5.0",
+    "nock": "^9.2.3",
     "eslint": "^4.17.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",

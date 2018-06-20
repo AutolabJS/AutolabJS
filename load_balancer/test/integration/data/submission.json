@@ -1,0 +1,46 @@
+{
+  "submissionsData": [
+      {        
+        "id_no": "STUDENT_PYTHON",
+        "Lab_No": "test1",
+        "time": "2018-01-12 18:03:21",
+        "commit": "",
+        "status": 1,
+        "penalty": 0,
+        "socket": "4JiZSe0VIluhK654AAAC",
+        "language": "python2"
+      },
+      {
+        "id_no": "STUDENT_PYTHON",
+        "Lab_No": "test1",
+        "time": "2018-01-12 18:03:21",
+        "commit": "",
+        "status": 1,
+        "penalty": 0,
+        "socket": "4JiZSe0VIluhK654AAAC",
+        "language": "python2"
+      },
+      {
+        "id_no": "STUDENT_JAVA",
+        "Lab_No": "test1",
+        "time": "2018-01-12 18:03:21",
+        "commit": "",
+        "status": 1,
+        "penalty": 0,
+        "socket": "4JiZSe0VIluhK654AAAC",
+        "language": "java"
+      }
+  ],
+  "nodesData": [
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8091"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8092"
+    }
+  ]
+}
