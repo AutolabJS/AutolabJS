@@ -4,6 +4,7 @@ const request = require('request');
 const nock = require('nock');
 const dns = require('dns');
 const sinon = require('sinon');
+const mysql = require('mysql');
 const { check } = require('../../../util/environmentCheck.js');
 const testData = require('./data/submission.json');
 // eslint-disable-next-line import/no-dynamic-require
@@ -14,6 +15,7 @@ const sandbox = sinon.createSandbox();
 
 let loadBalancer;
 let logStub;
+let mysqlConnection;
 
 check('LBCONFIG');
 
@@ -46,12 +48,31 @@ const startLoadBalancer = function startLoadBalancer() {
   loadBalancer = require('../../load_balancer.js');
 };
 
-const startExecutionNode = function startExecutionNode() {
-  delete require.cache[require.resolve('../../../execution_nodes/execute_node.js')];
-  // eslint-disable-next-line global-require
-  executeNode = require('../../../execution_nodes/execute_node.js');
+const startMysqlConnection = function startMysqlConnection() {
+  const labNo = testData.executedJob.submission_details.Lab_No;
+  try {
+    mysqlConnection = mysql.createConnection(
+      configData.database
+    );
+    mysqlConnection.connect();
+    let q='DROP TABLE IF EXISTS l'+labNo;
+    mysqlConnection.query(q, function(err, rows, fields) {
+      console.log('Delete Query', err, rows, fields);
+    });
+    q='CREATE TABLE l'+labNo+'(id_no varchar(30), score int, time datetime, PRIMARY KEY (id_no))';
+    mysqlConnection.query(q, function(err, rows, fields) {
+      console.log('Create Query', err, rows, fields);
+    });
+  } catch (e) {
+      console.log(e);
+  } finally {
+  }
 };
 
+const sleepFunc = function sleepFunc(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+};
+  
 const mockENStatus = function mockENStatus(url, returnVal) {
   const nockObj = nock(url)
     .get('/connectionCheck')
@@ -65,7 +86,8 @@ const requestRunNock = function requestRunNock(url) {
     .persist()
     .post('/requestRun')
     .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'language');
+      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
+        'penalty', 'socket', 'language');
       requestBody.should.deep.equal(tempJob);
       return true;
     });
@@ -145,16 +167,17 @@ describe('Correctly maintains list of ENs', () => {
   });
 
   /*it('when MySQL database is down', (done) => {
-    stubConsole();
-    // shutdown database here
-    const res = JSON.parse(JSON.stringify(configData.Nodes));
-    [0, 1].forEach((elem) => {
-      mockENStatus(`https://${res[elem].hostname}:${res[elem].port}`, true);
-      mockENStatus(`https://${res[elem].hostname}:${res[elem].port}`, true);
-    });
-    connectionCheckAssert([0, 1, 10], () => {
+    //stubConsole();
+    loadBalancer.server.close();
+    process.env.LBCONFIG = './test/functional/data/wrongConf.json'
+    try {
+      startLoadBalancer();
+    } catch (err) {
+      console.log('Error caught', err);
+    }
+    setTimeout(() => {
       done();
-    });
+    }, 200);
   });*/
 });
 
@@ -266,9 +289,11 @@ describe('Correctly accepts jobs', () => {
   });
 });
 
-/*describe('Correctly accepts executed job results', () => {
-  beforeEach(() => {
+describe('Correctly accepts executed job results', () => {
+  beforeEach(async () => {
     stubConsole();
+    startMysqlConnection();
+    await sleepFunc(200);
     startLoadBalancer();
     restoreConsole();
     activateNocks();
@@ -276,6 +301,7 @@ describe('Correctly accepts jobs', () => {
 
   afterEach((done) => {
     cleanNocks();
+    mysqlConnection.end();
     loadBalancer.server.close(done);
   });
 
@@ -285,12 +311,12 @@ describe('Correctly accepts jobs', () => {
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, false);
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
     const requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
-    // stub MySQL method here
     nock(msUrl)
     .persist()
     .post('/results')
     .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'marks', 'comment', 'log');
+      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
+        'penalty', 'socket', 'marks', 'comment', 'log');
       requestBody.marks.should.be.an('array');
       requestBody.comment.should.be.an('array');
       requestBody.should.deep.equal(execSubmissionObj.submission_details);
@@ -312,12 +338,12 @@ describe('Correctly accepts jobs', () => {
     const execSubmissionObj = testData.executedJob;
     stubConsole();
     const requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
-    // stub MySQL method here
     nock(msUrl)
     .persist()
     .post('/results')
     .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'marks', 'comment', 'log');
+      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
+        'penalty', 'socket', 'marks', 'comment', 'log');
       requestBody.marks.should.be.an('array');
       requestBody.comment.should.be.an('array');
       requestBody.should.deep.equal(execSubmissionObj.submission_details);
@@ -335,11 +361,13 @@ describe('Correctly accepts jobs', () => {
       });
     }, 100);
   });
-});*/
+});
 
 describe('Submits a job and receives result correctly', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     stubConsole();
+    startMysqlConnection();
+    await sleepFunc(200);
     startLoadBalancer();
     restoreConsole();
     activateNocks();
@@ -347,6 +375,7 @@ describe('Submits a job and receives result correctly', () => {
 
   afterEach((done) => {
     cleanNocks();
+    mysqlConnection.end();
     loadBalancer.server.close(done);
   });
 
@@ -358,7 +387,8 @@ describe('Submits a job and receives result correctly', () => {
     .persist()
     .post('/results')
     .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 'penalty', 'socket', 'marks', 'comment', 'log');
+      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
+        'penalty', 'socket', 'marks', 'comment', 'log');
       requestBody.should.deep.equal(execSubmissionObj.submission_details);
       return 'true';
     });

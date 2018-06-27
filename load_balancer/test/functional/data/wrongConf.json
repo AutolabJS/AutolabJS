@@ -1,0 +1,76 @@
+{
+  "Nodes": [
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8091"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8092"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8093"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8094"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8095"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8096"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8097"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8098"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8099"
+    },
+    {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8100"
+    }
+  ],
+  "server_info": {
+    "role": "main_server",
+    "hostname": "localhost",
+    "port": "9000"
+  },
+  "database": {
+    "role": "database",
+    "host": "localhost",
+    "user": "wrongUser",
+    "password": "wrongPass",
+    "database": "AutolabJS"
+  },
+  "gitlab": {
+    "role": "gitlab",
+    "hostname": "localhost",
+    "port": "80"
+  },
+  "load_balancer": {
+    "role": "load_balancer",
+    "hostname": "localhost",
+    "port": "8081"
+  }
+}
