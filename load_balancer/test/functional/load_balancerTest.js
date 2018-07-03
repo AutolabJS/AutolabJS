@@ -51,28 +51,25 @@ const startLoadBalancer = function startLoadBalancer() {
 const startMysqlConnection = function startMysqlConnection() {
   const labNo = testData.executedJob.submission_details.Lab_No;
   try {
-    mysqlConnection = mysql.createConnection(
-      configData.database
-    );
+    mysqlConnection = mysql.createConnection(configData.database);
     mysqlConnection.connect();
-    let q='DROP TABLE IF EXISTS l'+labNo;
-    mysqlConnection.query(q, function(err, rows, fields) {
+    let q = `DROP TABLE IF EXISTS l${labNo}`;
+    mysqlConnection.query(q, (err, rows, fields) => {
       console.log('Delete Query', err, rows, fields);
     });
-    q='CREATE TABLE l'+labNo+'(id_no varchar(30), score int, time datetime, PRIMARY KEY (id_no))';
-    mysqlConnection.query(q, function(err, rows, fields) {
+    q = `CREATE TABLE l${labNo}(id_no varchar(30), score int, time datetime, PRIMARY KEY (id_no))`;
+    mysqlConnection.query(q, (err, rows, fields) => {
       console.log('Create Query', err, rows, fields);
     });
   } catch (e) {
-      console.log(e);
-  } finally {
+    console.log(e);
   }
 };
 
 const sleepFunc = function sleepFunc(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 };
-  
+
 const mockENStatus = function mockENStatus(url, returnVal) {
   const nockObj = nock(url)
     .get('/connectionCheck')
@@ -86,11 +83,31 @@ const requestRunNock = function requestRunNock(url) {
     .persist()
     .post('/requestRun')
     .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
+      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status',
         'penalty', 'socket', 'language');
       requestBody.should.deep.equal(tempJob);
       return true;
     });
+  return nockObj;
+};
+
+const resultsNock = function resultsNock(failingTest, executedJobDetails) {
+  const nockObj = nock(msUrl)
+  .persist()
+  .post('/results')
+  .reply(200, (uri, requestBody) => {
+    requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status',
+      'penalty', 'socket', 'marks', 'comment', 'log');
+    requestBody.marks.should.be.an('array');
+    requestBody.comment.should.be.an('array');
+    requestBody.should.deep.equal(executedJobDetails.submission_details);
+    if (failingTest) {
+      requestBody.marks.length.should.not.equal(requestBody.comment.length);
+    } else {
+      requestBody.marks.length.should.equal(requestBody.comment.length);
+    }
+    return 'true';
+  });
   return nockObj;
 };
 
@@ -115,6 +132,25 @@ const jobSubmitCheck = function jobSubmitCheck() {
     (error === null).should.be.true();
     response.body.should.equal(true);
   });
+};
+
+const submitReqCheck = function submitReqCheck(executedJobDetails) {
+  request.post(`${lbUrl}/sendScores`, { json: executedJobDetails }, (error, response) => {
+    (error === null).should.be.true();
+    response.body.should.equal(true);
+  });
+};
+
+const testAssertion = function testAssertion(resultsNock, requestRunNock, resultsVal, requestRunVal, nodeArray, resp) {
+  setTimeout(() => {
+    requestRunNock.isDone().should.equal(requestRunVal);
+    if (resultsNock != null) {
+      resultsNock.isDone().should.equal(resultsVal);
+    }
+    connectionCheckAssert(nodeArray, () => {
+      resp();
+    });
+  }, 100);
 };
 
 describe('Correctly maintains list of ENs', () => {
@@ -166,19 +202,22 @@ describe('Correctly maintains list of ENs', () => {
     });
   });
 
-  /*it('when MySQL database is down', (done) => {
-    //stubConsole();
+  /* it('when MySQL database is down', (done) => {
+    stubConsole();
     loadBalancer.server.close();
-    process.env.LBCONFIG = './test/functional/data/wrongConf.json'
+    process.env.LBCONFIG = './test/functional/data/wrongConf.json';
     try {
       startLoadBalancer();
     } catch (err) {
       console.log('Error caught', err);
     }
     setTimeout(() => {
+      console.log('Reached here')
+      process.env.LBCONFIG = '../deploy/configs/load_balancer/nodes_data_conf.json';
+      restoreConsole();
       done();
     }, 200);
-  });*/
+  }); */
 });
 
 describe('Correctly adds a newly started node', () => {
@@ -204,12 +243,7 @@ describe('Correctly adds a newly started node', () => {
       jobSubmitCheck();
     }
     request.post(`${lbUrl}/addNode`, { json: tempNode });
-    setTimeout(() => {
-      requestRunNockObj.isDone().should.equal(jobPending);
-      connectionCheckAssert([0, 10], () => {
-        resp();
-      });
-    }, 100);
+    testAssertion(null, requestRunNockObj, false, jobPending, [0, 10], resp);
   };
 
   it('when no job is pending', (done) => {
@@ -280,12 +314,9 @@ describe('Correctly accepts jobs', () => {
     mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
     const requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
     jobSubmitCheck();
-    setTimeout(() => {
-      requestRunNockObj.isDone().should.equal(true);
-      connectionCheckAssert([0, 10], () => {
-        done();
-      });
-    }, 100);
+    testAssertion(null, requestRunNockObj, false, true, [0, 10], () => {
+      done();
+    });
   });
 });
 
@@ -311,55 +342,23 @@ describe('Correctly accepts executed job results', () => {
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, false);
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
     const requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
-    nock(msUrl)
-    .persist()
-    .post('/results')
-    .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
-        'penalty', 'socket', 'marks', 'comment', 'log');
-      requestBody.marks.should.be.an('array');
-      requestBody.comment.should.be.an('array');
-      requestBody.should.deep.equal(execSubmissionObj.submission_details);
-      return 'true';
+    const resultsNockObj = resultsNock(false, execSubmissionObj);
+    submitReqCheck(execSubmissionObj);
+    testAssertion(resultsNockObj, requestRunNockObj, true, false, [0, 10], () => {
+      done();
     });
-    request.post(`${lbUrl}/sendScores`, { json: execSubmissionObj }, (error, response) => {
-      (error === null).should.be.true();
-      response.body.should.equal(true);
-    });
-    setTimeout(() => {
-      requestRunNockObj.isDone().should.equal(false);
-      connectionCheckAssert([0, 10], () => {
-        done();
-      });
-    }, 100);
   });
 
   it('when a job is pending', (done) => {
     const execSubmissionObj = testData.executedJob;
     stubConsole();
     const requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
-    nock(msUrl)
-    .persist()
-    .post('/results')
-    .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
-        'penalty', 'socket', 'marks', 'comment', 'log');
-      requestBody.marks.should.be.an('array');
-      requestBody.comment.should.be.an('array');
-      requestBody.should.deep.equal(execSubmissionObj.submission_details);
-      return 'true';
-    });
+    const resultsNockObj = resultsNock(false, execSubmissionObj);
     jobSubmitCheck();
-    request.post(`${lbUrl}/sendScores`, { json: execSubmissionObj }, (error, response) => {
-      (error === null).should.be.true();
-      response.body.should.equal(true);
+    submitReqCheck(execSubmissionObj);
+    testAssertion(resultsNockObj, requestRunNockObj, true, true, [10], () => {
+      done();
     });
-    setTimeout(() => {
-      requestRunNockObj.isDone().should.equal(true);
-      connectionCheckAssert([10], () => {
-        done();
-      });
-    }, 100);
   });
 });
 
@@ -383,33 +382,53 @@ describe('Submits a job and receives result correctly', () => {
     stubConsole();
     const tempJob = testData.submissionsData[0];
     const execSubmissionObj = testData.executedJob;
-    nock(msUrl)
-    .persist()
-    .post('/results')
-    .reply(200, (uri, requestBody) => {
-      requestBody.should.have.all.keys('id_no', 'Lab_No', 'time', 'commit', 'status', 
-        'penalty', 'socket', 'marks', 'comment', 'log');
-      requestBody.should.deep.equal(execSubmissionObj.submission_details);
-      return 'true';
-    });
-    nock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`)
+    const resultsNockObj = resultsNock(false, execSubmissionObj);
+    const requestRunNockObj = nock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`)
     .persist()
     .post('/requestRun')
     .reply(200, (uri, requestBody) => {
       requestBody.should.deep.equal(tempJob);
-      request.post(`${lbUrl}/sendScores`, { json: execSubmissionObj }, (error, response) => {
-        (error === null).should.be.true();
-        response.body.should.equal(true);
-      });
+      submitReqCheck(execSubmissionObj);
       return true;
     });
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
     jobSubmitCheck();
+    testAssertion(resultsNockObj, requestRunNockObj, true, true, [0, 10], () => {
+      done();
+    });
+  });
+
+  it('with large logs of 30000 lines', (done) => {
+    const execSubmissionObj = JSON.parse(JSON.stringify(testData.executedJob));
+    let tempStr = 'Temporary string';
+    let count = 30000;
+    while (count > 0) {
+      tempStr = `Temp \n${tempStr}`;
+      count -= 1;
+    }
+    stubConsole();
+    execSubmissionObj.submission_details.log = tempStr;
+    const resultsNockObj = resultsNock(false, execSubmissionObj);
+    submitReqCheck(execSubmissionObj);
     setTimeout(() => {
-      connectionCheckAssert([0, 10], () => {
-        done();
-      });
+      resultsNockObj.isDone().should.equal(true);
+      restoreConsole();
+      done();
+    }, 100);
+  });
+
+  it('when EN sends invalid messages', (done) => {
+    const execSubmissionObj = JSON.parse(JSON.stringify(testData.executedJob));
+    execSubmissionObj.submission_details.marks = ['1', '1'];
+    stubConsole();
+    const resultsNockObj = resultsNock(true, execSubmissionObj);
+    submitReqCheck(execSubmissionObj);
+    setTimeout(() => {
+      resultsNockObj.isDone().should.equal(true);
+      restoreConsole();
+      done();
     }, 100);
   });
 });
+

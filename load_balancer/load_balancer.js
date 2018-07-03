@@ -29,8 +29,8 @@ const status = new Status(nodes_data.Nodes);
 let node_queue = [];
 
 app.use(express.static(__dirname + '/public'));
-app.use(bodyParser.urlencoded({extended: true}));
-app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({limit: nodes_data.bodyParserLimit, extended: true}));
+app.use(bodyParser.json({limit: nodes_data.bodyParserLimit}));
 
 app.get('/userCheck', function (req,res) {
   console.log('userCheck requested');
