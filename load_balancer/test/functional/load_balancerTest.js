@@ -141,11 +141,13 @@ const submitReqCheck = function submitReqCheck(executedJobDetails) {
   });
 };
 
-const testAssertion = function testAssertion(resultsNock, requestRunNock, resultsVal, requestRunVal, nodeArray, resp) {
+const testAssertion = function testAssertion(testDetails, nodeArray, resp) {
   setTimeout(() => {
-    requestRunNock.isDone().should.equal(requestRunVal);
-    if (resultsNock != null) {
-      resultsNock.isDone().should.equal(resultsVal);
+    if (testDetails.requestRunNockObj != null) {
+      testDetails.requestRunNockObj.isDone().should.equal(testDetails.requestRunVal);
+    }
+    if (testDetails.resultsNockObj != null) {
+      testDetails.resultsNockObj.isDone().should.equal(testDetails.resultsVal);
     }
     connectionCheckAssert(nodeArray, () => {
       resp();
@@ -234,16 +236,18 @@ describe('Correctly adds a newly started node', () => {
   });
 
   const addNodeCheck = function addNodeCheck(jobPending, resp) {
+    const testDetails = {};
     const tempNode = testData.nodesData[0];
     stubConsole();
     mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, false);
     mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
-    const requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
+    testDetails.requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
     if (jobPending) {
       jobSubmitCheck();
     }
     request.post(`${lbUrl}/addNode`, { json: tempNode });
-    testAssertion(null, requestRunNockObj, false, jobPending, [0, 10], resp);
+    testDetails.requestRunVal = jobPending;
+    testAssertion(testDetails, [0, 10], resp);
   };
 
   it('when no job is pending', (done) => {
@@ -308,13 +312,15 @@ describe('Correctly accepts jobs', () => {
   });
 
   it('when node is available to process request', (done) => {
+    const testDetails = {};
     const tempNode = testData.nodesData[0];
     stubConsole();
     mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
     mockENStatus(`https://${tempNode.hostname}:${tempNode.port}`, true);
-    const requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
+    testDetails.requestRunNockObj = requestRunNock(`https://${tempNode.hostname}:${tempNode.port}`);
     jobSubmitCheck();
-    testAssertion(null, requestRunNockObj, false, true, [0, 10], () => {
+    testDetails.requestRunVal = true;
+    testAssertion(testDetails, [0, 10], () => {
       done();
     });
   });
@@ -337,26 +343,32 @@ describe('Correctly accepts executed job results', () => {
   });
 
   it('when no job is pending', (done) => {
+    const testDetails = {};
     const execSubmissionObj = testData.executedJob;
     stubConsole();
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, false);
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
-    const requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
-    const resultsNockObj = resultsNock(false, execSubmissionObj);
+    testDetails.requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
+    testDetails.resultsNockObj = resultsNock(false, execSubmissionObj);
     submitReqCheck(execSubmissionObj);
-    testAssertion(resultsNockObj, requestRunNockObj, true, false, [0, 10], () => {
+    testDetails.resultsVal = true;
+    testDetails.requestRunVal = false;
+    testAssertion(testDetails, [0, 10], () => {
       done();
     });
   });
 
   it('when a job is pending', (done) => {
+    const testDetails = {};
     const execSubmissionObj = testData.executedJob;
     stubConsole();
-    const requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
-    const resultsNockObj = resultsNock(false, execSubmissionObj);
+    testDetails.requestRunNockObj = requestRunNock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`);
+    testDetails.resultsNockObj = resultsNock(false, execSubmissionObj);
     jobSubmitCheck();
     submitReqCheck(execSubmissionObj);
-    testAssertion(resultsNockObj, requestRunNockObj, true, true, [10], () => {
+    testDetails.resultsVal = true;
+    testDetails.requestRunVal = true;
+    testAssertion(testDetails, [10], () => {
       done();
     });
   });
@@ -379,11 +391,12 @@ describe('Submits a job and receives result correctly', () => {
   });
 
   it('for valid case', (done) => {
-    stubConsole();
+    const testDetails = {};
     const tempJob = testData.submissionsData[0];
     const execSubmissionObj = testData.executedJob;
-    const resultsNockObj = resultsNock(false, execSubmissionObj);
-    const requestRunNockObj = nock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`)
+    stubConsole();
+    testDetails.resultsNockObj = resultsNock(false, execSubmissionObj);
+    testDetails.requestRunNockObj = nock(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`)
     .persist()
     .post('/requestRun')
     .reply(200, (uri, requestBody) => {
@@ -394,12 +407,15 @@ describe('Submits a job and receives result correctly', () => {
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
     mockENStatus(`https://${execSubmissionObj.node_details.hostname}:${execSubmissionObj.node_details.port}`, true);
     jobSubmitCheck();
-    testAssertion(resultsNockObj, requestRunNockObj, true, true, [0, 10], () => {
+    testDetails.resultsVal = true;
+    testDetails.requestRunVal = true;
+    testAssertion(testDetails, [0, 10], () => {
       done();
     });
   });
 
   it('with large logs of 30000 lines', (done) => {
+    const testDetails = {};
     const execSubmissionObj = JSON.parse(JSON.stringify(testData.executedJob));
     let tempStr = 'Temporary string';
     let count = 30000;
@@ -409,26 +425,25 @@ describe('Submits a job and receives result correctly', () => {
     }
     stubConsole();
     execSubmissionObj.submission_details.log = tempStr;
-    const resultsNockObj = resultsNock(false, execSubmissionObj);
+    testDetails.resultsNockObj = resultsNock(false, execSubmissionObj);
     submitReqCheck(execSubmissionObj);
-    setTimeout(() => {
-      resultsNockObj.isDone().should.equal(true);
-      restoreConsole();
+    testDetails.resultsVal = true;
+    testAssertion(testDetails, [10], () => {
       done();
-    }, 100);
+    });
   });
 
   it('when EN sends invalid messages', (done) => {
+    const testDetails = {};
     const execSubmissionObj = JSON.parse(JSON.stringify(testData.executedJob));
-    execSubmissionObj.submission_details.marks = ['1', '1'];
     stubConsole();
-    const resultsNockObj = resultsNock(true, execSubmissionObj);
+    execSubmissionObj.submission_details.marks = ['1', '1'];
+    testDetails.resultsNockObj = resultsNock(true, execSubmissionObj);
     submitReqCheck(execSubmissionObj);
-    setTimeout(() => {
-      resultsNockObj.isDone().should.equal(true);
-      restoreConsole();
+    testDetails.resultsVal = true;
+    testAssertion(testDetails, [10], () => {
       done();
-    }, 100);
+    });
   });
 });
 
