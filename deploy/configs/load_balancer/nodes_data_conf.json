@@ -68,10 +68,10 @@
     "hostname": "localhost",
     "port": "80"
   },
-  "bodyParserLimit": "256kb",
   "load_balancer": {
     "role": "load_balancer",
     "hostname": "localhost",
-    "port": "8081"
+    "port": "8081",
+    "maxLogLength": "256kb"
   }
 }
