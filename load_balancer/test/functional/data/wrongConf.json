@@ -59,8 +59,8 @@
   "database": {
     "role": "database",
     "host": "localhost",
-    "user": "root",
-    "password": "root",
+    "user": "wrongUser",
+    "password": "wrongPass",
     "database": "AutolabJS"
   },
   "gitlab": {
@@ -71,7 +71,6 @@
   "load_balancer": {
     "role": "load_balancer",
     "hostname": "localhost",
-    "port": "8081",
-    "maxLogLength": "256kb"
+    "port": "8081"
   }
 }

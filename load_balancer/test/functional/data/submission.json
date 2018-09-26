@@ -42,5 +42,24 @@
       "hostname": "localhost",
       "port": "8092"
     }
-  ]
+  ],
+  "executedJob": {
+    "submission_details": {
+      "marks": [ "1", "1", "1", "1" ],
+      "comment": [ "Accepted", "Accepted", "Accepted", "Accepted" ],
+      "id_no": "STUDENT_PYTHON",
+      "Lab_No": "test1",
+      "commit": "",
+      "time": "2018-01-12 18:03:21",
+      "status": 1,
+      "penalty": 0,
+      "socket": "4JiZSe0VIluhK654AAAC",
+      "log": "Tk8gTE9HUyBGT1IgVEhJUyBFVkFMVUFUSU9O"
+    },
+    "node_details": {
+      "role": "execution_node",
+      "hostname": "localhost",
+      "port": "8091"
+    }
+  }
 }
