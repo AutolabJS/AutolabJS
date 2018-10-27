@@ -4,12 +4,12 @@
 # Author: Prasad Talasila
 # Date: 24-April-2017
 # Invocation: invoked as a cron job by root user; but can also be run as
-#             $sudo bash autolab-restart.sh
+#             $sudo bash autolabjs-restart.sh
 ##############
 
 stoppedList=$(docker ps -q --filter "status=exited" --format "{{.Names}}")
 execRestarts=$(echo "$stoppedList" | grep -e "^execution-node")
-dbRestart=$(echo "$stoppedList" | grep -c -e "^autolab-db")
+dbRestart=$(echo "$stoppedList" | grep -c -e "^autolabjs-db")
 gitlabRestart=$(echo "$stoppedList" | grep -c -e "^gitlab")
 
 for node in $execRestarts
@@ -19,7 +19,7 @@ done
 
 if [ "$dbRestart" -ne "0" ]
 then
-    docker restart autolab-db
+    docker restart autolabjs-db
     docker restart mainserver
     docker restart loadbalancer
 fi

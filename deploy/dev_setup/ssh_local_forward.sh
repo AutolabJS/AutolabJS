@@ -1,6 +1,6 @@
 #!/bin/bash
 ##############
-# Purpose: Setup necessary port mappings from localhost to Autolab deployed by Vagrantfile
+# Purpose: Setup necessary port mappings from localhost to AutolabJS deployed by Vagrantfile
 #          The script requires superuser permission to setup the port mappings
 #          The script needs to be rerun on reboot of the localhost
 #

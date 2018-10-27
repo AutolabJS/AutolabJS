@@ -63,7 +63,10 @@
 
     # Gitlab uses the same keys as that of main server and hence this step is brought here
     - name: Generate certificate for main server and gitlab
-      include_tasks: tasks/createCert.yml domain=deploy/keys/main_server common_name={{ organization }}
+      include_tasks: tasks/createCert.yml
+      vars:
+        domain: "deploy/keys/main_server"
+        common_name: "{{ organization }}"
 
     - name: Copy the certificates at the required locations
       copy:

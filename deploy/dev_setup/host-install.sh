@@ -1,9 +1,9 @@
 #!/bin/bash
 # shellcheck disable=SC1091
-																# skip the file existence check of shellcheck linter
-                                # this is necessary since the /home/vagrant directory only exists inside Vagrantbox
+# skip the file existence check of shellcheck linter
+# this is necessary since the /home/vagrant directory only exists inside Vagrantbox
 ################
-# Purpose: install the Autolab software inside the guest VM
+# Purpose: install the AutolabJS software inside the guest VM
 # Author: Prasad Talasila
 # Date: 6-April-2017
 # Invocation: invoked directly as superuser
@@ -13,34 +13,16 @@
 #
 ################
 
-# install development environment
-apt-get install -y git
-curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash -
-apt-get install -y nodejs
-npm install npm@latest -g
-
-# run setup.sh to install the Autolab prerequisite packages
-sudo bash /home/vagrant/autolab/deploy/setup.sh
-
-# if available, load docker images
-if [ -d /home/vagrant/autolab/docker-images ]
-then
-  cd /home/vagrant/autolab/docker-images || exit
-  ls "./*.tar" >/dev/null 2>&1	#do docker images exist?
-  if [ "$?" -eq "0" ]
-  then
-    bash load-vagrant.sh
-  else
-    bash docker-pull.sh
-  fi
-fi
+# Install dependencies
+cd /home/vagrant/autolabjs/deploy
+bash dependencies.sh single_machine
 
 # run Ansible playbook
-if [ -d /home/vagrant/autolab/deploy ]
+if [ -d /home/vagrant/autolabjs/deploy ]
 then
-  cd /home/vagrant/autolab/deploy || exit
-  sudo ansible-playbook playbook-single.yml -i inventory
+  cd /home/vagrant/autolabjs/deploy || exit
+  sudo ansible-playbook playbook.yml
 fi
 
-# some autolab components don't restart properly on reboot. Restart them in correct order
-echo "sudo /home/vagrant/autolab/deploy/dev_setup/restart.sh" >> /home/ubuntu/.bashrc
+# some autolabjs components don't restart properly on reboot. Restart them in correct order
+echo "sudo /home/vagrant/autolabjs/deploy/autolabjs-restart.sh" >> /home/ubuntu/.bashrc

@@ -7,7 +7,7 @@
 # Previous Versions: None
 # Invocation: $ bash restart_script_check.sh
 ###########
-if [ -f /root/autolab-restart.sh ]
+if [ -f /root/autolabjs-restart.sh ]
 then
     exit 0
 else

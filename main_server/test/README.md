@@ -1,1 +1,1 @@
-This directory contains unit,integration and functional tests for stand alone **main server** component of Autolab. The other components, namely Gitlab, Autolab-DB and load balancer get replaced with test doubles.
+This directory contains unit,integration and functional tests for stand alone **main server** component of Autolab. The other components, namely Gitlab, AutolabJS-DB and load balancer get replaced with test doubles.

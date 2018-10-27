@@ -22,7 +22,7 @@
 }
 
 @test "Database Container Check" {
-    result=$(grep -c "^mysql:latest autolab-db Up.*" container_status.txt)
+    result=$(grep -c "^mysql:latest autolabjs-db Up.*" container_status.txt)
     [ "$result" -eq 1 ]
 }
 
@@ -33,6 +33,6 @@
 
 @test "Restart Script Check" {
     sudo bash -c "bash ./helper_scripts/container/restart_script_check.sh"
-    result=$(sudo crontab -l -u root | grep -c 'bash /root/autolab-restart.sh')
+    result=$(sudo crontab -l -u root | grep -c 'bash /root/autolabjs-restart.sh')
     [ "$result" -eq 1 ]
 }
