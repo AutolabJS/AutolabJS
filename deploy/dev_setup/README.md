@@ -65,7 +65,10 @@ vagrant up  #wait for SSH connection error message, and press ctl + c
 vagrant ssh -- -p 2222
 sudo su
 cd /home/vagrant/autolabjs/deploy/dev_setup
-# If needed, modify the inventory file to load docker images
+# If needed, modify the following inventory variables in "single_machine" inventory file to load docker images
+load_docker_images=yes
+docker_images_location=/home/vagrant/autolabjs/docker-images
+
 source host_install.sh
 ```
 
