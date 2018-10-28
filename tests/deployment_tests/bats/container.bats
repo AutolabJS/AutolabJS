@@ -22,7 +22,7 @@
 }
 
 @test "Database Container Check" {
-    result=$(grep -c "^mysql:latest autolabjs-db Up.*" container_status.txt)
+    result=$(grep -c "^mysql:5.7 autolabjs-db Up.*" container_status.txt)
     [ "$result" -eq 1 ]
 }
 
