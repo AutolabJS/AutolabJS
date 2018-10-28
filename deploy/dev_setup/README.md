@@ -27,6 +27,42 @@ For all other operating systems, please check the instructions for installing gi
 
 If you have the saved docker images of AutolabJS components, place them in ```AutolabJS/docker-images``` directory.    
 
+
+#### Install ####
+If you want to setup and test AutolabJS software, execute the Vagrant environment. Please note that the vagrant machine requires 4GB of RAM. You are advised to run the vagrant command only on a computer with at least 4 core CPU, 6GB of RAM and 10GB of free hard disk space.     
+```shell
+cd ../..    #do to the top-level directory of AutolabJS code base
+vagrant up  #wait for SSH connection error message, and press ctl + c
+vagrant ssh -- -p 2222
+cd /home/vagrant/autolabjs/deploy/dev_setup
+# If needed, modify the following inventory variables in "single_machine" inventory file to load docker images
+load_docker_images=yes
+docker_images_location=/home/vagrant/autolabjs/docker-images
+
+sudo bash host-install.sh
+```
+
+**Application URLs**    
+After the installation, AutolabJS would be available on the _IP-Address / hostname_ of the guest machine at the following URLs.    
+
+| **Service**    | **URL**                        |
+|----------------|--------------------------------|
+| Main server    | https://IP_address:9000        |
+| AutolabJS Status | https://IP_address:9000/status |
+| Gitlab         | https://IP_address:9003        |
+
+If you wish to make the Gitlab available at the standard ports of 80, 443 please complete the steps in **SSH Port Forwarding** section.    
+
+
+#### Uninstall ####
+To completely delete / uninstall the AutolabJS vagrant host machine, execute the following commands from AutolabJS top-level directory in the host machine.
+```
+vagrant destroy -f	#delete the host machine completely
+```
+
+
+
+***
 #### Vagrant Commands ####
 All the commands in this section are to be executed from the top-level directory in which `Vagrantfile` exists.    
 Vagrant uses SSH to login to the provisioned virtual machine. We changed the SSH port on host machine to 2222. Thus Vagrant can not smoothly execute `vagrant ssh` and `vagrant up` operations. To bring up the host machine, execute    
@@ -57,45 +93,7 @@ vagrant destroy -f
 ```
 
 
-#### Install ####
-If you want to setup and test AutolabJS software, execute the Vagrant environment. Please note that the vagrant machine requires 4GB of RAM. You are advised to run the vagrant command only on a computer with at least 4 core CPU, 6GB of RAM and 10GB of free hard disk space.     
-```shell
-cd ../..    #do to the top-level directory of AutolabJS code base
-vagrant up  #wait for SSH connection error message, and press ctl + c
-vagrant ssh -- -p 2222
-sudo su
-cd /home/vagrant/autolabjs/deploy/dev_setup
-# If needed, modify the following inventory variables in "single_machine" inventory file to load docker images
-load_docker_images=yes
-docker_images_location=/home/vagrant/autolabjs/docker-images
 
-source host_install.sh
-```
-
-**Application URLs**    
-After the installation, AutolabJS would be available on the _IP-Address / hostname_ of the guest machine at the following URLs.    
-
-| **Service**    | **URL**                        |
-|----------------|--------------------------------|
-| Main server    | https://IP_address:9000        |
-| AutolabJS Status | https://IP_address:9000/status |
-| Gitlab         | https://IP_address:9003        |
-
-If you wish to make the Gitlab available at the standard ports of 80, 443 please complete the steps in **SSH Port Forwarding** section.    
-
-
-#### Uninstall ####
-To completely delete / uninstall the AutolabJS vagrant host machine, execute the following commands from AutolabJS top-level directory in the host machine.
-```
-vagrant destroy -f	#delete the host machine completely
-#remove the SSL certificates. If these are not removed, the reinstallation will fail.
-rm deploy/keys/main_server/id_rsa*
-rm deploy/keys/load_balancer/id_rsa*
-```
-
-
-
-***
 #### SSH Port Forwarding ####
 This section is completely optional. The commands in this section make the AutolabJS available at standard HTTP(s) ports. This is only local port redirection by utilizing SSH server. To utilize local port fowarding, execute the following commands.    
 ```
