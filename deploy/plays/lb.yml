@@ -2,7 +2,10 @@
   tasks:
 
     - name: Generate certificate for load balancer
-      include_tasks: tasks/createCert.yml domain=deploy/keys/load_balancer common_name=lb.{{ organization }}
+      include_tasks: tasks/createCert.yml
+      vars:
+        domain: "deploy/keys/load_balancer"
+        common_name: "lb.{{ organization }}"
 
     - copy:
         src: "{{ install_dir }}/deploy/keys/load_balancer/"
@@ -10,7 +13,10 @@
         mode: 0755
 
     - name: Generate ssh login keys for Gitlab
-      include_tasks: tasks/sshKeyGen.yml path="deploy/keys/gitlab/load_balancer" comment="load balancer key for lb@autolabjs"
+      include_tasks: tasks/sshKeyGen.yml
+      vars:
+        path: "deploy/keys/gitlab/load_balancer"
+        comment: "load balancer key for lb@autolabjs"
 
     - name: Register public key
       shell: cat {{ install_dir }}/deploy/keys/gitlab/load_balancer/id_rsa.pub

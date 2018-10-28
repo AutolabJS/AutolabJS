@@ -3,7 +3,7 @@
   tasks:
     - name: Build MySQL Container
       docker_container:
-        name: autolab-db
+        name: autolabjs-db
         image: "mysql:5.7"
         detach: yes
         network_mode: host
@@ -29,4 +29,4 @@
     - pause: seconds=10
 
     - name: Create AutolabJS database
-      command: docker exec autolab-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE AutolabJS'"
+      command: docker exec autolabjs-db bash -c "mysql -u root -p{{ mysql_root_pass }} -e 'CREATE DATABASE AutolabJS'"

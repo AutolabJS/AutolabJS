@@ -3,7 +3,7 @@
   tasks:
     - name: Stop and Remove Database Container
       docker_container:
-        name: autolab-db
+        name: autolabjs-db
         state: absent
       ignore_errors: yes
 

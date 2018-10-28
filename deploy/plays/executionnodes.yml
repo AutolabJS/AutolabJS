@@ -12,7 +12,11 @@
         - "deploy/keys/gitlab/execution_nodes/{{ en_dir }}"
 
     - name: Generate certificate for execution node
-      include_tasks: tasks/createCert.yml domain="deploy/keys/execution_nodes/{{ en_dir }}" common_name="{{ inventory_hostname }}.{{ organization }}"
+      include_tasks: tasks/createCert.yml
+      vars:
+        domain: "deploy/keys/execution_nodes/{{ en_dir }}"
+        common_name: "{{ inventory_hostname }}.{{ organization }}"
+
 
     - copy:
         src: "{{ install_dir }}/deploy/keys/execution_nodes/{{ en_dir }}/"
@@ -20,7 +24,11 @@
         mode: 0755
 
     - name: Generate ssh login keys for Gitlab
-      include_tasks: tasks/sshKeyGen.yml path="deploy/keys/gitlab/execution_nodes/{{ en_dir }}" comment="load balancer key for {{ inventory_hostname }}@autolabjs"
+      include_tasks: tasks/sshKeyGen.yml
+      vars:
+        path: "deploy/keys/gitlab/execution_nodes/{{ en_dir }}"
+        comment: "load balancer key for {{ inventory_hostname }}@autolabjs"
+
 
     - name: Register public key
       shell: "cat {{ install_dir }}/deploy/keys/gitlab/execution_nodes/{{ en_dir }}/id_rsa.pub"

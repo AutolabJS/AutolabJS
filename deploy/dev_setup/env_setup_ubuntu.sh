@@ -34,3 +34,4 @@ then
     wget  -P packages/  https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb
 fi
 dpkg -i packages/vagrant_1.9.3_x86_64.deb
+vagrant plugin install vagrant-disksize
