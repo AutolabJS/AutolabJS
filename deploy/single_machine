@@ -1,5 +1,6 @@
 # This hosts file is for a single machine installation of AutolabJS software
 
+# Place holder for unique host on which main server and load balancer of AutolabJS run
 [machines]
 m1
 
