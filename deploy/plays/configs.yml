@@ -1,0 +1,8 @@
+#generate all the required config files from templates
+- hosts: database
+  tasks:
+    - name: Create mysql login config from template file
+      template:
+        src: templates/my.cnf.j2
+        dest: "../configs/db/my.cnf"
+        mode: '0600'
