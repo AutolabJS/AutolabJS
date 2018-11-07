@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 RUN apt-get update
 # make sure that locales package is available
@@ -14,7 +14,7 @@ ENV LC_ALL en_IN.UTF-8
 # verify modified configuration
 RUN dpkg-reconfigure --frontend noninteractive locales
 
-RUN apt-get update && apt-get install -y curl
+RUN apt-get update && apt-get install -y curl gnupg
 RUN curl -sL https://deb.nodesource.com/setup_8.x -o nodesource_setup.sh
 RUN bash nodesource_setup.sh
 RUN apt-get update && apt-get install -y software-properties-common && \
