@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM autolabjs/nodejs:0.4.0
 
 RUN apt-get update
 # make sure that locales package is available

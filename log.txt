@@ -1,0 +1,536 @@
++ '[' -d tests/deployment_tests ']'
++ ./main_server/node_modules/.bin/nyc --reporter=lcov --reporter=text-lcov -s bash tests/deployment_tests/test.sh
++ config=./env.conf
++ cd tests/deployment_tests
++ set -o allexport
++ [[ -f ./env.conf ]]
++ . ./env.conf
+++ TMPDIR=/tmp
+++ NODE_TLS_REJECT_UNAUTHORIZED=0
+++ COMMITPATH=/tmp/gitlab_tests/project
+++ GITLABTEMP=/tmp/gitlab_tests/temp
+++ GIT_SSL_NO_VERIFY=1
+++ GITLAB_DATA=/tmp/gitlab_data
+++ NUMBER_OF_EXECUTION_NODES=10
+++ INSTALL_DIR=/opt/autolabjs
++ BATS=node_modules/bats/libexec/bats
++ TESTDIR=
++ set +o allexport
++ mkdir -p ../backup
++ cp /opt/autolabjs/deploy/configs/main_server/labs.json ../backup/initial_labs.json
++ bash helper_scripts/setup.sh
++ git config --global user.email autolabjs@autolabjs.com
++ git config --global user.name autolabjs
++ sudo docker exec gitlab sed -i 's/# gitlab_rails\['\''rate_limit_requests_per_period'\''] = 10/gitlab_rails\['\''rate_limit_requests_per_period'\''] = 1000/' /etc/gitlab/gitlab.rb
++ sudo docker exec gitlab gitlab-ctl reconfigure
+gitlab Reconfigured!
++ sudo docker exec gitlab gitlab-ctl restart
+ok: run: gitaly: (pid 4430) 0s
+ok: run: gitlab-monitor: (pid 4442) 1s
+ok: run: gitlab-workhorse: (pid 4446) 0s
+ok: run: logrotate: (pid 4462) 0s
+ok: run: nginx: (pid 4468) 0s
+ok: run: node-exporter: (pid 4477) 0s
+ok: run: postgres-exporter: (pid 4519) 1s
+ok: run: postgresql: (pid 4529) 0s
+ok: run: prometheus: (pid 4531) 1s
+ok: run: redis: (pid 4548) 0s
+ok: run: redis-exporter: (pid 4552) 0s
+ok: run: sidekiq: (pid 4558) 1s
+ok: run: sshd: (pid 4562) 0s
+ok: run: unicorn: (pid 4566) 1s
++ sudo apt-get install -y mysql-client
+Reading package lists...
+Building dependency tree...
+Reading state information...
+mysql-client is already the newest version (5.7.24-0ubuntu0.16.04.1).
+0 upgraded, 0 newly installed, 0 to remove and 57 not upgraded.
++ cd ../../
+++ pwd
++ bash scripts/npm_install.sh deployment /home/jineet/AutolabJS
++ usage=deployment
++ base_directory=/home/jineet/AutolabJS
++ production=("main_server" "main_server/public/js" "load_balancer" "execution_nodes" "util")
++ test=("tests/deployment_tests" "tests/functional_tests" "tests/test_modules")
++ travisTests=("tests/functional_tests" "tests/test_modules")
++ deployment=("tests/deployment_tests" "tests/test_modules")
++ componentPaths=()
++ '[' '!' /home/jineet/AutolabJS ']'
++ '[' deployment == production ']'
++ '[' deployment == travis ']'
++ '[' deployment == deployment ']'
++ componentPaths=(${deployment[@]})
++ for i in '"${componentPaths[@]}"'
++ npm install --silent --prefix /home/jineet/AutolabJS/tests/deployment_tests
++ for i in '"${componentPaths[@]}"'
++ npm install --silent --prefix /home/jineet/AutolabJS/tests/test_modules
+++ ls shell
++ tests='concurrent_eval.sh
+container.sh
+demo_lab.sh
+docker_locale.sh
+gitlab_en.sh
+gitlab.sh
+scoreboard.sh
+website_load.sh'
++ echo -e '\n Post Install Checks \n'
+
+ Post Install Checks 
+
++ for test in '$tests'
+++ echo concurrent_eval.sh
+++ tr _ ' '
+++ sed -e 's/\b\(.\)/\u\1/g'
++ testName='Concurrent Eval.Sh'
++ echo -e '\n========== Concurrent Eval Checks =========='
+
+========== Concurrent Eval Checks ==========
++ set +e
++ bash shell/concurrent_eval.sh
++ TESTDIR=execution_node
++ export TESTDIR
++ bash ./helper_scripts/concurrent_eval/concurrent_eval_setup.sh
++ user=("2015A7PS101G" "2015A7PS102G" "2015A7PS201G" "2015A7PS202G" "2015A7PS203G" "2015A7PS204G" "2015A7PS205G")
++ pass=12345678
++ testType=unit_tests
++ labAuthorPath=/tmp/gitlab_data/lab_author
++ studentPath=/tmp/gitlab_data/student
++ '[' -d /tmp/gitlab_data/lab_author ']'
++ '[' -d /tmp/gitlab_data/student ']'
++ bash ./helper_scripts/create_user.sh lab_author 12345678
++ user=lab_author
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("lab_author", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ mkdir -p /tmp/gitlab_data/lab_author
++ cp -rf ../../docs/examples/unit_tests/author_solution ../../docs/examples/unit_tests/Driver14.cpp ../../docs/examples/unit_tests/Driver3.py ../../docs/examples/unit_tests/Driver.cpp ../../docs/examples/unit_tests/Driver.java ../../docs/examples/unit_tests/Driver.py ../../docs/examples/unit_tests/execute.sh ../../docs/examples/unit_tests/README.md ../../docs/examples/unit_tests/README.txt ../../docs/examples/unit_tests/student_solution ../../docs/examples/unit_tests/test_cases ../../docs/examples/unit_tests/test_info.txt /tmp/gitlab_data/lab_author
++ bash ./helper_scripts/setup_project.sh lab_author 12345678 lab1 /tmp/gitlab_data/lab_author
++ user=lab_author
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/lab_author
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "lab1"); project.commit("/tmp/gitlab_data/lab_author").catch((e) => {console.log(e); process.exit(1);})'
++ (( i=0 ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS101G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS101G
++ bash ./helper_scripts/create_user.sh 2015A7PS101G 12345678
++ user=2015A7PS101G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS101G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS101G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS101G
++ user=2015A7PS101G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS101G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS101G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS101G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS101G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS102G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS102G
++ bash ./helper_scripts/create_user.sh 2015A7PS102G 12345678
++ user=2015A7PS102G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS102G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS102G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS102G
++ user=2015A7PS102G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS102G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS102G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS102G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS102G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS201G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS201G
++ bash ./helper_scripts/create_user.sh 2015A7PS201G 12345678
++ user=2015A7PS201G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS201G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS201G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS201G
++ user=2015A7PS201G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS201G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS201G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS201G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS201G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS202G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS202G
++ bash ./helper_scripts/create_user.sh 2015A7PS202G 12345678
++ user=2015A7PS202G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS202G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS202G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS202G
++ user=2015A7PS202G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS202G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS202G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS202G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS202G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS203G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS203G
++ bash ./helper_scripts/create_user.sh 2015A7PS203G 12345678
++ user=2015A7PS203G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS203G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS203G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS203G
++ user=2015A7PS203G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS203G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS203G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS203G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS203G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS204G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS204G
++ bash ./helper_scripts/create_user.sh 2015A7PS204G 12345678
++ user=2015A7PS204G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS204G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS204G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS204G
++ user=2015A7PS204G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS204G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS204G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS204G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS204G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ mkdir -p /tmp/gitlab_data/student/2015A7PS205G
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student/2015A7PS205G
++ bash ./helper_scripts/create_user.sh 2015A7PS205G 12345678
++ user=2015A7PS205G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS205G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS205G 12345678 lab1 /tmp/gitlab_data/student/2015A7PS205G
++ user=2015A7PS205G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student/2015A7PS205G
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS205G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS205G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student/2015A7PS205G").catch((e) => {console.log(e); process.exit(1);})'
++ (( i++ ))
++ (( i<7 ))
++ cd ../test_modules
++ TYPE_OF_TEST=deployment
++ node_modules/bats/libexec/bats bats/execution_node.bats
+1..2
+ok 1 Two concurrent executions run on two different execution nodes
+ok 2 Five concurrent executions run on five different execution nodes
++ cd ../deployment_tests
++ bash ./helper_scripts/concurrent_eval/concurrent_eval_teardown.sh
++ user=("lab_author" "2015A7PS101G" "2015A7PS102G" "2015A7PS201G" "2015A7PS202G" "2015A7PS203G" "2015A7PS204G" "2015A7PS205G")
++ (( i=0 ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh lab_author
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS101G
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS102G
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS201G
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS202G
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS203G
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS204G
++ (( i++ ))
++ (( i<8 ))
++ bash ./helper_scripts/delete_user.sh 2015A7PS205G
++ (( i++ ))
++ (( i<8 ))
++ rm -rf /tmp/gitlab_data
++ status=0
++ set +e
++ bash ./helper_scripts/cleanup.sh
+++ node -e 'require("./gitlab.js").listUsers().then((data) => console.log(data)).catch((e) => {console.log(e); process.exit(1);})'
++ userList='[ '\''root'\'' ]'
+++ tr , '\n'
+++ tr -d ' '
+++ tr -d ']'
+++ tr -d '['
+++ tr -d \'
+++ echo '[ '\''root'\'' ]'
++ users=root
++ for user in '$users'
++ '[' root '!=' root ']'
++ cmp /opt/autolabjs/deploy/configs/main_server/labs.json ../backup/initial_labs.json
++ labsJsonCheck=0
++ '[' 0 -ne 0 ']'
++ '[' 0 -ne 0 ']'
++ for test in '$tests'
+++ echo container.sh
+++ tr _ ' '
+++ sed -e 's/\b\(.\)/\u\1/g'
++ testName=Container.Sh
++ echo -e '\n========== Container Checks =========='
+
+========== Container Checks ==========
++ set +e
++ bash shell/container.sh
+1..6
+ok 1 Main Server Container Check
+ok 2 Load Balancer Container Check
+ok 3 Execution Nodes Container Check
+ok 4 Database Container Check
+ok 5 Gitlab Container Check
+not ok 6 Restart Script Check
+# (in test file bats/container.bats, line 35)
+#   `sudo bash -c "bash ./helper_scripts/container/restart_script_check.sh"' failed
++ status=0
++ set +e
++ bash ./helper_scripts/cleanup.sh
+++ node -e 'require("./gitlab.js").listUsers().then((data) => console.log(data)).catch((e) => {console.log(e); process.exit(1);})'
++ userList='[ '\''root'\'' ]'
+++ echo '[ '\''root'\'' ]'
+++ tr , '\n'
+++ tr -d ' '
+++ tr -d ']'
+++ tr -d '['
+++ tr -d \'
++ users=root
++ for user in '$users'
++ '[' root '!=' root ']'
++ cmp /opt/autolabjs/deploy/configs/main_server/labs.json ../backup/initial_labs.json
++ labsJsonCheck=0
++ '[' 0 -ne 0 ']'
++ '[' 0 -ne 0 ']'
++ for test in '$tests'
+++ echo demo_lab.sh
+++ sed -e 's/\b\(.\)/\u\1/g'
+++ tr _ ' '
++ testName='Demo Lab.Sh'
++ echo -e '\n========== Demo Lab Checks =========='
+
+========== Demo Lab Checks ==========
++ set +e
++ bash shell/demo_lab.sh
++ export TESTDIR
++ TESTDIR=unit_tests
++ bash helper_scripts/demo_lab/gitlab_setup.sh 2015A7PS006G 12345678 lab1 unit_tests
++ user=2015A7PS006G
++ pass=12345678
++ lab=lab1
++ testType=unit_tests
++ labAuthorPath=/tmp/gitlab_data/lab_author
++ studentPath=/tmp/gitlab_data/student
++ '[' -d /tmp/gitlab_data/lab_author ']'
++ '[' -d /tmp/gitlab_data/student ']'
++ mkdir -p /tmp/gitlab_data/lab_author
++ mkdir -p /tmp/gitlab_data/student
++ cp -rf ../../docs/examples/unit_tests/author_solution ../../docs/examples/unit_tests/Driver14.cpp ../../docs/examples/unit_tests/Driver3.py ../../docs/examples/unit_tests/Driver.cpp ../../docs/examples/unit_tests/Driver.java ../../docs/examples/unit_tests/Driver.py ../../docs/examples/unit_tests/execute.sh ../../docs/examples/unit_tests/README.md ../../docs/examples/unit_tests/README.txt ../../docs/examples/unit_tests/student_solution ../../docs/examples/unit_tests/test_cases ../../docs/examples/unit_tests/test_info.txt /tmp/gitlab_data/lab_author
++ cp -rf ../../docs/examples/unit_tests/student_solution/c ../../docs/examples/unit_tests/student_solution/cpp ../../docs/examples/unit_tests/student_solution/cpp14 ../../docs/examples/unit_tests/student_solution/java ../../docs/examples/unit_tests/student_solution/python2 ../../docs/examples/unit_tests/student_solution/python3 /tmp/gitlab_data/student
++ bash ./helper_scripts/create_user.sh lab_author 12345678
++ user=lab_author
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("lab_author", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/create_user.sh 2015A7PS006G 12345678
++ user=2015A7PS006G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS006G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh lab_author 12345678 lab1 /tmp/gitlab_data/lab_author
++ user=lab_author
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/lab_author
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "lab1"); project.commit("/tmp/gitlab_data/lab_author").catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS006G 12345678 lab1 /tmp/gitlab_data/student
++ user=2015A7PS006G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS006G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS006G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student").catch((e) => {console.log(e); process.exit(1);})'
++ cd ../test_modules
++ echo -e '\n Unit test checks \n'
+
+ Unit test checks 
+
++ node_modules/bats/libexec/bats bats/unit_tests.bats
+1..6
+ok 1 Unit test for C
+ok 2 Unit test for C++ 2011
+ok 3 Unit test for C++ 2014
+ok 4 Unit test for Java
+ok 5 Unit test for Python 2
+ok 6 Unit test for Python 3
++ cd ../deployment_tests
++ bash helper_scripts/demo_lab/gitlab_teardown.sh 2015A7PS006G 12345678
++ user=2015A7PS006G
++ bash ./helper_scripts/delete_user.sh lab_author
++ bash ./helper_scripts/delete_user.sh 2015A7PS006G
++ rm -rf /tmp/gitlab_data
++ echo -e '\n Unit test checks completed \n'
+
+ Unit test checks completed 
+
++ bash helper_scripts/demo_lab/gitlab_setup.sh 2015A7PS006G 12345678 lab1 io_tests
++ user=2015A7PS006G
++ pass=12345678
++ lab=lab1
++ testType=io_tests
++ labAuthorPath=/tmp/gitlab_data/lab_author
++ studentPath=/tmp/gitlab_data/student
++ '[' -d /tmp/gitlab_data/lab_author ']'
++ '[' -d /tmp/gitlab_data/student ']'
++ mkdir -p /tmp/gitlab_data/lab_author
++ mkdir -p /tmp/gitlab_data/student
++ cp -rf ../../docs/examples/io_tests/execute.sh ../../docs/examples/io_tests/README.md ../../docs/examples/io_tests/README.txt ../../docs/examples/io_tests/student_solution ../../docs/examples/io_tests/test_cases ../../docs/examples/io_tests/test_info.txt /tmp/gitlab_data/lab_author
++ cp -rf ../../docs/examples/io_tests/student_solution/c ../../docs/examples/io_tests/student_solution/cpp ../../docs/examples/io_tests/student_solution/cpp14 ../../docs/examples/io_tests/student_solution/java ../../docs/examples/io_tests/student_solution/python2 ../../docs/examples/io_tests/student_solution/python3 /tmp/gitlab_data/student
++ bash ./helper_scripts/create_user.sh lab_author 12345678
++ user=lab_author
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("lab_author", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/create_user.sh 2015A7PS006G 12345678
++ user=2015A7PS006G
++ pass=12345678
++ node -e 'User = require("./gitlab.js").User; user = new User("2015A7PS006G", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh lab_author 12345678 lab1 /tmp/gitlab_data/lab_author
++ user=lab_author
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/lab_author
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "lab1"); project.commit("/tmp/gitlab_data/lab_author").catch((e) => {console.log(e); process.exit(1);})'
++ bash ./helper_scripts/setup_project.sh 2015A7PS006G 12345678 lab1 /tmp/gitlab_data/student
++ user=2015A7PS006G
++ pass=12345678
++ lab=lab1
++ commitPath=/tmp/gitlab_data/student
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS006G", "12345678", "lab1"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
++ node -e 'Project = require("./gitlab.js").Project; project = new Project("2015A7PS006G", "12345678", "lab1"); project.commit("/tmp/gitlab_data/student").catch((e) => {console.log(e); process.exit(1);})'
++ cd ../test_modules
++ TESTDIR=io_tests
++ echo -e '\n IO test checks \n'
+
+ IO test checks 
+
++ node_modules/bats/libexec/bats bats/io_tests.bats
+1..6
+ok 1 IO test for C
+ok 2 IO test for C++ 2011
+ok 3 IO test for C++ 2014
+ok 4 IO test for Java
+ok 5 IO test for Python 2
+ok 6 IO test for Python 3
++ cd ../deployment_tests
++ bash helper_scripts/demo_lab/gitlab_teardown.sh 2015A7PS006G 12345678
++ user=2015A7PS006G
++ bash ./helper_scripts/delete_user.sh lab_author
++ bash ./helper_scripts/delete_user.sh 2015A7PS006G
++ rm -rf /tmp/gitlab_data
++ echo -e '\n IO test checks completed \n'
+
+ IO test checks completed 
+
++ status=0
++ set +e
++ bash ./helper_scripts/cleanup.sh
+++ node -e 'require("./gitlab.js").listUsers().then((data) => console.log(data)).catch((e) => {console.log(e); process.exit(1);})'
++ userList='[ '\''root'\'' ]'
+++ echo '[ '\''root'\'' ]'
+++ tr -d \'
+++ tr -d '['
+++ tr -d ' '
+++ tr -d ']'
+++ tr , '\n'
++ users=root
++ for user in '$users'
++ '[' root '!=' root ']'
++ cmp /opt/autolabjs/deploy/configs/main_server/labs.json ../backup/initial_labs.json
++ labsJsonCheck=0
++ '[' 0 -ne 0 ']'
++ '[' 0 -ne 0 ']'
++ for test in '$tests'
+++ echo docker_locale.sh
+++ tr _ ' '
+++ sed -e 's/\b\(.\)/\u\1/g'
++ testName='Docker Locale.Sh'
++ echo -e '\n========== Docker Locale Checks =========='
+
+========== Docker Locale Checks ==========
++ set +e
++ bash shell/docker_locale.sh
++ TESTDIR=docker_locale
++ export TESTDIR
++ node_modules/bats/libexec/bats bats/docker_locale.bats
+1..1
+ok 1 Docker locale accepts UTF-8 characters
++ status=0
++ set +e
++ bash ./helper_scripts/cleanup.sh
+++ node -e 'require("./gitlab.js").listUsers().then((data) => console.log(data)).catch((e) => {console.log(e); process.exit(1);})'
++ userList='[ '\''root'\'' ]'
+++ echo '[ '\''root'\'' ]'
+++ tr -d \'
+++ tr -d '['
+++ tr -d ']'
+++ tr -d ' '
+++ tr , '\n'
++ users=root
++ for user in '$users'
++ '[' root '!=' root ']'
++ cmp /opt/autolabjs/deploy/configs/main_server/labs.json ../backup/initial_labs.json
++ labsJsonCheck=0
++ '[' 0 -ne 0 ']'
++ '[' 0 -ne 0 ']'
++ for test in '$tests'
+++ echo gitlab_en.sh
+++ tr _ ' '
+++ sed -e 's/\b\(.\)/\u\1/g'
++ testName='Gitlab En.Sh'
++ echo -e '\n========== Gitlab En Checks =========='
+
+========== Gitlab En Checks ==========
++ set +e
++ bash shell/gitlab_en.sh
++ TESTDIR=gitlab_en_cloning
++ export TESTDIR
++ node_modules/bats/libexec/bats bats/gitlab_en_cloning.bats
+1..1
+not ok 1 Key added for execution node
+# (in test file bats/gitlab_en_cloning.bats, line 44)
+#   `cmp "./data/$TESTDIR/result.txt" "$BATS_TMPDIR/$TESTDIR/node$n.txt"' failed
+# + user=lab_author
+# + pass=12345678
+# + node -e 'User = require("./gitlab.js").User; user = new User("lab_author", "12345678"); user.addUser().catch((e) => {console.log(e); process.exit(1);})'
+# + user=lab_author
+# + pass=12345678
+# + lab=test
+# + commitPath=/tmp/gitlab_en_cloning
+# + node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "test"); project.createProject().catch((e) => {console.log(e); process.exit(1);})'
+# + node -e 'Project = require("./gitlab.js").Project; project = new Project("lab_author", "12345678", "test"); project.commit("/tmp/gitlab_en_cloning").catch((e) => {console.log(e); process.exit(1);})'
+# cmp: EOF on /tmp/gitlab_en_cloning/node1.txt
++ status=1
++ set +e
++ bash ./helper_scripts/cleanup.sh
+++ node -e 'require("./gitlab.js").listUsers().then((data) => console.log(data)).catch((e) => {console.log(e); process.exit(1);})'
++ userList='[ '\''root'\'' ]'
+++ echo '[ '\''root'\'' ]'
+++ tr -d \'
+++ tr -d '['
+++ tr -d ']'
+++ tr -d ' '
+++ tr , '\n'
++ users=root
++ for user in '$users'
++ '[' root '!=' root ']'
++ cmp /opt/autolabjs/deploy/configs/main_server/labs.json ../backup/initial_labs.json
++ labsJsonCheck=0
++ '[' 0 -ne 0 ']'
++ '[' 1 -ne 0 ']'
++ exit 1
