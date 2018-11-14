@@ -2,14 +2,10 @@
 
 #save docker images on machine-1
 # shellcheck disable=SC2024
-sudo docker save main_server > main_server.tar
+sudo docker save 'autolabjs/nodejs:0.4.0' > nodejs.tar
 # shellcheck disable=SC2024
-sudo docker save load_balancer > load_balancer.tar
+sudo docker save 'autolabjs/gitlab-ce:10.1.4-ce.0' > gitlab.tar
 # shellcheck disable=SC2024
-sudo docker save 'gitlab/gitlab-ce' > gitlab.tar
+sudo docker save 'autolabjs/mysql:5.7.4' > mysql.tar
 # shellcheck disable=SC2024
-sudo docker save mysql > mysql.tar
-# shellcheck disable=SC2024
-sudo docker save execution_node > execution_node.tar
-# shellcheck disable=SC2024
-sudo docker save ubuntu > ubuntu-16.04.tar
+sudo docker save 'autolabjs/executionnode:0.4.0' > execution_node.tar

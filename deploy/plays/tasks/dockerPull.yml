@@ -4,6 +4,7 @@
     docker_image:
       name: "{{ item }}"
     with_items:
-      - mysql:5.7.4
-      - gitlab/gitlab-ce:10.1.4-ce.0
-      - ubuntu:16.04
+      - autolabjs/mysql:5.7.4
+      - autolabjs/gitlab-ce:10.1.4-ce.0
+      - autolabjs/nodejs:0.4.0
+      - autolabjs/executionnode:0.4.0

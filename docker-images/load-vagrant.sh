@@ -5,20 +5,14 @@
 # all the utilized docker images are removed immediately to save on precious 10GB disk space on VM
 
 # shellcheck disable=SC2024
-sudo docker load < main_server.tar
-rm main_server.tar
-# shellcheck disable=SC2024
-sudo docker load < load_balancer.tar
-rm load_balancer.tar
+sudo docker load < 'nodejs.tar'
+rm 'nodejs.tar'
 # shellcheck disable=SC2024
 sudo docker load < 'gitlab.tar'
-rm gitlab.tar
+rm 'gitlab.tar'
 # shellcheck disable=SC2024
-sudo docker load < mysql.tar
-rm mysql.tar
+sudo docker load < 'mysql.tar'
+rm 'mysql.tar'
 # shellcheck disable=SC2024
-sudo docker load < execution_node.tar
-rm execution_node.tar
-# shellcheck disable=SC2024
-sudo docker load < ubuntu-16.04.tar
-rm ubuntu-16.04.tar
+sudo docker load < 'execution_node.tar'
+rm 'execution_node.tar'
