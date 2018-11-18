@@ -1,4 +1,4 @@
-FROM autolabjs/executionnode:latest
+FROM autolabjs/executionnode:0.4.0
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 

@@ -1,4 +1,4 @@
-FROM autolabjs/nodejs:latest
+FROM autolabjs/nodejs:0.4.0
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
