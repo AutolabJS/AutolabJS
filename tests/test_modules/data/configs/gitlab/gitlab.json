@@ -1,0 +1,8 @@
+{
+  "gitlab": {
+    "hostname": "localhost",
+    "port": "80",
+    "username": "root",
+    "password": "12345678"
+  }
+}
