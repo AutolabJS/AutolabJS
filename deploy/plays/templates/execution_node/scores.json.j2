@@ -2,8 +2,8 @@
   "node_details":
     {
       "role": "execution_node",
-      "hostname": "localhost",
-      "port": "8096"
+      "hostname": "{{ ansible_host }}",
+      "port": "{{ en_port }}"
     },
   "submission_details":
     {

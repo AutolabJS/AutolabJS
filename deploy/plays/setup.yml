@@ -1,12 +1,12 @@
+- hosts: executionnodes
+  tasks:
+    - name: Install node packages mentioned in package.json for execution nodes
+      command: "npm install --prefix {{ install_dir }}/execution_nodes/{{ inventory_hostname }}"
+
 - hosts: machines
   vars:
     main_server_public: "{{ install_dir }}/main_server/public"
   tasks:
-
-    - name: Install node packages mentioned in package.json for execution nodes
-      command: "npm install --prefix {{ install_dir }}/execution_nodes/execution_node_{{ item }}"
-      with_sequence: start=1 count={{ number_of_execution_nodes }}
-
     - name: Install node packages mentioned in package.json for remaining components
       command: "npm install --prefix {{ install_dir }}/{{ item }}"
       with_items:

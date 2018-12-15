@@ -68,6 +68,27 @@
         dest: "../configs/load_balancer/nodes_data_conf.json"
         mode: '0600'
 
+- hosts: executionnodes
+  tasks:
+    #execution node configs
+    - name: Create config directory of an execution node
+      file:
+        path: "../configs/execution_nodes/{{ inventory_hostname }}"
+        mode: '0600'
+        state: directory
+
+    - name: Create config of an execution node from template file
+      template:
+        src: templates/execution_node/conf.json.j2
+        dest: "../configs/execution_nodes/{{ inventory_hostname }}/conf.json"
+        mode: '0600'
+
+    - name: Create score json template of an execution node from template file
+      template:
+        src: templates/execution_node/scores.json.j2
+        dest: "../configs/execution_nodes/{{ inventory_hostname }}/scores.json"
+        mode: '0600'
+
 - hosts: gitlab
   tasks:
     #load balancer configs

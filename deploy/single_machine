@@ -14,16 +14,16 @@ lb
 # comment out the unnecessary ones and limit the installation to few
 # execution nodes.
 [executionnodes]
-en1 en_dir=execution_node_1 port=8091
-en2 en_dir=execution_node_2 port=8092
-en3 en_dir=execution_node_3 port=8093
-en4 en_dir=execution_node_4 port=8094
-en5 en_dir=execution_node_5 port=8095
-en6 en_dir=execution_node_6 port=8096
-en7 en_dir=execution_node_7 port=8097
-en8 en_dir=execution_node_8 port=8098
-en9 en_dir=execution_node_9 port=8099
-en10 en_dir=execution_node_10 port=8100
+en1 en_port=8091
+en2 en_port=8092
+en3 en_port=8093
+en4 en_port=8094
+en5 en_port=8095
+en6 en_port=8096
+en7 en_port=8097
+en8 en_port=8098
+en9 en_port=8099
+en10 en_port=8100
 
 [database]
 mysqldb
@@ -44,7 +44,6 @@ ansible_python_interpreter=/usr/bin/python2
 #optionally, you can change host name to proper DNS name or IP address
 ansible_host=localhost
 install_dir=/opt/autolabjs
-number_of_execution_nodes=10
 
 #remember to change host name to proper DNS names or IP addresses
 ms_hostname=localhost
@@ -77,8 +76,8 @@ docker_images_location=/path/to/docker/images
 [mainserver:vars]
 course_name="Object Oriented Programming"
 course_number="CS F213"
-instructor_in_charge="TSRK Prasad"
-other_instructors='["Rajat","Tejas"]'
+instructor_in_charge="Prasad Talasila"
+other_instructors='["Rajat Agarwal","Ankshit Jain"]'
 ms_admin_pass=12345678
 
 [loadbalancer:vars]
@@ -93,6 +92,5 @@ submissions_dir=load_balancer/submissions
 [database:vars]
 #no exclusive variables for machines group
 
-#GitLab credentials
 [git-credentials:vars]
 #no exclusive variables for machines group
