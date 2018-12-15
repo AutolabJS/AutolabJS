@@ -53,25 +53,26 @@
   ],
   "server_info": {
     "role": "main_server",
-    "hostname": "localhost",
-    "port": "9000"
+    "hostname": "{{ ms_hostname }}",
+    "port" : "{{ ms_port }}"
   },
-  "database": {
+  "database" :
+  {
     "role": "database",
-    "host": "localhost",
-    "user": "root",
-    "password": "root",
-    "database": "AutolabJS"
+    "host"     : "{{ db_hostname }}",
+    "user"    : "root",
+    "password" : "{{ mysql_root_pass }}",
+    "database" : "AutolabJS"
   },
   "gitlab": {
     "role": "gitlab",
-    "hostname": "localhost",
+    "hostname": "{{ gitlab_hostname }}",
     "port": "80"
   },
   "load_balancer": {
     "role": "load_balancer",
-    "hostname": "localhost",
-    "port": "8081",
+    "hostname": "{{ lb_hostname }}",
+    "port": "{{ lb_port }}",
     "maxLogLength": "256kb"
   }
 }

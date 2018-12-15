@@ -1,8 +1,99 @@
 #generate all the required config files from templates
 - hosts: database
   tasks:
+    #MySQL DB config
+    - name: Create config directory of MySQL server
+      file:
+        path: "../configs/db/conf.d"
+        mode: '0600'
+        state: directory
+
     - name: Create mysql login config from template file
       template:
-        src: templates/my.cnf.j2
+        src: templates/db/my.cnf.j2
         dest: "../configs/db/my.cnf"
+        mode: '0600'
+
+    - name: Copy MySQL server config
+      copy:
+        src: templates/db/conf.d/mysql.conf
+        dest: "../configs/db/conf.d/mysql.conf"
+        mode: '0600'
+
+- hosts: mainserver
+  tasks:
+    #Main server configs
+    - name: Create config directory of main server
+      file:
+        path: "../configs/main_server"
+        mode: '0600'
+        state: directory
+
+    - name: Create config of main server from template file
+      template:
+        src: templates/main_server/conf.json.j2
+        dest: "../configs/main_server/conf.json"
+        mode: '0600'
+
+    - name: Create course config of main server from template file
+      template:
+        src: templates/main_server/course.json.j2
+        dest: "../configs/main_server/course.json"
+        mode: '0600'
+
+    - name: Create admin config of main server from template file
+      template:
+        src: templates/main_server/APIKeys.json.j2
+        dest: "../configs/main_server/APIKeys.json"
+        mode: '0600'
+
+    - name: Copy labs config of main server
+      copy:
+        src: templates/main_server/labs.json
+        dest: "../configs/main_server/labs.json"
+        mode: '0600'
+
+- hosts: loadbalancer
+  tasks:
+    #load balancer configs
+    - name: Create config directory of load balancer
+      file:
+        path: "../configs/load_balancer"
+        mode: '0600'
+        state: directory
+
+    - name: Create config of main server from template file
+      template:
+        src: templates/load_balancer/nodes_data_conf.json.j2
+        dest: "../configs/load_balancer/nodes_data_conf.json"
+        mode: '0600'
+
+- hosts: gitlab
+  tasks:
+    #load balancer configs
+    - name: Create config directory of gitlab
+      file:
+        path: "../configs/gitlab"
+        mode: '0600'
+        state: directory
+
+    - name: Create config of gitlab from template file
+      template:
+        src: templates/gitlab/gitlab.json.j2
+        dest: "../configs/gitlab/gitlab.json"
+        mode: '0600'
+
+- hosts: all
+  tasks:
+    #load balancer configs
+    - name: Create config directory of util
+      file:
+        path: "../configs/util"
+        mode: '0600'
+        state: directory
+
+    - name: Create config of util from template file
+      template:
+        src: templates/util/logger.json.j2
+        dest: "../configs/util/logger.json"
         mode: '0600'

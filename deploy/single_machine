@@ -45,6 +45,19 @@ ansible_python_interpreter=/usr/bin/python2
 ansible_host=localhost
 install_dir=/opt/autolabjs
 number_of_execution_nodes=10
+
+#remember to change host name to proper DNS names or IP addresses
+ms_hostname=localhost
+ms_port=9000
+lb_hostname=localhost
+lb_port=8081
+db_hostname=localhost
+#remember to change the password to a secure password
+mysql_root_pass=root
+gitlab_hostname=localhost
+#remember to change the password to a secure password
+gitlab_password=12345678
+
 # Key generation details
 country=IN
 state=Goa
@@ -62,7 +75,11 @@ docker_images_location=/path/to/docker/images
 #no exclusive variables for machines group
 
 [mainserver:vars]
-#no exclusive variables for mainserver group
+course_name="Object Oriented Programming"
+course_number="CS F213"
+instructor_in_charge="TSRK Prasad"
+other_instructors='["Rajat","Tejas"]'
+ms_admin_pass=12345678
 
 [loadbalancer:vars]
 submissions_dir=load_balancer/submissions
@@ -73,14 +90,9 @@ submissions_dir=load_balancer/submissions
 [git:vars]
 #no exclusive variables for git group
 
-#MySQL credentials
 [database:vars]
-#remember to change the password to a secure password
-mysql_root_pass=root
+#no exclusive variables for machines group
 
 #GitLab credentials
 [git-credentials:vars]
-#remember to change host name to proper DNS name or IP address
-gitlab_hostname=localhost
-#remember to change the password to a secure password
-gitlab_password=12345678
+#no exclusive variables for machines group
