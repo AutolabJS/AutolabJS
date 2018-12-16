@@ -54,6 +54,8 @@
         mode: '0600'
 
 - hosts: loadbalancer
+  vars:
+    executionnodes: "{{ groups['executionnodes'] }}"
   tasks:
     #load balancer configs
     - name: Create config directory of load balancer
@@ -62,7 +64,7 @@
         mode: '0600'
         state: directory
 
-    - name: Create config of main server from template file
+    - name: Create config of load balancer from template file
       template:
         src: templates/load_balancer/nodes_data_conf.json.j2
         dest: "../configs/load_balancer/nodes_data_conf.json"
