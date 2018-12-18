@@ -70,6 +70,7 @@ app_name=AutolabJS
 password=autolabjs
 
 # Development variables
+# The path should not have a trailing slash
 load_docker_images=no
 docker_images_location=/path/to/docker/images
 

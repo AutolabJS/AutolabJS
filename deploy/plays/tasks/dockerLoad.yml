@@ -7,5 +7,5 @@
     with_items:
       - { name: autolabjs/gitlab-ce, tag: 10.1.4-ce.0, path: gitlab.tar }
       - { name: autolabjs/mysql, tag: 5.7.4, path: mysql.tar }
-      - { name: autolabjs/nodejs, tag: 0.4.0, path: nodejs.tar }
-      - { name: autolabjs/executionnode, tag: 0.4.0, path: execution_node.tar }
+      - { name: autolabjs/nodejs, tag: 0.5.0, path: nodejs.tar }
+      - { name: autolabjs/executionnode, tag: 0.5.0, path: execution_node.tar }
