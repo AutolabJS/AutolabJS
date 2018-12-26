@@ -24,8 +24,8 @@ teardown() {
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/no_log.txt"
   cat "$BATS_TMPDIR/$TESTDIR/no_log.txt"
-  cat "data/$TESTDIR/no_log.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/no_log.txt" "data/$TESTDIR/no_log.txt"
+  cat "data/$TESTDIR/travis/no_log.txt"
+  cmp "$BATS_TMPDIR/$TESTDIR/no_log.txt" "data/$TESTDIR/travis/no_log.txt"
   result="$?"
   [ "$result" -eq 0 ]
 }
@@ -41,8 +41,8 @@ teardown() {
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/java_exception.txt"
   cat "$BATS_TMPDIR/$TESTDIR/java_exception.txt"
-  cat "data/$TESTDIR/shellOut_greater_than_25.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/java_exception.txt" "data/$TESTDIR/shellOut_greater_than_25.txt"
+  cat "data/$TESTDIR/travis/shellOut_greater_than_25.txt"
+  cmp "$BATS_TMPDIR/$TESTDIR/java_exception.txt" "data/$TESTDIR/travis/shellOut_greater_than_25.txt"
   result="$?"
   [ "$result" -eq 0 ]
 }
@@ -76,8 +76,8 @@ teardown() {
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt"
   cat "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt"
-  cat  "data/$TESTDIR/log_greater_than_50.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt" "data/$TESTDIR/log_greater_than_50.txt"
+  cat  "data/$TESTDIR/travis/log_greater_than_50.txt"
+  cmp "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt" "data/$TESTDIR/travis/log_greater_than_50.txt"
   result="$?"
   [ "$result" -eq 0 ]
 }
