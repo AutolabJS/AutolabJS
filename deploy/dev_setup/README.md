@@ -43,13 +43,13 @@ sudo bash host-install.sh
 ```
 
 **Application URLs**    
-After the installation, AutolabJS would be available on the _IP-Address / hostname_ of the guest machine at the following URLs.    
+After the installation, AutolabJS would be available at the following URLs.    
 
 | **Service**    | **URL**                        |
 |----------------|--------------------------------|
-| Main server    | https://IP_address:9000        |
-| AutolabJS Status | https://IP_address:9000/status |
-| Gitlab         | https://IP_address:9003        |
+| Main server    | https://localhost:9000        |
+| AutolabJS Status | https://localhost:9000/status |
+| Gitlab         | https://localhost:9003        |
 
 If you wish to make the Gitlab available at the standard ports of 80, 443 please complete the steps in **SSH Port Forwarding** section.    
 

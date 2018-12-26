@@ -27,7 +27,7 @@
         - bsdtar
         - wget
         - curl
-        - "linux-image-extra-{{ ansible_kernel }}"
+        - "linux-image-extra-virtual"
 
     - name: Adding the AUFS module
       modprobe: name=aufs

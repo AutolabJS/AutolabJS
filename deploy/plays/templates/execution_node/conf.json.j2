@@ -1,0 +1,17 @@
+{ "load_balancer" :{
+  "role": "load_balancer",
+  "hostname": "{{ lb_hostname }}",
+  "port": "{{ lb_port }}"
+},
+"gitlab" :{
+  "role": "gitlab",
+  "hostname": "{{ gitlab_hostname }}",
+  "port": "{{ gitlab_port }}"
+},
+"execution_node" :
+{
+  "role": "execution_node",
+  "hostname": "{{ ansible_host }}",
+  "port" : "{{ en_port }}"
+}
+}

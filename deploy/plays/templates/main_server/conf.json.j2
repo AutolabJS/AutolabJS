@@ -1,0 +1,27 @@
+{
+"load_balancer": {
+  "role": "load_balancer",
+  "hostname": "{{ lb_hostname }}",
+  "port": "{{ lb_port }}"
+},
+ "database" :
+ {
+   "role": "database",
+   "host"     : "{{ db_hostname }}",
+   "user"    : "root",
+   "password" : "{{ mysql_root_pass }}",
+   "database" : "AutolabJS"
+ },
+ "gitlab" :
+ {
+   "role": "gitlab",
+   "username":"{{ gitlab_username }}",
+   "password" : "{{ gitlab_password }}"
+ },
+ "main_server" :
+ {
+   "role": "main_server",
+   "hostname": "{{ ms_hostname }}",
+   "port" : "{{ ms_port }}"
+ }
+}

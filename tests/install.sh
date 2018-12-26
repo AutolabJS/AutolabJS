@@ -47,6 +47,8 @@ cp main_server/public/js/node_modules/jquery/dist/jquery.min.js main_server/publ
 cp main_server/public/js/node_modules/file-saver/FileSaver.min.js main_server/public/js/
 cp main_server/public/js/node_modules/materialize-css/dist/js/materialize.min.js main_server/public/js/
 cp main_server/public/js/node_modules/materialize-css/dist/css/materialize.min.css main_server/public/css/
+cp -R tests/test_modules/data/configs deploy/.
+cp -R tests/test_modules/helper_scripts/keys/* deploy/.
 
 # remove the node_modules directory
 rm -rf main_server/public/js/node_modules

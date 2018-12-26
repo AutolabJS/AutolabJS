@@ -1,2 +1,0 @@
-#for the moment, the dependencies.yml is being run from dependencies.sh
-- import_playbook: plays/configs.yml

@@ -25,22 +25,6 @@
         - "log/main_server"
         - "log/load_balancer"
 
-    - name: Creating log directories for execution nodes
-      file:
-        path: "{{ install_dir }}/log/execution_nodes/execution_node_{{ item }}"
-        state: directory
-        owner: "{{ ansible_user }}"
-        mode: 0755
-        recurse: yes
-      with_sequence: start=1 count="{{ number_of_execution_nodes }}"
-
-    - name: Copying files to directories of execution nodes
-      copy:
-        src: "../../execution_nodes/"
-        dest: "{{ install_dir }}/execution_nodes/execution_node_{{ item }}"
-        mode: 0755
-      with_sequence: start=1 count="{{ number_of_execution_nodes }}"
-
     - name: Copy files to remaining subdirectories of installation directory
       copy:
         src: "../../{{ item }}/"
@@ -52,3 +36,19 @@
         - "util"
         - "deploy"
         - "docker-images"
+
+- hosts: executionnodes
+  tasks:
+    - name: Creating log directories for execution nodes
+      file:
+        path: "{{ install_dir }}/log/execution_nodes/{{ inventory_hostname }}"
+        state: directory
+        owner: "{{ ansible_user }}"
+        mode: 0755
+        recurse: yes
+
+    - name: Copying files to directories of execution nodes
+      copy:
+        src: "../../execution_nodes/"
+        dest: "{{ install_dir }}/execution_nodes/{{ inventory_hostname }}"
+        mode: 0755

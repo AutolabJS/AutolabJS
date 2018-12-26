@@ -6,5 +6,5 @@
     with_items:
       - autolabjs/mysql:5.7.4
       - autolabjs/gitlab-ce:10.1.4-ce.0
-      - autolabjs/nodejs:0.4.0
-      - autolabjs/executionnode:0.4.0
+      - autolabjs/nodejs:0.5.0
+      - autolabjs/executionnode:0.5.0
