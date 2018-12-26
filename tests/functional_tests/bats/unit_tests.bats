@@ -21,7 +21,7 @@ teardown() {
 }
 
 @test "Unit test for C" {
-  node submit.js -i 2015A7PS006G -l lab1 --lang=c --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=c --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/c.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/c.txt" "data/$TESTDIR/c_unsupported.txt"
   result=$?
@@ -29,7 +29,7 @@ teardown() {
 }
 
 @test "Unit test for C++ 2011" {
-  node submit.js -i 2015A7PS006G -l lab1 --lang=cpp --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=cpp --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/cpp.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/cpp.txt" "data/$TESTDIR/test_result.txt"
   result=$?
@@ -37,7 +37,7 @@ teardown() {
 }
 
 @test "Unit test for C++ 2014" {
-  node submit.js -i 2015A7PS006G -l lab1 --lang=cpp14 --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=cpp14 --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/cpp14.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/cpp14.txt" "data/$TESTDIR/test_result.txt"
   result=$?
@@ -45,7 +45,7 @@ teardown() {
 }
 
 @test "Unit test for Java" {
-  node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/java.txt"
   cat "$BATS_TMPDIR/$TESTDIR/java.txt"
   cat "data/$TESTDIR/test_result.txt"
@@ -55,7 +55,7 @@ teardown() {
 }
 
 @test "Unit test for Python 2" {
-  node submit.js -i 2015A7PS006G -l lab1 --lang=python2 --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=python2 --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/python2.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/python2.txt" "data/$TESTDIR/test_result.txt"
   result=$?
@@ -63,7 +63,7 @@ teardown() {
 }
 
 @test "Unit test for Python 3" {
-  node submit.js -i 2015A7PS006G -l lab1 --lang=python3 --host='localhost:9000' > \
+  node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=python3 --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/python3.txt"
   cmp "$BATS_TMPDIR/$TESTDIR/python3.txt" "data/$TESTDIR/test_result.txt"
   result=$?
