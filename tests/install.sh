@@ -73,3 +73,7 @@ sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/re
 mkdir -p execution_nodes/ssl
 cp -rf execution_nodes/execution_node_1/ssl/. execution_nodes/ssl/
 sed -i "s/\.\.\/\.\.\/util\/environmentCheck\.js/\.\.\/util\/environmentCheck\.js/" execution_nodes/execute_node.js
+
+#unset the JAVA_OPTIONS
+unset _JAVA_OPTIONS
+echo "$_JAVA_OPTIONS"
