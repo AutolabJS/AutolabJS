@@ -46,9 +46,7 @@ teardown() {
   done
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
       "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt"
-  cat "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt"
-  cat "data/$TESTDIR/author_student_repository.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt" "data/$TESTDIR/author_student_repository.txt"
+  cmp "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt" "data/$TESTDIR/travis/author_student_repository.txt"
   result=$?
   [ "$result" -eq 0 ]
 }
