@@ -25,8 +25,9 @@ fi
 # initialize the DB
 mysql -e 'CREATE DATABASE AutolabJS;'
 mysql -e 'USE AutolabJS;'
-echo -e "USE mysql;\nUPDATE user SET password=PASSWORD('root') WHERE user='root';\nFLUSH PRIVILEGES;\n" | \
-    mysql -u root
+sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('root') \
+      where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+sudo service mysql restart
 
 bash scripts/npm_install.sh travis "$(pwd)"
 

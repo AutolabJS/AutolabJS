@@ -47,7 +47,11 @@ teardown() {
 @test "IO test for Java" {
   node submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/java.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/java.txt" "data/$TESTDIR/test_result.txt"
+  if [ "$TRAVIS_ENV" = true ] ; then
+    cmp "$BATS_TMPDIR/$TESTDIR/java.txt" "data/$TESTDIR/travis/java_result.txt"
+  else
+    cmp "$BATS_TMPDIR/$TESTDIR/java.txt" "data/$TESTDIR/test_result.txt"
+  fi
   result="$?"
   [ "$result" -eq 0 ]
 }

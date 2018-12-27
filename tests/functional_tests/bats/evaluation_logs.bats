@@ -23,7 +23,11 @@ teardown() {
 @test "No log generated" {
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/no_log.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/no_log.txt" "data/$TESTDIR/no_log.txt"
+  if [ "$TRAVIS_ENV" = true ] ; then
+    cmp "$BATS_TMPDIR/$TESTDIR/no_log.txt" "data/$TESTDIR/travis/no_log.txt"
+  else
+    cmp "$BATS_TMPDIR/$TESTDIR/no_log.txt" "data/$TESTDIR/no_log.txt"
+  fi
   result="$?"
   [ "$result" -eq 0 ]
 }
@@ -38,7 +42,11 @@ teardown() {
   #Submit and compare with expected result
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/java_exception.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/java_exception.txt" "data/$TESTDIR/shellOut_greater_than_25.txt"
+  if [ "$TRAVIS_ENV" = true ] ; then
+    cmp "$BATS_TMPDIR/$TESTDIR/java_exception.txt" "data/$TESTDIR/travis/shellOut_greater_than_25.txt"
+  else
+    cmp "$BATS_TMPDIR/$TESTDIR/java_exception.txt" "data/$TESTDIR/shellOut_greater_than_25.txt"
+  fi
   result="$?"
   [ "$result" -eq 0 ]
 }
@@ -71,8 +79,11 @@ teardown() {
   #Submit and compare with expected result
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
     "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt"
-  cat "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt" "data/$TESTDIR/log_greater_than_50.txt"
+  if [ "$TRAVIS_ENV" = true ] ; then
+    cmp "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt" "data/$TESTDIR/travis/log_greater_than_50.txt"
+  else
+    cmp "$BATS_TMPDIR/$TESTDIR/log_greater_than_50.txt" "data/$TESTDIR/log_greater_than_50.txt"
+  fi
   result="$?"
   [ "$result" -eq 0 ]
 }
