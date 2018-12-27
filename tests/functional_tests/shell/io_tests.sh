@@ -14,4 +14,4 @@ set -ex
 cd ../test_modules
 TESTDIR='io_tests'
 export TESTDIR
-$BATS bats/io_tests.bats
+TYPE_OF_TEST='functional' $BATS bats/io_tests.bats

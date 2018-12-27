@@ -46,7 +46,11 @@ teardown() {
   done
   node ../test_modules/submit.js -i 2015A7PS006G -l lab1 --lang=java --host='localhost:9000' > \
       "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt"
-  cmp "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt" "data/$TESTDIR/author_student_repository.txt"
+  if [ "$TRAVIS_ENV" = true ] ; then
+    cmp "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt" "data/$TESTDIR/travis/author_student_repository.txt"
+  else
+    cmp "$BATS_TMPDIR/$TESTDIR/author_student_repository.txt" "data/$TESTDIR/author_student_repository.txt"
+  fi
   result=$?
   [ "$result" -eq 0 ]
 }
