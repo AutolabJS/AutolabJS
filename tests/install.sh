@@ -73,3 +73,7 @@ sed -i 's/\/etc\/main_server/\.\.\/deploy\/configs\/main_server/' main_server/re
 mkdir -p execution_nodes/ssl
 cp -rf execution_nodes/execution_node_1/ssl/. execution_nodes/ssl/
 sed -i "s/\.\.\/\.\.\/util\/environmentCheck\.js/\.\.\/util\/environmentCheck\.js/" execution_nodes/execute_node.js
+
+# Create the html files from Jinja2 templates
+cd deploy/
+ansible-playbook plays/webpages.yml

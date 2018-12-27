@@ -86,6 +86,9 @@ course_name="Object Oriented Programming"
 course_number="CS F213"
 instructor_in_charge="Prasad Talasila"
 other_instructors='["Rajat Agarwal","Ankshit Jain"]'
+#links to webpages containing submission and self-evaluation instructions
+submission_url="https://github.com/AutolabJS/AutolabJS/wiki/v0.5.0-Making-a-Submission"
+self_evaluation_url="https://github.com/AutolabJS/AutolabJS/wiki/v0.5.0-Post-lab-self-evaluation"
 ms_admin_pass=12345678
 
 [loadbalancer:vars]

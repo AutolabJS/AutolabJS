@@ -17,12 +17,12 @@
 
   <body>
       <nav class="light-blue darken-3" role="navigation" style="position: fixed; z-index: 1000">
-      <div class="nav-wrapper container"><a id="logo_container" href="/admin" class="brand-logo">Admin Portal</a>
+      <div class="nav-wrapper container"><a id="logo_container" href="/admin" class="brand-logo">AutolabJS Admin Portal</a>
         <ul class="right hide-on-med-and-down">
 
            <li id = "login-navbar"><a class="dropdown-button" href="#" data-activates="dropdown2" data-beloworigin="true" id = "login_dropdown">Login</a></li>
            <li id = "logout-navbar"><a href="#" id = "logout">Logout</a></li>
-           <li><a target="_blank" href="https://autolab.bits-goa.ac.in">GitLab</a></li>
+           <li><a target="_blank" href="https://{{ gitlab_hostname }}">GitLab</a></li>
            <li><a class="dropdown-button" href="" data-activates="dropdown1">Guides<i class="material-icons right">arrow_drop_down</i></a></li>
         </ul>
       </div>
@@ -30,11 +30,11 @@
 
 
     <ul class="right hide-on-med-and-down" >
-          <ul id="dropdown1" class="dropdown-content">
-            <li><a target="_blank" href="https://github.com/prasadtalasila/AutolabJS/AutolabJS/Making-a-Submission">Submission</a></li>
-            <li class="divider"></li>
-            <li><a target="_blank" href="https://github.com/AutolabJS/AutolabJS/wiki/Post-lab-self-evaluation">Post Lab</a></li>
-          </ul>
+      <ul id="dropdown1" class="dropdown-content">
+        <li><a target="_blank" href="{{ submission_url }}">Submission</a></li>
+        <li class="divider"></li>
+        <li><a target="_blank" href="{{ self_evaluation_url }}">Post Lab</a></li>
+      </ul>
 
     </ul>
       <ul id="dropdown2" class="dropdown-content collection" >
@@ -104,8 +104,8 @@
         <div class="row">
           <div class="col l6 s12">
             <h5 class="white-text">About</h5>
-            <p class="grey-text text-lighten-4">This is an autograder service.<br>
-              Please report any bugs to the instruction team. <br>
+            <p class="grey-text text-lighten-4">This is an auto evaluation service.<br>
+              Please report any bugs to the <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS/issues/new">development team</a>. <br>
               Interested in contributing? Find the source code <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS"><b>here</b></a>.
             </p>
           </div>
@@ -120,7 +120,7 @@
       </div>
       <div class="footer-copyright">
         <div class="container">
-          <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS/wiki"><b>Contributors</b></a>
+        <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS/graphs/contributors"><b>Contributors</b></a>
         </div>
       </div>
     </footer>
