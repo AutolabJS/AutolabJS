@@ -43,8 +43,8 @@ expFirstLine="requestRun post request recieved"
 expLastLine="bash extract_run.sh $id $lab localhost  $lang"
 result=0
 if [[ $fileLength -ge 10 ]]; then
-  firstLine=$(tail -n 10 "$logFilePath" | head -n 1)
-  lastLine=$(tail -n 1 "$logFilePath" | tr -d \" )
+  firstLine=$(grep -v "DeprecationWarning" "$logFilePath" | tail -n 10 | head -n 1)
+  lastLine=$(grep -v "DeprecationWarning" "$logFilePath" | tail -n 1 | tr -d \" )
   if [[ "$firstLine" == "$expFirstLine" && "$expLastLine" == "$lastLine" ]]; then
   result=1
   fi
