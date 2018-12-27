@@ -22,6 +22,9 @@ env:
 - TEST_TYPE="functional_tests"
 - TEST_TYPE="component_tests"
 
+before_install:
+ - sudo bash scripts/travis_install.sh
+
 before_script:
  - bash tests/install.sh
  - bash tests/compile.sh

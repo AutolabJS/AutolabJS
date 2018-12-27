@@ -146,12 +146,12 @@ teardown() {
   [ "$result" -eq 0 ]
 
   # for the making a submission page on Github
-  curl -fsS --head --request GET https://github.com/AutolabJS/AutolabJS/wiki/v0.3.0-Making-a-Submission
+  curl -fsS --head --request GET https://github.com/AutolabJS/AutolabJS/wiki/v0.5.0-Making-a-Submission
   result=$?
   [ "$result" -eq 0 ]
 
   # for the post lab evaluation page on Github
-  curl -fsS --head --request GET https://github.com/AutolabJS/AutolabJS/wiki/v0.3.0-Post-lab-self-evaluation
+  curl -fsS --head --request GET https://github.com/AutolabJS/AutolabJS/wiki/v0.5.0-Post-lab-self-evaluation
   result=$?
   [ "$result" -eq 0 ]
 }

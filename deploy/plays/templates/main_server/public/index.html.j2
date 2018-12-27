@@ -3,7 +3,7 @@
   <head>
     <script type="text/javascript" src="js/jquery.min.js"></script>
     <meta charset="utf-8">
-   <title>Autograder</title>
+   <title>AutolabJS - auto evaluation for collaborative programmers</title>
     <link href="css/icon.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="css/materialize.min.css"  media="screen,projection"/>
     <link href="css/style.css" type="text/css" rel="stylesheet" media="screen,projection"/>
@@ -17,14 +17,14 @@
 
   <body>
     <nav class="light-blue darken-3" role="navigation" style="position: fixed; z-index: 1000">
-      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">CS F213: Object Oriented Programming</a>
+      <div class="nav-wrapper container"><a id="logo-container" href="/" class="brand-logo">{{ course_number ~ ":" ~ course_name }}</a>
         <ul id="nav-mobile" class="right hide-on-med-and-down">
-        <li><a target="_blank" href="https://autolab.bits-goa.ac.in">GitLab</a></li>
+        <li><a target="_blank" href="https://{{ gitlab_hostname }}">GitLab</a></li>
         <ul class="right hide-on-med-and-down">
           <ul id="dropdown1" class="dropdown-content">
-            <li><a target="_blank" href="https://github.com/AutolabJS/AutolabJS/wiki/v0.2-beta-Making-a-Submission">Submission</a></li>
+            <li><a target="_blank" href="{{ submission_url }}">Submission</a></li>
             <li class="divider"></li>
-            <li><a target="_blank" href="https://github.com/AutolabJS/AutolabJS/wiki/v0.2-beta-Post-lab-self-evaluation">Post Lab</a></li>
+            <li><a target="_blank" href="{{ self_evaluation_url }}">Post Lab</a></li>
           </ul>
           <li><a class="dropdown-button" href="" data-activates="dropdown1">Guides<i class="material-icons right">arrow_drop_down</i></a></li>
         </ul>
@@ -236,8 +236,8 @@
         <div class="row">
           <div class="col l6 s12">
             <h5 class="white-text">About</h5>
-            <p class="grey-text text-lighten-4">This is an autograder service.<br>
-              Please report any bugs to the instruction team. <br>
+            <p class="grey-text text-lighten-4">This is an auto evaluation service.<br>
+              Please report any bugs to the <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS/issues/new">development team</a>. <br>
               Interested in contributing? Find the source code <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS"><b>here</b></a>.
             </p>
           </div>
@@ -253,7 +253,7 @@
       </div>
       <div class="footer-copyright">
         <div class="container">
-        <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS/wiki"><b>Contributors</b></a>
+        <a class="grey-text text-lighten-4" target="_blank" href="https://github.com/AutolabJS/AutolabJS/graphs/contributors"><b>Contributors</b></a>
         </div>
       </div>
     </footer>

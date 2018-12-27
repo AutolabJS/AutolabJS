@@ -1,0 +1,36 @@
+#generate all the required web files from templates
+- hosts: mainserver
+  tasks:
+    #Main server configs
+    - name: Create index.html webpage from template file
+      template:
+        src: templates/main_server/public/index.html.j2
+        dest: "../../main_server/public/index.html"
+        mode: '0600'
+
+    - name: Create config.html webpage from template file
+      template:
+        src: templates/main_server/public/config.html.j2
+        dest: "../../main_server/public/config.html"
+        mode: '0600'
+
+    - name: Create admin.html webpage from template file
+      template:
+        src: templates/main_server/public/admin.html.j2
+        dest: "../../main_server/public/admin.html"
+        mode: '0600'
+
+- hosts: mainserver
+  tasks:
+    #tests configuration
+    - name: Create index.html webpage from template file for tests
+      template:
+        src: templates/main_server/public/index.html.j2
+        dest: "../../tests/test_modules/data/website_load/index.html"
+        mode: '0600'
+
+    - name: Create admin.html webpage from template file for tests
+      template:
+        src: templates/main_server/public/admin.html.j2
+        dest: "../../tests/test_modules/data/website_load/admin.html"
+        mode: '0600'
