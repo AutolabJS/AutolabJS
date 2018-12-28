@@ -84,6 +84,9 @@ docker_images_location=/path/to/docker/images
 # Message and file limits
 max_log_size=5242880
 max_eval_log_size=256kb
+
+# System config information
+sys_ssh_port=2222
 # ------------- end of [all:vars]
 
 [machines:vars]

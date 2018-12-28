@@ -1,0 +1,48 @@
+---
+- name: Enable UFW
+  ufw:
+    state: enabled
+    logging: on
+
+- name: Set the default incoming policy of UFW to deny
+  ufw:
+    direction: incoming
+    policy: deny
+    log: yes
+
+- name: Set the default outgoing policy of UFW to allow
+  ufw:
+    direction: outgoing
+    policy: allow
+
+- name: Allow system SSH traffic
+  ufw:
+    rule: allow
+    port: "{{ sys_ssh_port }}"
+
+- name: Allow traffic for AutolabJS
+  ufw:
+    rule: allow
+    port: '{{ item }}'
+    comment: "autolabjs"
+  with_items:
+    - 22                    # port for gitlab's ssh traffic
+    - "{{ gitlab_port }}"   # default value = 80
+    - 443                   # port for gitlab's https traffic
+    - "{{ sys_ssh_port }}"  # default value = 2222
+    - "{{ ms_port }}"       # default value = 9000
+
+- name: Deny access to load balancer from anywhere else
+  ufw:
+    rule: deny
+    port: "{{ lb_port }}"
+    log: yes
+    comment: "autolabjs"
+
+- name: Deny access to execution nodes from anywhere else
+  ufw:
+    rule: deny
+    port: "{{ hostvars[item]['en_port'] }}"
+    log: yes
+    comment: "autolabjs"
+  loop: "{{ groups['executionnodes'] }}"

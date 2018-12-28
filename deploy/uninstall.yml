@@ -64,6 +64,9 @@
       - "load_balancer"
       - "execution_node"
 
+    - name: Remove firewall policies
+      import_tasks: plays/tasks/ufwreset.yml
+
 - hosts: all
   become: yes
   tasks:

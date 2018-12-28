@@ -1,4 +1,4 @@
-- hosts: all
+- hosts: machines
   become: yes
   tasks:
     - name: Install crontab on all the machines running AutolabJS components
@@ -13,3 +13,6 @@
         month: "*"
         user: root
         cron_file: "autolabjs"
+
+    - name: Set firewall policies
+      import_tasks: tasks/ufwset.yml
