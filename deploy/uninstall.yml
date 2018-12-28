@@ -63,3 +63,12 @@
       - "main_server"
       - "load_balancer"
       - "execution_node"
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: Remove crontab from all the machines running AutolabJS components
+      cron:
+        name: "autolabjs-restart"
+        cron_file: "autolabjs"
+        state: absent

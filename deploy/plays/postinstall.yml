@@ -1,0 +1,15 @@
+- hosts: all
+  become: yes
+  tasks:
+    - name: Install crontab on all the machines running AutolabJS components
+      cron:
+        name: "autolabjs-restart"
+        job: "bash /opt/autolabjs/deploy/autolabjs-restart.sh"
+        state: present
+        minute: "*"
+        hour: "*"
+        day: "*"
+        weekday: "*"
+        month: "*"
+        user: root
+        cron_file: "autolabjs"
