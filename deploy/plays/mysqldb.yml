@@ -25,7 +25,7 @@
       copy: src=./helper_scripts/wait-for-it.sh dest=/tmp/wait-for-it.sh mode=0777
 
     - name: Waiting for MySQL server to be up
-      shell: ./helper_scripts/wait-for-it.sh -t 60 {{ ansible_host }}:3306
+      shell: ./helper_scripts/wait-for-it.sh -t 60 {{ db_hostname }}:3306
 
     - pause: seconds=10
 

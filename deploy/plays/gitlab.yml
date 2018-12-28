@@ -9,7 +9,7 @@
         hostname: gitlab.example.com
         env:
           GITLAB_ROOT_PASSWORD: "{{ gitlab_password }}"
-          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ ansible_host }}'; nginx['redirect_http_to_https'] = true;"
+          GITLAB_OMNIBUS_CONFIG: "external_url 'https://{{ gitlab_hostname }}'; nginx['redirect_http_to_https'] = true;"
         published_ports:
           - "80:80"
           - "22:22"
@@ -20,8 +20,8 @@
           - "{{ install_dir }}/config:/etc/gitlab"
           - "{{ install_dir }}/log/gitlab:/var/log/gitlab"
           - "{{ install_dir }}/gitlab/data:/var/opt/gitlab"
-          - "{{ install_dir }}/deploy/keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ ansible_host }}.key"
-          - "{{ install_dir }}/deploy/keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ ansible_host }}.crt"
+          - "{{ install_dir }}/deploy/keys/gitlab/ssl/localhost.key:/etc/gitlab/ssl/{{ gitlab_hostname }}.key"
+          - "{{ install_dir }}/deploy/keys/gitlab/ssl/localhost.crt:/etc/gitlab/ssl/{{ gitlab_hostname }}.crt"
 
     - name: Copy wait-for-it to container
       shell: docker cp helper_scripts/wait-for-it.sh gitlab:/wait-for-it.sh
@@ -33,7 +33,7 @@
 
     - name: Get Private Token
       uri:
-        url: https://{{ ansible_host }}/api/v3/session
+        url: https://{{ gitlab_hostname }}/api/v3/session
         status_code: 201
         method: POST
         body: "login=root&password={{ gitlab_password }}"
@@ -46,7 +46,7 @@
 
     - name: Create Test Project
       uri:
-        url: https://{{ ansible_host }}/api/v3/projects
+        url: https://{{ gitlab_hostname }}/api/v3/projects
         method: POST
         status_code: 201
         body: "name=Test&private_token={{ session.private_token }}"
