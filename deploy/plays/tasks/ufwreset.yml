@@ -1,0 +1,30 @@
+---
+- name: Remove AutolabJS specific rules for opened ports
+  ufw:
+    rule: allow
+    port: '{{ item }}'
+    comment: "autolabjs"
+    delete: yes
+  with_items:
+    - 22                    # port for gitlab's ssh traffic
+    - "{{ gitlab_port }}"   # default value = 80
+    - 443                   # port for gitlab's https traffic
+    - "{{ sys_ssh_port }}"  # default value = 2222
+    - "{{ ms_port }}"       # default value = 9000
+
+- name: Delete blocking rules for load balancer
+  ufw:
+    rule: deny
+    port: "{{ lb_port }}"
+    log: yes
+    comment: "autolabjs"
+    delete: yes
+
+- name: Delete blocking rules for execution nodes
+  ufw:
+    rule: deny
+    port: "{{ hostvars[item]['en_port'] }}"
+    log: yes
+    comment: "autolabjs"
+    delete: yes
+  loop: "{{ groups['executionnodes'] }}"

@@ -9,3 +9,4 @@
 - import_playbook: plays/lb.yml
 - import_playbook: plays/ms.yml
 - import_playbook: plays/executionnodes.yml
+- import_playbook: plays/postinstall.yml

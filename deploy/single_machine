@@ -2,13 +2,16 @@
 
 # Place holder for unique host on which main server and load balancer of AutolabJS run
 [machines]
-m1
+server1
+# -------------
 
 [mainserver]
 ms
+# -------------
 
 [loadbalancer]
 lb
+# -------------
 
 #By default installs ten execution nodes. If you don't need so many, you can
 # comment out the unnecessary ones and limit the installation to few
@@ -24,50 +27,54 @@ en7 en_port=8097
 en8 en_port=8098
 en9 en_port=8099
 en10 en_port=8100
+# -------------
 
 [database]
 mysqldb
+# -------------
 
 [git]
 gitlab
+# -------------
 
 [git-credentials:children]
 git
 loadbalancer
 executionnodes
+# -------------
 
 # The group variables sections follow
 [all:vars]
 reject_unauthorised=0
 ansible_connection=local
 ansible_python_interpreter=/usr/bin/python2
-#optionally, you can change host name to proper DNS name or IP address
-ansible_host=localhost
 install_dir=/opt/autolabjs
 
-#remember to change host name to proper DNS names or IP addresses
-ms_hostname=localhost
+#remember to change host name to proper DNS name or IP address
+ansible_host=localhost
+ms_hostname="{{ ansible_host }}"
+lb_hostname="{{ ansible_host }}"
+db_hostname="{{ ansible_host }}"
+gitlab_hostname="{{ ansible_host }}"
+
 ms_port=9000
-lb_hostname=localhost
 lb_port=8081
-db_hostname=localhost
-#remember to change the password to a secure password
-mysql_root_pass=root
-gitlab_hostname=localhost
-gitlab_username=root
-#remember to change the password to a secure password
-gitlab_password=12345678
 gitlab_port=80  #Don't change this port
+#remember to change the passwords to a secure password
+mysql_root_pass=root
+gitlab_username=root
+gitlab_password=12345678
 
 # Key generation details
-country=IN
-state=Goa
-locality=BITSGoa
-organization=autolabjs.com
-organizational_unit=CSIS
+#remember to change the root CA cert password to a secure password
+password=autolabjs
 email=admin@autolabjs.com
 app_name=AutolabJS
-password=autolabjs
+organization=autolabjs.com
+organizational_unit=CSIS
+country=IN
+state=Goa
+locality=Goa
 
 # Development variables
 # The path should not have a trailing slash
@@ -78,8 +85,13 @@ docker_images_location=/path/to/docker/images
 max_log_size=5242880
 max_eval_log_size=256kb
 
+# System config information
+sys_ssh_port=2222
+# ------------- end of [all:vars]
+
 [machines:vars]
 #no exclusive variables for machines group
+# -------------
 
 [mainserver:vars]
 course_name="Object Oriented Programming"
@@ -90,18 +102,24 @@ other_instructors='["Rajat Agarwal","Ankshit Jain"]'
 submission_url="https://github.com/AutolabJS/AutolabJS/wiki/v0.5.0-Making-a-Submission"
 self_evaluation_url="https://github.com/AutolabJS/AutolabJS/wiki/v0.5.0-Post-lab-self-evaluation"
 ms_admin_pass=12345678
+# -------------
 
 [loadbalancer:vars]
 submissions_dir=load_balancer/submissions
+# -------------
 
 [executionnodes:vars]
 #no exclusive variables for executionnodes group
+# -------------
 
 [git:vars]
 #no exclusive variables for git group
+# -------------
 
 [database:vars]
 #no exclusive variables for machines group
+# -------------
 
 [git-credentials:vars]
 #no exclusive variables for machines group
+# -------------

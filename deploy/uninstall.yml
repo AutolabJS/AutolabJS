@@ -63,3 +63,15 @@
       - "main_server"
       - "load_balancer"
       - "execution_node"
+
+    - name: Remove firewall policies
+      import_tasks: plays/tasks/ufwreset.yml
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: Remove crontab from all the machines running AutolabJS components
+      cron:
+        name: "autolabjs-restart"
+        cron_file: "autolabjs"
+        state: absent

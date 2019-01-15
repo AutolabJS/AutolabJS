@@ -37,7 +37,7 @@
 
     - name: Add key to gitlab
       uri:
-        url: https://{{ ansible_host }}/api/v3/user/keys
+        url: https://{{ gitlab_hostname }}/api/v3/user/keys
         status_code: 201
         method: POST
         body_format: json
