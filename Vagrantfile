@@ -10,6 +10,7 @@ Vagrant.configure("2") do |config|
   config.vm.synced_folder ".", "/home/vagrant/autolabjs", type: "rsync"
 
   # port forwarding. must run ssh_local_forward.sh to get Autolab to work properly
+  config.ssh.guest_port = 2222
   config.vm.network "forwarded_port", guest: 22, host: 9001, id: "git"
   config.vm.network "forwarded_port", guest: 80, host: 9002, id: "gitlab-http"
   config.vm.network "forwarded_port", guest: 443, host: 9003, id: "gitlab-https"
@@ -26,7 +27,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "shell", inline: <<-SHELL
   # change the default port of SSH server
-  sudo sed -i 's/^Port 22/Port 2222/' /etc/ssh/sshd_config
+  sudo sed -i 's/^Port 22$/Port 2222/' /etc/ssh/sshd_config
   sudo sudo service ssh restart
   echo "cd /home/vagrant/autolabjs" >>  /home/ubuntu/.bashrc
   SHELL
