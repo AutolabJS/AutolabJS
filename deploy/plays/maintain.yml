@@ -1,0 +1,20 @@
+- hosts: localhost
+  become: yes
+  tasks:
+    - name: Stop containers
+      shell: docker stop {{ item }} 
+      loop: 
+      - "mainserver"
+      - "loadbalancer"
+      - "autolabjs-db"
+      - "gitlab"
+      - "execution-node-{{ ansible_host }}-{{ en_port }}"
+
+- hosts: all
+  become: yes
+  tasks:
+    - name: Remove crontab from all the machines running AutolabJS components
+      cron:
+        name: "autolabjs-restart"
+        cron_file: "autolabjs"
+        state: absent
