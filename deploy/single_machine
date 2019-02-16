@@ -13,7 +13,7 @@ ms
 lb
 # -------------
 
-#By default installs ten execution nodes. If you don't need so many, you can
+# By default installs ten execution nodes. If you don't need so many, you can
 # comment out the unnecessary ones and limit the installation to few
 # execution nodes.
 [executionnodes]

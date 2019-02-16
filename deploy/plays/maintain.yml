@@ -1,55 +1,14 @@
-- hosts: machines
+- hosts: localhost
   become: yes
   tasks:
-    - name: Remove autolab directory completely
-      file: "dest={{ install_dir }} state=absent"
-      ignore_errors: yes
-
-    - name: Remove all images
-      docker_image:
-        name: "{{ item }}"
-        state: absent
-      ignore_errors: yes
-      with_items:
-      - "autolabjs/gitlab-ce:10.1.4-ce.0"
-      - "autolabjs/mysql:5.7.4"
-      - "autolabjs/nodejs:0.5.0"
-      - "autolabjs/executionnode:0.5.0"
-      - "main_server"
-      - "load_balancer"
-      - "execution_node"
-
-    - name: Remove firewall policies
-      import_tasks: plays/tasks/ufwreset.yml
-
     - name: Stop containers
-      tag: stop
-      docker_container:
-        name: "{{ item }}"
-        state: stopped
-      with_items: 
-      - "autolabjs/gitlab-ce:10.1.4-ce.0"
-      - "autolabjs/mysql:5.7.4"
-      - "autolabjs/nodejs:0.5.0"
-      - "autolabjs/executionnode:0.5.0"
-      - "main_server"
-      - "load_balancer"
-      - "execution_node"
-
-    - name: Restart containers
-      tag: restart
-      docker_container:
-        name: "{{ item }}"
-        state: started
-        restart: yes
-      with_items:
-      - "autolabjs/gitlab-ce:10.1.4-ce.0"
-      - "autolabjs/mysql:5.7.4"
-      - "autolabjs/nodejs:0.5.0"
-      - "autolabjs/executionnode:0.5.0"
-      - "main_server"
-      - "load_balancer"
-      - "execution_node"
+      shell: docker stop {{ item }} 
+      loop: 
+      - "mainserver"
+      - "loadbalancer"
+      - "autolabjs-db"
+      - "gitlab"
+      - "execution-node-{{ ansible_host }}-{{ en_port }}"
 
 - hosts: all
   become: yes
